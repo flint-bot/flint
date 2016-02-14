@@ -1,0 +1,30 @@
+{
+  "name": "node-flint",
+  "version": "1.0.0",
+  "description": "Making Bots Spark",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nmarus/flint.git"
+  },
+  "keywords": [],
+  "author": "Nicholas Marus",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/nmarus/flint/issues"
+  },
+  "homepage": "https://github.com/nmarus/flint#readme",
+  "dependencies": {
+    "async": "^1.5.2",
+    "debug": "^2.2.0",
+    "lodash": "^4.3.0",
+    "moment": "^2.11.2",
+    "node-sparky": "^1.0.21",
+    "restify": "^4.0.3",
+    "util": "^0.10.3",
+    "validator": "^4.8.0"
+  }
+}
