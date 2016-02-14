@@ -1,4 +1,4 @@
-# Flint-Bot
+# Flint
 
 
 A simple Cisco Spark bot builder that is easily extended.
