@@ -24,7 +24,7 @@ flint.hears('/echo', function(bot, trigger) {
 
 // anytime someone says beer
 flint.hears(/(^| )beer( |.|$)/i, function(bot, trigger) {
-  bot.say('Enjoy a 🍺!');
+  bot.say('Enjoy a beer, %s!', trigger.person.displayName);
 });
 ```
 
@@ -139,18 +139,39 @@ console.log(trigger.args); // [ 'hello', 'bob!' ]
 
 ### bot.say(message *, callback(error, messageObj)* );
 Send text or file attachments to room.
-* `message` : either a string or object
+* `message` : either a string, a string plus variables, or an object
 * `callback` : *optional callback*
 
-#####Example: Send a message to room
+#####Example: Send a simple message to room
 ```js
 bot.say('hello');
+```
+
+#####Example: Send a message with variables to room
+```js
+var name = 'John Doe';
+
+bot.say('Hello, %s!', name);
 ```
 
 #####Example: Send a message and file to room
 ```js
 bot.say({text: 'hello', file:'http://myurl/file.doc'});
 ```
+
+
+### bot.file(url *, callback(error, messageObj)* );
+Send just a file attachment to room.
+* `url` : url string
+* `callback` : *optional callback*
+
+#####Example: Send a file to room
+```js
+var url = 'http://myurl/file.doc';
+
+bot.file(url);
+```
+
 
 ### bot.add(email *, callback(error, email)* );
 Add a person or group of people to a room.

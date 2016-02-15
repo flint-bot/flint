@@ -79,13 +79,13 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
       bot.say(trigger.args.join(' '));
     });
 
-    // command '/add' to add a person to room by email
+    // add a person or people to room by email
     flint.hears('/add', function(bot, trigger) {
       var email = trigger.args;
       if(email) bot.add(email);
     });
 
-    // command '/remove' to remove a person from room by email
+    // remove a person or people from room by email
     flint.hears('/remove', function(bot, trigger) {
       var email = trigger.args;
       if(email) bot.remove(email);
@@ -93,7 +93,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
 
     // anytime someone says beer
     flint.hears(/(^| )beer( |.|$)/i, function(bot, trigger) {
-      bot.say('Enjoy a 🍺!');
+      bot.say('Enjoy a beer, %s!', trigger.person.displayName);
     });
     ```
 
@@ -116,7 +116,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
       "repository": "",
       "author": "Nicholas Marus <nmarus@gmail.com>",
       "dependencies": {
-        "node-flint": "^1.0.0"
+        "node-flint": "^1.0.2"
       }
     }
     ```

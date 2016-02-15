@@ -1,6 +1,6 @@
 {
   "name": "node-flint",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Making Bots Spark",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,7 @@
     "debug": "^2.2.0",
     "lodash": "^4.3.0",
     "moment": "^2.11.2",
-    "node-sparky": "^1.0.21",
+    "node-sparky": "^1.0.25",
     "restify": "^4.0.3",
     "util": "^0.10.3",
     "validator": "^4.8.0"
