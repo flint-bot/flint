@@ -31,7 +31,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
   * `name`
   * `description`
   * `author`
-  * `dependecies`
+  * `dependencies`
 
     The file should look something like the following. Be sure to save after you have made the changes.
 
@@ -116,7 +116,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
       "repository": "",
       "author": "Nicholas Marus <nmarus@gmail.com>",
       "dependencies": {
-        "node-flint": "^1.0.2"
+        "node-flint": "^1.0.4"
       }
     }
     ```
