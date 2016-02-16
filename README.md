@@ -303,7 +303,7 @@ bot.schedule(function(bot) {
 
 
 ### bot.remember(key, value);
-Store key/value data to the bot  which is specific for the room the bot is in.
+Store key/value data specific to a room the bot is in. Values are pushed to an array under the key. It is not possible to overwrite a specific value under a key, but you must rather forget the entire key. *(See bot.forget)*
 * `key` : key as a string in local bot's memory
 * `value` : value to store at key (String, Object, Collection, Array, etc)
 
@@ -351,4 +351,12 @@ flint.hears('/hello', function(bot, trigger) {
 });
 
 
+### bot.forget(key);
+Forget all data stored under a key.
+* `key` : key as a string in local bot's memory
+
+#####Example:
+```js
+
+bot.forget('nicknames');
 ```
