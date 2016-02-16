@@ -349,7 +349,7 @@ flint.hears('/hello', function(bot, trigger) {
     bot.say('Hello ' + trigger.person.displayName);
   }
 });
-
+```
 
 ### bot.forget(key);
 Forget all data stored under a key.
