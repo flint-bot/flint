@@ -138,7 +138,7 @@ console.log(trigger.args); // [ 'hello', 'bob!' ]
 ## Bot Methods
 
 ### bot.say(message *, callback(error, messageObj)* );
-Send text or file attachments to room.
+Send text and/or file attachments to room.
 * `message` : either a string, a string plus variables, or an object
 * `callback` : *optional callback*
 
@@ -170,6 +170,30 @@ Send just a file attachment to room.
 var url = 'http://myurl/file.doc';
 
 bot.file(url);
+```
+
+
+### bot.dm(email, message *, callback(error, messageObj)* );
+Send text and/or file attachments to a person
+* `email` : email address of person for bot to direct message
+* `message` : either a string, a string plus variables, or an object
+* `callback` : *optional callback*
+
+#####Example: Send a simple message to person
+```js
+bot.dm('person@domain.com', 'hello');
+```
+
+#####Example: Send a message with variables to person
+```js
+var name = 'John Doe';
+
+bot.dm('person@domain.com', 'Hello, %s!', name);
+```
+
+#####Example: Send a message and file to person
+```js
+bot.dm({text: 'hello', file:'http://myurl/file.doc'});
 ```
 
 
@@ -227,6 +251,22 @@ bot.getPeople(function(error, emails) {
     console.log('error');
   } else {
     console.log(emails.join(', ')); // prints a comma separated list to console
+  }
+});
+```
+
+### bot.person(email, callback(error, person));
+Get person object from email.
+* `email` : this is the email address of a Spark account
+* `callback` : required callback that contains results of query
+
+#####Example:
+```js
+bot.person('person@domain.com', function(error, person) {
+  if(error) {
+    console.log('error');
+  } else {
+    console.log(person.displayName);
   }
 });
 ```
@@ -302,14 +342,14 @@ bot.schedule(function(bot) {
 * `bot.schedulerStop();` : Stops the scheduler queue
 
 
-### bot.remember(key, value);
-Store key/value data specific to a room the bot is in. Values are pushed to an array under the key. It is not possible to overwrite a specific value under a key. You must forget the entire key. *(See bot.forget)*
+### bot.remember(namespace, key, value);
+Store namespace,key/value data specific to a room the bot is in.
+* `namespace` : namespace as a string in local bot's memory
 * `key` : key as a string in local bot's memory
 * `value` : value to store at key (String, Object, Collection, Array, etc)
 
 #####Example:
 ```js
-
 // command '/callme' to get person nickname in room
 flint.hears('/callme', function(bot, trigger) {
   // check if anything was sent after /callme
@@ -317,7 +357,7 @@ flint.hears('/callme', function(bot, trigger) {
     // set nn to word following /callme
     var nn = trigger.args.shift();
     // save to local bots memory
-    bot.remember('nicknames', { email: trigger.message.personEmail, nickname: nn });
+    bot.remember('nicknames', trigger.message.personEmail, nn);
     bot.say('I will call you ' + nn + ' from now on in this room');
   } else {
     bot.say('Maybe later.');
@@ -327,18 +367,16 @@ flint.hears('/callme', function(bot, trigger) {
 
 
 ### bot.recall(key);
-Recall key/value data that was stored.
+Recall namespace/key/value data that was stored.
+* `namespace` : namespace as a string in local bot's memory
 * `key` : key as a string in local bot's memory
 
 #####Example: (See bot.remember example for the first part of this.)
 ```js
-// use lodash
-var _ = require('lodash');
-
 // command '/hello' responds with greeting
 flint.hears('/hello', function(bot, trigger) {
   // recall nickname
-  var person = _.find(bot.recall('nicknames'), { email: trigger.message.personEmail });
+  var person = bot.recall('nicknames', trigger.message.personEmail);
 
   // check if we know a nickname
   if(person) {
@@ -351,12 +389,12 @@ flint.hears('/hello', function(bot, trigger) {
 });
 ```
 
-### bot.forget(key);
-Forget all data stored under a key.
-* `key` : key as a string in local bot's memory
+### bot.forget(namespace *, key*);
+Forget all data stored under a namespace and/or key.
+* `namespace` : namespace as a string in local bot's memory
+* `key` : *key as a string in local bot's memory (optional)*
 
 #####Example:
 ```js
-
 bot.forget('nicknames');
 ```
