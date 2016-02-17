@@ -255,14 +255,14 @@ bot.getPeople(function(error, emails) {
 });
 ```
 
-### bot.person(email, callback(error, person));
+### bot.getPerson(email, callback(error, person));
 Get person object from email.
 * `email` : this is the email address of a Spark account
 * `callback` : required callback that contains results of query
 
 #####Example:
 ```js
-bot.person('person@domain.com', function(error, person) {
+bot.getPerson('person@domain.com', function(error, person) {
   if(error) {
     console.log('error');
   } else {
