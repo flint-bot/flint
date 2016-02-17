@@ -343,7 +343,7 @@ bot.schedule(function(bot) {
 
 
 ### bot.remember(namespace, key, value);
-Store namespace,key/value data specific to a room the bot is in.
+Store namespace/key/value data specific to a room the bot is in.
 * `namespace` : namespace as a string in local bot's memory
 * `key` : key as a string in local bot's memory
 * `value` : value to store at key (String, Object, Collection, Array, etc)
