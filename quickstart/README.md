@@ -139,8 +139,6 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
     flint has registered a room +2s
     ```
 
-    *Note: If you are using your own personal Spark Account, the application will make a post in every room you are part of when it registers to a room.*
-
 3. Run a few test commands:
 
     ```
