@@ -21,6 +21,9 @@ flint.hears('/echo', function(bot, trigger) {
   bot.say(trigger.args.join(' '));
 });
 
+//domain name to use for @name formats
+var domain = '@domain.com';
+
 // props [<name>]
 flint.hears('/props', function(bot, trigger) {
   var email = trigger.args ? trigger.args[0] : null;
