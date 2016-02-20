@@ -239,14 +239,14 @@ bot.remove('person@domain.com');
 *(For other examples, see bot.add)*
 
 
-### bot.getPeople(callback(error, emails));
+### bot.rollcall(callback(error, emails));
 Get array of emails for all people in room.
 * `emails` : this is an array of email addresses for room
 * `callback` : required callback that contains results of query
 
 #####Example:
 ```js
-bot.getPeople(function(error, emails) {
+bot.rollcall(function(error, emails) {
   if(error) {
     console.log('error');
   } else {
@@ -255,14 +255,14 @@ bot.getPeople(function(error, emails) {
 });
 ```
 
-### bot.getPerson(email, callback(error, person));
-Get person object from email.
-* `email` : this is the email address of a Spark account
+### bot.inspect(person, callback(error, person));
+Get person object from email or personId.
+* `person` : this is the email address or personId of a Spark account
 * `callback` : required callback that contains results of query
 
 #####Example:
 ```js
-bot.getPerson('person@domain.com', function(error, person) {
+bot.inspect('person@domain.com', function(error, person) {
   if(error) {
     console.log('error');
   } else {
