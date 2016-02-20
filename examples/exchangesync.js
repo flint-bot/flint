@@ -43,10 +43,12 @@ var depth = 3;
 // max dl sizes
 var listMax = 100;
 var execMax = 500;
+
+// sync interval in hours
 var listHours = 6;
 
-// rate limiter
-var limiter = new Bottleneck(8, 50); // 8 parallel calls with no more than one every 50ms
+// rate limiter (8 parallel calls with no more than one every 50ms)
+var limiter = new Bottleneck(8, 50); 
 
 // recursively query a DL, returns an array of all emails found.
 function ewsDlNested(email, callback) {
