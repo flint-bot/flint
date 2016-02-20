@@ -138,7 +138,6 @@ module.exports = function(flint) {
     var command = trigger.args[0] ? trigger.args.shift() : null;
     var email = command && command !== 'help' && trigger.args[0] ? trigger.args.shift() : null;
 
-    
     // if email defined and not valid
     if(email && !validator.isEmail(email)) {
       bot.say('That is not a valid email, %s.', trigger.person.displayName);
