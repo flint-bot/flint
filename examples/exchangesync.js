@@ -230,7 +230,7 @@ module.exports = function(flint) {
                 return;
               } else {
                 // compare members from a list to those in the room
-                bot.getPeople(function(err, emails) {
+                bot.rollcall(function(err, emails) {
                   if(err) {
                     bot.say('I\'m sorry, there was an error getting the list of people in this room.');
                     debug('encountered error getting people in room');
@@ -277,7 +277,7 @@ module.exports = function(flint) {
                 bot.say('That distribution list has %s members. It is longer than the maximum of %s allowed by system, %s', list.length, execMax, trigger.person.displayName);
               } else {
                 // one time sync of room to dl members
-                bot.getPeople(function(err, emails) {
+                bot.rollcall(function(err, emails) {
                   if(err) {
                     bot.say('I\'m sorry, there was an error getting the list of people in this room.');
                     debug('encountered error getting people in room');
@@ -357,7 +357,7 @@ module.exports = function(flint) {
                 bot.remember('dl', 'dlEmail', email);
                 bot.remember('dl', 'dlUser', trigger.message.personEmail);
                 
-                bot.getPeople(function(err, emails) {
+                bot.rollcall(function(err, emails) {
                   if(err) {
                     bot.say('I\'m sorry, there was an error getting the list of people in this room.');
                     debug('encountered error getting people in room');
@@ -385,7 +385,7 @@ module.exports = function(flint) {
                     if(err) {
                       return;
                     } else {
-                      bot.getPeople(function(err, emails) {
+                      bot.rollcall(function(err, emails) {
                         if(err) {
                           debug('encountered error getting people in room');
                           return;

@@ -20,7 +20,7 @@ flint.hears('/echo', function(bot, trigger) {
   bot.say(trigger.args.join(' '));
 });
 
-//domain name to use for @name format
+// domain name to use for @name format
 var domain = '@domain.com';
 
 // dm (@name | <email>) <message>

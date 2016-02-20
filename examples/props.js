@@ -21,7 +21,7 @@ flint.hears('/echo', function(bot, trigger) {
   bot.say(trigger.args.join(' '));
 });
 
-//domain name to use for @name formats
+// domain name to use for @name formats
 var domain = '@domain.com';
 
 // props [<name>]
@@ -34,7 +34,7 @@ flint.hears('/props', function(bot, trigger) {
   
   if(email && validator.isEmail(email)) {
     // get display name
-    bot.getPerson(email, function(err, person) {
+    bot.inspect(email, function(err, person) {
       if(err || !person) {
         bot.say('Invalid email address or @name.');
       } else {
