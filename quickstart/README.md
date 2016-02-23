@@ -52,7 +52,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
       }
     }
     ```
-    
+
   ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.03.jpg)
 
 #### Flint Application Setup
@@ -103,6 +103,8 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
       bot.say('Enjoy a beer, %s!', trigger.person.displayName);
     });
     ```
+
+  ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.04.jpg)
 
 2. Install the `node-flint` npm package to your project. This is done from the terminal window at the bottom of the Cloud9 IDE.
 
