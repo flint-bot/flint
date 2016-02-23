@@ -30,6 +30,8 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
   * `client`
   * `node_modules`
 
+  ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.02.jpg)
+
 5. Next, edit the `package.json` file in your project tree. Edit the following:
   * `name`
   * `description`
