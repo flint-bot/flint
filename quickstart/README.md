@@ -52,6 +52,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
       }
     }
     ```
+    
   ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.03.jpg)
 
 #### Flint Application Setup
