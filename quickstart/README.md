@@ -22,7 +22,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
   * `Description` - This can be anything.
   * `Template` - Choose "Node.js".
 
-  ![Cloud 9 New Project](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/cloud9.io.01.jpg)
+  ![Cloud 9 New Project](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.01.jpg)
 
 3. Press "Create Workspace" and wait for the Cloud9 IDE to load.
 
