@@ -56,7 +56,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
 
 #### Flint Application Setup
 
-1. Open up `server.js` and replace the existing code with the following. Be sure to save after you have made the changes and note the following customized settings:
+1. Open up `server.js` and replace the existing code with the following. Be sure to save after you have made the changes.
 
  * `hookUrl`: The cloud9 url for your app is `http://<appname>-<username>.c9users.io`
  * `sparkEmail`: Enter the Cisco Spark Email used at the start of this tutorial.
