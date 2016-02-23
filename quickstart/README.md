@@ -129,11 +129,12 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
       "repository": "",
       "author": "Nicholas Marus <nmarus@gmail.com>",
       "dependencies": {
-        "node-flint": "^1.0.4"
+        "node-flint": "^1.0.8"
       }
     }
     ```
 
+  ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.07.jpg)
 
 #### Run Flint
 
