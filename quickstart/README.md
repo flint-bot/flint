@@ -22,6 +22,8 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
   * `Description` - This can be anything.
   * `Template` - Choose "Node.js".
 
+  ![Cloud 9 New Project](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/cloud9.io.01.jpg)
+
 3. Press "Create Workspace" and wait for the Cloud9 IDE to load.
 
 4. After the IDE has loaded, you will see that Cloud9 has set us up with a sample project. We don't need any of this, so start by deleting the 2 existing  folders in the project tree named:
