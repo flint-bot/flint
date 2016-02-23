@@ -4,7 +4,7 @@
 This tutorial will get you started with a simple Cisco Spark Bot written in Node JS and hosted on Cloud9.
 
 #### Getting Your Spark Access Token
-First you will need your Cisco Spark API Access Token. You can use your own account or create a new "bot" account. 
+First you will need your Cisco Spark API Access Token. *You can use your own account or create a new "bot" account. However, if you use your own account, you will need someone else to test the commands as the application is designed to ignore commands that come from itself.*
 
 1. Login to http://developer.ciscospark.com
 
@@ -155,7 +155,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
     flint has registered a room +2s
     ```
 
-3. Run a few test commands:
+3. Open a chat window with your bot account and run a few test commands:
 
     ```
     /echo hello world!
