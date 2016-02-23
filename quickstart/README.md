@@ -37,7 +37,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
   * `description`
   * `author`
   * `dependencies`
-  
+
     The file should look something like the following. Be sure to save after you have made the changes.
 
     ```json
