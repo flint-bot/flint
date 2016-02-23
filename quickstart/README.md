@@ -10,6 +10,7 @@ First you will need your Cisco Spark API Access Token. You can use your own acco
 
 2. Click your avatar image and copy the characters listed in "My Access Token". You will need this later when setting up Flint.
 
+  ![Cicso Spark Token](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/ciscospark.com.01.jpg)
 
 #### Cloud9 Setup
 Cloud9 is an online Integrated Development Environment (IDE). This allows you to build this Node JS app without having to install anything on your computer or worry about having to pinhole your firewall to allow the Spark API web-hook callbacks to access locally running application.
