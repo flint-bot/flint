@@ -144,6 +144,8 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
     DEBUG=* node server.js
     ```
 
+  ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.08.jpg)
+
 2. Validate the logs. You should see something similar to the following. If you haven’t added the “bot” to a room yet, do so now and wait till the bot posts a message to the room stating it is ready.
 
     ```
