@@ -1,4 +1,4 @@
-# Quick Start with Flint on Cloud9
+# Quick Start with Cisco Spark and Flint on Cloud9
 
 #### Introduction
 This tutorial will get you started with a simple Cisco Spark Bot written in Node JS and hosted on Cloud9. This makes use of two frameworks to make the process a bit easier:
