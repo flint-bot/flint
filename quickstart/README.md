@@ -112,6 +112,10 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
     npm install --save node-flint
     ```
 
+  ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.05.jpg)
+
+  ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.06.jpg)
+
 3. Open up the `package.json` file and verify that the `node-flint` dependency is now there. Additionally, you should now see the “node-modules” folder in your application tree.
 
     *Note: The version of the `node-flint` package may differ. It's only important that the dependency is listed.*
