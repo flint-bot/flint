@@ -13,7 +13,7 @@ First you will need your Cisco Spark API Access Token. *You can use your own acc
 
 2. Click your avatar image and copy the characters listed in "My Access Token". You will need this later when setting up Flint.
 
-  ![Cicso Spark Token](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/ciscospark.com.01.jpg)
+  ![Cicso spark token](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/ciscospark.com.01.jpg)
 
 #### Cloud9 Setup
 Cloud9 is an online Integrated Development Environment (IDE). This allows you to build this Node JS app without having to install anything on your computer or worry about having to pinhole your firewall to allow the Spark API web-hook callbacks to access locally running application.
@@ -26,7 +26,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
   * `Description` - This can be anything.
   * `Template` - Choose "Node.js".
 
-  ![Cloud 9 New Project](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.01.jpg)
+  ![Cloud 9 new project](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.01.jpg)
 
 3. Press "Create Workspace" and wait for the Cloud9 IDE to load.
 
@@ -35,7 +35,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
   * `client`
   * `node_modules`
 
-  ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.02.jpg)
+  ![Cloud 9 remove template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.02.jpg)
 
 5. Next, edit the `package.json` file in your project tree. Edit the following:
   
@@ -59,7 +59,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
     }
     ```
 
-  ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.03.jpg)
+  ![Cloud 9 package.json](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.03.jpg)
 
 #### Flint Application Setup
 
@@ -110,7 +110,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
     });
     ```
 
-  ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.04.jpg)
+  ![Cloud 9 server.js](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.04.jpg)
 
 2. Install the `node-flint` npm package to your project. This is done from the terminal window at the bottom of the Cloud9 IDE.
 
@@ -118,9 +118,9 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
     npm install --save node-flint
     ```
 
-  ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.05.jpg)
+  ![Cloud 9 npm install](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.05.jpg)
 
-  ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.06.jpg)
+  ![Cloud 9 npm install output](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.06.jpg)
 
 3. Open up the `package.json` file and verify that the `node-flint` dependency is now there. Additionally, you should now see the “node-modules” folder in your application tree.
 
@@ -140,7 +140,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
     }
     ```
 
-  ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.07.jpg)
+  ![Cloud 9 package.json updated](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.07.jpg)
 
 #### Run Flint
 
@@ -150,7 +150,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
     DEBUG=* node server.js
     ```
 
-  ![Cloud 9 Remove Template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.08.jpg)
+  ![Cloud 9 run flint](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.08.jpg)
 
 2. Validate the logs. You should see something similar to the following. If you haven’t added the “bot” to a room yet, do so now and wait till the bot posts a message to the room stating it is ready.
 
@@ -174,6 +174,18 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
 4. Monitor the terminal on Cloud9 for events that Flint produces.
 
 5. To stop the Cloud9 application, press `ctrl + c` from the terminal window.
+
+#### Adjust Cloud9 Project Security (required only for private projects)
+
+If you are running this as a "private" project on Cloud9 (vs Public), you will need to make sure that the call back URL that is used in the creation of webhooks, is made public. To do so:
+
+1. Select share from the cloud9 menu in the top right hand corner.
+
+  ![Cloud 9 project permissions](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.09.jpg)
+
+2. Make sure the "application" is set to "public"
+
+  ![Cloud 9 application set to public](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.10.jpg)
 
 #### References
 
