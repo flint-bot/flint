@@ -30,7 +30,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
 
 3. Press "Create Workspace" and wait for the Cloud9 IDE to load.
 
-4. After the IDE has loaded, you will see that Cloud9 has set us up with a sample project. We don't need any of this, so start by deleting the 2 existing folders in the project tree. This can be done by righ clicking on the folder and selecting delete. These are named:
+4. After the IDE has loaded, you will see that Cloud9 has set us up with a sample project. We don't need any of this, so start by deleting the 2 existing folders in the project tree. This can be done by right clicking on the folder and selecting delete. These are named:
   
   * `client`
   * `node_modules`
