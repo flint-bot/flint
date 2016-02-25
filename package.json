@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/nmarus/flint.git"
   },
-  "keywords": [],
+  "keywords": [ "cisco", "spark", "bot" ],
   "author": "Nicholas Marus",
   "license": "Apache-2.0",
   "bugs": {
