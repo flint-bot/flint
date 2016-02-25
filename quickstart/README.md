@@ -177,7 +177,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
 
 #### Adjust Cloud9 Project Security (required only for private projects)
 
-If you are running this as a "private" project on Cloud9 (vs Public), you will need to make sure that the call back URL that is used in the creation of webhooks, is made public. To do so:
+If you are running this as a "private" project on Cloud9 (vs public), you will need to make sure that the call back URL that is used in the creation of webhooks, is made public. To do so:
 
 1. Select share from the cloud9 menu in the top right hand corner.
 
