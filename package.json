@@ -1,6 +1,6 @@
 {
   "name": "node-flint",
-  "version": "1.0.10",
+  "version": "1.1.0",
   "description": "Making Bots Spark",
   "main": "index.js",
   "scripts": {
@@ -10,9 +10,13 @@
     "type": "git",
     "url": "git+https://github.com/nmarus/flint.git"
   },
-  "keywords": [ "cisco", "spark", "bot" ],
+  "keywords": [
+    "cisco",
+    "spark",
+    "bot"
+  ],
   "author": "Nicholas Marus",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/nmarus/flint/issues"
   },
@@ -24,6 +28,7 @@
     "moment": "^2.11.2",
     "node-sparky": "^1.0.25",
     "restify": "^4.0.3",
+    "sparkbot-token": "^1.0.0",
     "util": "^0.10.3",
     "validator": "^4.8.0"
   }

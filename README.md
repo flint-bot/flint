@@ -39,9 +39,13 @@ npm install node-flint --save
 
 # Reference
 
-Flint generates a bot object for each Spark room the account has been added to.  The bot object tracks the specifics about the room and is passed to the command trigger's callback when a phrase is heard. A background monitor constantly watches which rooms the bot account is currently part of. The monitor automatically generates and tears down the assoicated webhooks and bot objects as needed.
+Flint generates a bot object for each Spark room the account has been added to.  The bot object tracks the specifics about the room and is passed to the command trigger's callback when a phrase is heard. A background monitor constantly watches which rooms the bot account is currently part of. The monitor automatically generates and tears down the associated webhooks and bot objects as needed.
 
 ## API Initialization and Configuration
+Flint must authenticate to the Cisco Spark API through the use of tokens. There are two ways to get an auth token and Flint can use both. The first way is through access tokens. Access tokens are acquired from the profile page of the Bot's account after logging in at https://developer.ciscospark.com. This is the easiest way to get started. However, the access token will expire after a period of time or if you log out of the profile (closing the browser does not expire the token).
+
+#### Access Tokens
+To use an access token, setup your Flint project using the following template:
 
 ```js
 var Flint = require('node-flint');
@@ -50,13 +54,47 @@ var config = {
   hookUrl: 'http://mycallbackhost.io',
   localPort: 80,
   sparkEmail: 'mybot@domain.com',
-  sparkToken: '<my api token>'
+  sparkToken: '0d3673535c5b9d84a575735bb01fbb93f499bb19454bafa372bbb38355bdf4fc'
 };
+
+var flint = new Flint(config);
 ```
 * `hookUrl` : The callback URL sent when setting up a webhook
-* `localPort` : The localport that flint listens on for callback hooks
+* `localPort` : The localport that Flint listens on for callback hooks
 * `sparkEmail` : The email address of the bot account
 * `sparkToken` : The Cisco Spark auth token
+
+The other method for authenticating with the Cisco Spark API is through the use of OAUTH. OAUTH allows the use of refresh tokens. Flint will perform the refresh automatically every 24 hours in order to get a new token. This is a little bit more complicated to setup as it requires an application be created on the Bot's profile after logging in to https://developer.ciscospark.com.
+
+#### Refresh (OAUTH) Tokens
+To use refresh tokens, setup your Flint project using the following template:
+
+```js
+var Flint = require('node-flint');
+
+var config = {
+  hookUrl: 'http://mycallbackhost.io',
+  localPort: 80,
+  sparkEmail: 'mybot@domain.com',
+  clientID: 'Cab7fa9b26c1571f797086d427ce347f3ec99616f31390e4a07ff3d84af414026',
+  clientSecret: '0d3673535c5b9d84a575735bb01fbb93f499bb19454bafa372bbb38355bdf4fc',
+  redirectURL: 'http://mycallbackhost.io/bogus',
+  username: 'mybot@domain.com',
+  password: 'supers3cret'
+};
+
+var flint = new Flint(config);
+```
+* `hookUrl` : The callback URL sent when setting up a webhook
+* `localPort` : The localport that Flint listens on for callback hooks
+* `sparkEmail` : The email address of the bot account
+* `clientID` : The Client ID generated when creating your application
+* `clientSecret` : The Client Secret generated when creating your application
+* `redirectURL` : The Redirect URL used when creating your application
+* `username` : The Bot username used to log into developer.ciscospark.com
+* `password` : The Bot password used to log into developer.ciscospark.com
+
+*Note: The `redirectURL` does not need to be a valid URL path as it is never used. This is because we are not using OAUTH to grant access to other user accounts. However you **must** use the same URL here that you used when setting up your application under the Bot's profile.*
 
 
 ## Command Structure
@@ -366,7 +404,7 @@ flint.hears('/callme', function(bot, trigger) {
 ```
 
 
-### bot.recall(key);
+### bot.recall(namespace, key);
 Recall namespace/key/value data that was stored.
 * `namespace` : namespace as a string in local bot's memory
 * `key` : key as a string in local bot's memory
