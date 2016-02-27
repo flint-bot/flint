@@ -94,7 +94,7 @@ var flint = new Flint(config);
 * `username` : The Bot username used to log into developer.ciscospark.com
 * `password` : The Bot password used to log into developer.ciscospark.com
 
-*Note: The `redirectURL` does not need to be a valid URL path as it is never used. This is because we are not using OAUTH to grant access to other user accounts. However you **must** use the same URL here that you used when setting up your application under the Bot's profile.*
+*Note: The `redirectURL` does not need to be a valid URL path as it is never used. This is because we are not using OAUTH to grant access to other user accounts. However you must use the same URL here that you used when setting up your application under the Bot's profile.*
 
 
 ## Command Structure
