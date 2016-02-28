@@ -392,11 +392,12 @@ Store namespace/key/value data specific to a room the bot is in.
 flint.hears('/callme', function(bot, trigger) {
   // check if anything was sent after /callme
   if(trigger.args.length > 0) {
-    // set nn to words following /callme
-    var nn = trigger.args.join(' ');
+    // set nickname to words following /callme
+    var nickname = trigger.args.join(' ');
+
     // save to local bots memory
-    bot.remember('nicknames', trigger.message.personEmail, nn);
-    bot.say('I will call you ' + nn + ' from now on in this room');
+    bot.remember('nicknames', trigger.message.personEmail, nickname);
+    bot.say('I will call you ' + nickname + ' from now on in this room.');
   } else {
     bot.say('Maybe later.');
   }

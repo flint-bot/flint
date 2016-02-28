@@ -25,11 +25,12 @@ flint.hears('/echo', function(bot, trigger) {
 flint.hears('/callme', function(bot, trigger) {
   // check if anything was sent after /callme
   if(trigger.args.length > 0) {
-    // set nn to word following /callme and normalize to proper case
-    var nn = _.startCase(trigger.args.join(' '));
+    // set nickname to word following /callme and normalize to proper case
+    var nickname = _.startCase(trigger.args.join(' '));
+
     // save to local bots memory
-    bot.remember('nicknames', trigger.message.personEmail, nn);
-    bot.say('I will call you ' + nn + ' from now on in this room');
+    bot.remember('nicknames', trigger.message.personEmail, nickname);
+    bot.say('I will call you ' + nickname + ' from now on in this room.');
   } else {
     bot.say('Maybe later.');
   }
