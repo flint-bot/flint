@@ -21,24 +21,26 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
 1. Sign up for a free account on [cloud9](http://c9.io). This is where the code for the bot will run.
 
 2. After creating an account and logging into Cloud9, you will need to create a new workspace. When doing so, you will be presented with a dialog box. Choose all the defaults and define the following:
-  
+
   * `Workspace Name` - For this tutorial we are using "mybot", but it can be anything.
   * `Description` - This can be anything.
   * `Template` - Choose "Node.js".
 
   ![Cloud 9 new project](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.01.jpg)
 
+  *Note: If setting up a private workspace, you will need to adjust the Cloud9 workspace security settings in order for the webhooks from the Cisco Spark API to reach the webserver that runs in this app. The directions for doing this are [here](https://github.com/nmarus/flint/tree/master/quickstart#adjust-cloud9-project-security-required-only-for-private-projects).*
+
 3. Press "Create Workspace" and wait for the Cloud9 IDE to load.
 
 4. After the IDE has loaded, you will see that Cloud9 has set us up with a sample project. We don't need any of this, so start by deleting the 2 existing folders in the project tree. This can be done by right clicking on the folder and selecting delete. These are named:
-  
+
   * `client`
   * `node_modules`
 
   ![Cloud 9 remove template](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.02.jpg)
 
 5. Next, edit the `package.json` file in your project tree. Edit the following:
-  
+
   * `name`
   * `description`
   * `author`
@@ -192,4 +194,3 @@ If you are running this as a "private" project on Cloud9 (vs public), you will n
 - Node Package node-flint: http://npmjs.org/node-flint
 - Node Package node-sparky: http://npmjs.org/node-sparky
 - Cloud9 Sample Project: https://c9.io/nmarus/mybot
-
