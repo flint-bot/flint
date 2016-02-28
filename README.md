@@ -392,8 +392,8 @@ Store namespace/key/value data specific to a room the bot is in.
 flint.hears('/callme', function(bot, trigger) {
   // check if anything was sent after /callme
   if(trigger.args.length > 0) {
-    // set nn to word following /callme
-    var nn = trigger.args.shift();
+    // set nn to words following /callme
+    var nn = trigger.args.join(' ');
     // save to local bots memory
     bot.remember('nicknames', trigger.message.personEmail, nn);
     bot.say('I will call you ' + nn + ' from now on in this room');
@@ -414,12 +414,12 @@ Recall namespace/key/value data that was stored.
 // command '/hello' responds with greeting
 flint.hears('/hello', function(bot, trigger) {
   // recall nickname
-  var person = bot.recall('nicknames', trigger.message.personEmail);
+  var nickname = bot.recall('nicknames', trigger.message.personEmail);
 
   // check if we know a nickname
-  if(person) {
+  if(nickname) {
     // nickname was found, greet by nickname
-    bot.say('Hello ' + person.nickname);
+    bot.say('Hello ' + nickname);
   } else {
     // nickname was not found, greet by display name
     bot.say('Hello ' + trigger.person.displayName);
