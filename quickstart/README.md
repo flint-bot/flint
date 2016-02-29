@@ -154,7 +154,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
 
   ![Cloud 9 run flint](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.08.jpg)
 
-2. Validate the logs. You should see something similar to the following. If you haven’t added the “bot” to a room yet, do so now and wait till the bot posts a message to the room stating it is ready.
+2. Validate the logs. You should see something similar to the following. If you haven’t added the Bot to a room yet, do so now. You can add the Bot by email address to an existing room, create new room with the bot and others, or create a 1:1 chat with it. Once added, wait till the log states a room is registered. This will be within 15 seconds of the bot getting joined to the room. 
 
     ```
     flint found a room with a node-flint but not registered +42s
