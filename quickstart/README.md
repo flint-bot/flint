@@ -71,7 +71,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
  * `sparkEmail`: Enter the Cisco Spark Email used at the start of this tutorial.
  * `sparkToken`: Enter the Cisco Spark Access Token that you recorded earlier.
 
-     ```js
+    ```js
     var Flint = require('node-flint');
 
     // define flint setup
