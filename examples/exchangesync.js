@@ -121,9 +121,13 @@ function ewsDlNested(email, callback) {
   }
 
   traverse(email, 0, function(result) {
+    // lower case
+    result = _.map(result, function(e) {
+      return _.toLower(e);
+    });
+    // filter results to qualified domain
     result = _.filter(result, function(e) {
-      // filter results
-      return (_.toLower(e.replace(/.*@/, '')) === ewsConfig.domain);
+      return (e.replace(/.*@/, '') === ewsConfig.domain);
     });
     callback(null, result);
   });
