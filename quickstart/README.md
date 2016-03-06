@@ -149,7 +149,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
 1. Run the bot manually from the Cloud9 Terminal:
 
     ```bash
-    DEBUG=* node server.js
+    DEBUG=flint node server.js
     ```
 
   ![Cloud 9 run flint](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.08.jpg)
