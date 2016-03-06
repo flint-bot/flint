@@ -6,7 +6,7 @@
     "lodash": "^4.3.0",
     "moment": "^2.11.2",
     "node-ews": "^1.1.1",
-    "node-flint": "^1.0.7",
+    "node-flint": "^1.1.15",
     "validator": "^4.8.0"
   }
 }
