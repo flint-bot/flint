@@ -5,8 +5,8 @@
     "debug": "^2.2.0",
     "lodash": "^4.3.0",
     "moment": "^2.11.2",
-    "node-ews": "^1.1.1",
-    "node-flint": "^1.1.19",
+    "node-ews": "^1.2.1",
+    "node-flint": "^1.1.24",
     "validator": "^4.8.0"
   }
 }
