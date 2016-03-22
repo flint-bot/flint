@@ -126,7 +126,7 @@ flint.hears(phrase, function(bot, trigger) {
 * `trigger` : The object that describes the details around what triggered the `phrase`.
 * `commands` : The commands that are ran when the `phrase` is heard.
 
-###### Example
+###### Example:
 ```js
 flint.hears('/hello', function(bot, trigger) {
   bot.say('Hello %s!', trigger.person.displayName);
