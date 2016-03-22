@@ -96,6 +96,23 @@ var flint = new Flint(config);
 
 *Note: The `redirectURL` does not need to be a valid URL path as it is never used. This is because we are not using OAUTH to grant access to other user accounts. However you must use the same URL here that you used when setting up your application under the Bot's profile.*
 
+#### Optional Config Parameters
+The following are optional parameters. If unset, they will use the defaults as specified. It is recommended to leave the defaults unless you fully understand the impact as some of these directly affect the outgoing API rate limiter. 
+
+````js
+var config = {
+  [...]
+  remotePort: 80,
+  maxItems: 500,
+  maxConcurrent: 1,
+  minTime: 500
+};
+````
+* `remotePort` : The tcp port specified when creating webhooks (defaults to localPort)
+* `maxItems` : The maximum items to return in a query (defaults to 500)
+* `maxConcurrent` : The maximum concurrent API requests to send to the Spark API (defaults to 1)
+* `minTime` : The minimum time between successive API requests (defaults to 500ms)
+
 
 ## Command Structure
 
