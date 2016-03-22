@@ -8,7 +8,7 @@ var Flint = require('node-flint');
 
 // define flint setup
 var config = {
-  hookUrl: 'http://mycallbackhost.io',
+  baseUrl: 'http://mycallbackhost.io',
   localPort: 80,
   sparkEmail: 'mybot@domain.com',
   sparkToken: '<my api token>'
@@ -51,7 +51,7 @@ To use an access token, setup your Flint project using the following template:
 var Flint = require('node-flint');
 
 var config = {
-  hookUrl: 'http://mycallbackhost.io',
+  baseUrl: 'http://mycallbackhost.io',
   localPort: 80,
   sparkEmail: 'mybot@domain.com',
   sparkToken: '0d3673535c5b9d84a575735bb01fbb93f499bb19454bafa372bbb38355bdf4fc'
@@ -59,7 +59,7 @@ var config = {
 
 var flint = new Flint(config);
 ```
-* `hookUrl` : The callback URL sent when setting up a webhook
+* `baseUrl` : The callback URL sent when setting up a webhook
 * `localPort` : The localport that Flint listens on for callback hooks
 * `sparkEmail` : The email address of the bot account
 * `sparkToken` : The Cisco Spark auth token
@@ -73,7 +73,7 @@ To use refresh tokens, setup your Flint project using the following template:
 var Flint = require('node-flint');
 
 var config = {
-  hookUrl: 'http://mycallbackhost.io',
+  baseUrl: 'http://mycallbackhost.io',
   localPort: 80,
   sparkEmail: 'mybot@domain.com',
   clientID: 'Cab7fa9b26c1571f797086d427ce347f3ec99616f31390e4a07ff3d84af414026',
@@ -85,7 +85,7 @@ var config = {
 
 var flint = new Flint(config);
 ```
-* `hookUrl` : The callback URL sent when setting up a webhook
+* `baseUrl` : The callback URL sent when setting up a webhook
 * `localPort` : The localport that Flint listens on for callback hooks
 * `sparkEmail` : The email address of the bot account
 * `clientID` : The Client ID generated when creating your application

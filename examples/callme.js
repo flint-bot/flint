@@ -4,7 +4,7 @@ var _ = require('lodash');
 // define flint setup
 var config = {
   // url to access this app's webservice
-  hookUrl: 'http://webhook.url',
+  baseUrl: 'http://webhook.url',
   // port that local server listens on
   localPort: 80,
   // spark account email
