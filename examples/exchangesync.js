@@ -356,9 +356,9 @@ module.exports = function(flint) {
                 bot.say('That distribution list has %s members. It is longer than the maximum of %s allowed by system, %s', list.length, execMax, trigger.person.displayName);
               } else {
                 
-                bot.remember('dl', 'sync', true);
-                bot.remember('dl', 'dlEmail', email);
-                bot.remember('dl', 'dlUser', trigger.message.personEmail);
+                bot.store('dl', 'sync', true);
+                bot.store('dl', 'dlEmail', email);
+                bot.store('dl', 'dlUser', trigger.message.personEmail);
                 
                 bot.rollcall(function(err, emails) {
                   if(err) {

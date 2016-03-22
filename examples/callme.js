@@ -29,7 +29,7 @@ flint.hears('/callme', function(bot, trigger) {
     var nickname = _.startCase(trigger.args.join(' '));
 
     // save to local bots memory
-    bot.remember('nicknames', trigger.message.personEmail, nickname);
+    bot.store('nicknames', trigger.message.personEmail, nickname);
     bot.say('I will call you ' + nickname + ' from now on in this room.');
   } else {
     bot.say('Maybe later.');

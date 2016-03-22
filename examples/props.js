@@ -47,7 +47,7 @@ flint.hears('/props', function(bot, trigger) {
         total++;
         
         // save score and let everyone know
-        bot.remember('props', email, { name: name, total: total});
+        bot.store('props', email, { name: name, total: total});
         bot.say('%s now has %s points with a +1 from %s!', name, total, trigger.person.displayName);
       }
     });

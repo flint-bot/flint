@@ -380,7 +380,7 @@ bot.schedule(function(bot) {
 * `bot.schedulerStop();` : Stops the scheduler queue
 
 
-### bot.remember(namespace, key, value);
+### bot.store(namespace, key, value);
 Store namespace/key/value data specific to a room the bot is in.
 * `namespace` : namespace as a string in local bot's memory
 * `key` : key as a string in local bot's memory
@@ -396,7 +396,7 @@ flint.hears('/callme', function(bot, trigger) {
     var nickname = trigger.args.join(' ');
 
     // save to local bots memory
-    bot.remember('nicknames', trigger.message.personEmail, nickname);
+    bot.store('nicknames', trigger.message.personEmail, nickname);
     bot.say('I will call you ' + nickname + ' from now on in this room.');
   } else {
     bot.say('Maybe later.');
@@ -410,7 +410,7 @@ Recall namespace/key/value data that was stored.
 * `namespace` : namespace as a string in local bot's memory
 * `key` : key as a string in local bot's memory
 
-#####Example: (See bot.remember example for the first part of this.)
+#####Example: (See bot.store example for the first part of this.)
 ```js
 // command '/hello' responds with greeting
 flint.hears('/hello', function(bot, trigger) {
