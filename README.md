@@ -126,6 +126,12 @@ flint.hears(phrase, function(bot, trigger) {
 * `trigger` : The object that describes the details around what triggered the `phrase`.
 * `commands` : The commands that are ran when the `phrase` is heard.
 
+###### Example
+```js
+flint.hears('/hello', function(bot, trigger) {
+  bot.say('Hello %s!', trigger.person.displayName);
+});
+```
 
 ## Trigger Properties
 
@@ -190,26 +196,26 @@ console.log(trigger.args); // [ 'hello', 'bob!' ]
 ```
 
 
-## Bot Methods
+## Room & People Interaction
 
 ### bot.say(message *, callback(error, messageObj)* );
 Send text and/or file attachments to room.
 * `message` : either a string, a string plus variables, or an object
 * `callback` : *optional callback*
 
-#####Example: Send a simple message to room
+###### Example: Send a simple message to room
 ```js
 bot.say('hello');
 ```
 
-#####Example: Send a message with variables to room
+###### Example: Send a message with variables to room
 ```js
 var name = 'John Doe';
 
 bot.say('Hello, %s!', name);
 ```
 
-#####Example: Send a message and file to room
+###### Example: Send a message and file to room
 ```js
 bot.say({text: 'hello', file:'http://myurl/file.doc'});
 ```
@@ -220,7 +226,7 @@ Send just a file attachment to room.
 * `url` : url string
 * `callback` : *optional callback*
 
-#####Example: Send a file to room
+###### Example: Send a file to room
 ```js
 var url = 'http://myurl/file.doc';
 
@@ -234,19 +240,19 @@ Send text and/or file attachments to a person
 * `message` : either a string, a string plus variables, or an object
 * `callback` : *optional callback*
 
-#####Example: Send a simple message to person
+###### Example: Send a simple message to person
 ```js
 bot.dm('person@domain.com', 'hello');
 ```
 
-#####Example: Send a message with variables to person
+###### Example: Send a message with variables to person
 ```js
 var name = 'John Doe';
 
 bot.dm('person@domain.com', 'Hello, %s!', name);
 ```
 
-#####Example: Send a message and file to person
+###### Example: Send a message and file to person
 ```js
 bot.dm({text: 'hello', file:'http://myurl/file.doc'});
 ```
@@ -257,7 +263,7 @@ Add a person or group of people to a room.
 * `email` : this is either a string or an array
 * `callback` : *optional callback*
 
-#####Example: Add a single person to room.
+###### Example: Add a single person to room.
 ```js
 bot.add('person@domain.com', function(error, email) {
   if(error) {
@@ -268,7 +274,7 @@ bot.add('person@domain.com', function(error, email) {
 });
 ```
 
-#####Example: Add a group of people by email to room:
+###### Example: Add a group of people by email to room:
 ```js
 var emails = [ 'person1.domain.com', 'person2.domain.com', 'person3.domain.com' ];
 bot.add(emails, function(error, emails) {
@@ -286,7 +292,7 @@ Remove a person or a group of people from room.
 * `email` : this is either a string or an array
 * `callback` : *optional callback*
 
-#####Example: Remove a single person by email from room
+###### Example: Remove a single person by email from room
 ```js
 bot.remove('person@domain.com');
 ```
@@ -299,7 +305,7 @@ Get array of emails for all people in room.
 * `emails` : this is an array of email addresses for room
 * `callback` : required callback that contains results of query
 
-#####Example:
+###### Example:
 ```js
 bot.rollcall(function(error, emails) {
   if(error) {
@@ -315,7 +321,7 @@ Get person object from email or personId.
 * `person` : this is the email address or personId of a Spark account
 * `callback` : required callback that contains results of query
 
-#####Example:
+###### Example:
 ```js
 bot.inspect('person@domain.com', function(error, person) {
   if(error) {
@@ -333,7 +339,7 @@ Creates a new room with specified people defined by email addresses in an array.
 * `callback` : *optional callback*
 * `roomObj` : Room Object that was created
 
-#####Example:
+###### Example:
 ```js
 // command '/room' to create a new room with people by email
 flint.hears('/room', function(bot, trigger) {
@@ -350,10 +356,12 @@ flint.hears('/room', function(bot, trigger) {
 ### bot.implode();
 Removes everyone from a room and then removes self.
 
-#####Example:
+###### Example:
 ```js
 bot.implode();
 ```
+
+## Time Based
 
 
 ### bot.repeat(action(bot), interval);
@@ -361,7 +369,7 @@ Repeat an action at a specific interval.
 * `action` : function that gets called at each interval
 * `interval` : integer seconds between action
 
-#####Example: Tell the room 'hello' every 120 seconds
+###### Example: Tell the room 'hello' every 120 seconds
 
 ```js
 bot.repeat(function(bot) {
@@ -379,7 +387,7 @@ Schedule an action at a specific time.
 * `action` : function that gets called at each interval
 * `datetime` : date object when action should happen
 
-#####Example: Tell the room 'Happy New Year' on Jan 1, 2017 at 8AM EST
+###### Example: Tell the room 'Happy New Year' on Jan 1, 2017 at 8AM EST
 ```js
 // using moment.js
 var moment = require('moment');
@@ -397,13 +405,16 @@ bot.schedule(function(bot) {
 * `bot.schedulerStop();` : Stops the scheduler queue
 
 
+## Local Bot Memory
+
+
 ### bot.store(namespace, key, value);
 Store namespace/key/value data specific to a room the bot is in.
 * `namespace` : namespace as a string in local bot's memory
 * `key` : key as a string in local bot's memory
 * `value` : value to store at key (String, Object, Collection, Array, etc)
 
-#####Example:
+###### Example:
 ```js
 // command '/callme' to get person nickname in room
 flint.hears('/callme', function(bot, trigger) {
@@ -427,7 +438,7 @@ Recall namespace/key/value data that was stored.
 * `namespace` : namespace as a string in local bot's memory
 * `key` : key as a string in local bot's memory
 
-#####Example: (See bot.store example for the first part of this.)
+###### Example: (See bot.store example for the first part of this.)
 ```js
 // command '/hello' responds with greeting
 flint.hears('/hello', function(bot, trigger) {
@@ -445,12 +456,80 @@ flint.hears('/hello', function(bot, trigger) {
 });
 ```
 
+
 ### bot.forget(namespace *, key*);
 Forget all data stored under a namespace and/or key.
 * `namespace` : namespace as a string in local bot's memory
 * `key` : *key as a string in local bot's memory (optional)*
 
-#####Example:
+###### Example:
 ```js
 bot.forget('nicknames');
+```
+
+
+## Subscriptions
+
+
+Publisher/Subscriber functions allow Flint to provision inbound routes that individual rooms (via their bot instance) can subscribe to. The publish function happens globally (flint) and the subscribe function happens at the bot. This hierarchy allows Flint to be triggered by external systems. Flint will answer on get, post, put, and del http requests. The request object is passed to the the subscriber. All published routes are created under http://myserver/s so that a route named "myapp" would be accessible at http://myserver/s/myapp. URL, body JSON, and body form url-encoded parameters are parsed into "request.params".
+
+
+### flint.publish(name *, callback(error, url)*);
+Publish a inbound route to http://myserver/s/name. Returns url. 
+* `name` : name of published route
+* `url` : the generated url in a format of http://myserver/s/name
+
+###### Example:
+```js
+flint.publish('myroute', function(err, url) {
+  if(!err) {
+    console.log('new route published at %s', url);
+  }
+}); 
+```
+
+
+### bot.subscribe(name, action(req) *, callback(error)*);
+Subscribe bot to a published inbound route.
+* `name` : name of published route
+* `action` : function that is called with the request to subscribed route
+
+###### Example:
+```js
+bot.subscribe('myroute', function(req) {
+  bot.say('This just in: %s', req.body);
+}, function(err) {
+  if(err) {
+    console.log('route not found');
+  }
+});
+```
+
+
+### bot.unsubscribe(name);
+Unsubscribe bot from a published inbound route.
+* `name` : name of published route
+
+###### Example:
+```js
+bot.unsubscribe('myroute');
+```
+
+
+## Proxy Content
+
+
+A simple file proxy is provided with Flint in order to serve files from other URLs. The main purpose of this is to expose internal files that may be only URL accssible from the host Flint is running on. This is in order to serve the file to the Spark API by passing the internet accessible URL in the API call. The proxy mapping expires after 60 seconds. 
+
+### flint.expose(url, filename);
+Serve an external URL file locally. Returns proxied url.
+* `url` : url of file to proxy
+* `filename` : filename to expose as http://myserver/p/myfilename
+
+###### Example:
+```js
+bot.say({
+  text: 'Here is your file.',
+  file: flint.expose('http://192.168.10.10/files/mychart.jpg', 'mychart.jpg')
+});
 ```
