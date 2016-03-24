@@ -29,9 +29,24 @@ flint.hears(/(^| )beer( |.|$)/i, function(bot, trigger) {
 ```
 
 
+#### Changelog
+
+*2016-03-24 - v.2.0.6*
+* Added publish and subscribe functionality
+* Added simple reverse proxy functionality
+* Added webhook callback authentication to prevent spoofing of Spark callbacks
+* Added optional domain and user whitelists to prevent bot from responding to unauthorized users
+* Extended trigger.person JSON object
+
+
+#### Related Projects
+* [node-sparky](https://github.com/nmarus/node-sparky) - The Node-JS Spark API framework that Flint uses
+* [sparkbot-token](https://github.com/nmarus/sparkbot-token) - The OAUTH framework for Flint's authentication
+
+
 ## Installation
 
-This module can be installed via NPM:
+Flint can be installed via NPM:
 ```bash
 npm install node-flint --save
 ```
@@ -94,7 +109,7 @@ var flint = new Flint(config);
 * `username` : The Bot username used to log into developer.ciscospark.com
 * `password` : The Bot password used to log into developer.ciscospark.com
 
-*Note: The `redirectURL` does not need to be a valid URL path as it is never used. This is because we are not using OAUTH to grant access to other user accounts. However you must use the same URL here that you used when setting up your application under the Bot's profile.*
+*Note: The `redirectURL` does not need to be a valid URL path as it is never used. This is because we are not using OAUTH to grant access to other user accounts. However you must use the same URL here that you used when setting up your application under the Bot's CiscoSpark.com profile.*
 
 #### Optional Config Parameters
 The following are optional parameters. If unset, they will use the defaults as specified. It is recommended to leave the defaults unless you fully understand the impact as some of these directly affect the outgoing API rate limiter. 
@@ -105,13 +120,17 @@ var config = {
   remotePort: 80,
   maxItems: 500,
   maxConcurrent: 1,
-  minTime: 500
+  minTime: 500,
+  domainWhiteList: [],
+  userWhiteList: []
 };
 ````
 * `remotePort` : The tcp port specified when creating webhooks (defaults to localPort)
 * `maxItems` : The maximum items to return in a query (defaults to 500)
 * `maxConcurrent` : The maximum concurrent API requests to send to the Spark API (defaults to 1)
 * `minTime` : The minimum time between successive API requests (defaults to 500ms)
+* `domainWhiteList` : Array of email domains that bot will accept commands from (if unset, allow all)
+* `userWhiteList` : Array of user emails that bot will accept commands from (if unset, allow all)
 
 
 ## Command Structure
@@ -157,7 +176,10 @@ This is the person object that the phrase was triggered by.
   "id" : "OTZhYmMyYWEtM2RjYy0xMWU1LWExNTItZmUzNDgxOWNkYzlh",
   "emails" : [ "johnny.chang@foomail.com", "jchang@barmail.com" ],
   "displayName" : "John Andersen",
-  "created" : "2015-10-18T14:26:16+00:00"
+  "created" : "2015-10-18T14:26:16+00:00",
+  "email" : "johnny.chang@foomail.com",
+  "username" : "johnny.chang",
+  "domain" : "foomail.com"
 }
 ```
 
