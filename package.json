@@ -1,6 +1,6 @@
 {
   "name": "node-flint",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "Making Bots Spark",
   "main": "index.js",
   "scripts": {
