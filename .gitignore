@@ -19,3 +19,6 @@ Thumbs.db
 # Application specific files
 venv
 node_modules
+
+# Flint specific
+test/
