@@ -8,20 +8,30 @@ var settings = {
   
   // Port that local server listens on
   localPort: 80,
+
+  // webhooks (socket2me)
+  //
+  // s2mHost: host of the socket2me webhook proxy
+  //
+  // s2mHost: 'mysockethost.com',
   
-  // Port that is used in webhooks
-  // externalPort: 80,
-  
-  // URL to access this app's webservice
+  // webhooks (direct)
+  //
+  // baseUrl:      internet url for this app
+  // externalPort: external port (optional, defaults to localport)
+  //
   baseUrl: 'http://myhost.com',
+  // externalPort: 80,
   
   // Spark Account email
   sparkEmail: 'myuser@myhost.com',
   
-  // Spark API using developer auth token
+  // Spark API (developer token)
+  // 
   sparkToken: 'token',
   
-  // Spark API using OAuth
+  // Spark API (oauth settings)
+  // 
   // clientID: 'id',
   // clientSecret: 'secret',
   // redirectURL: 'http://myhost.com',
