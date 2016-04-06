@@ -29,32 +29,44 @@ flint.hears(/(^| )beer( |.|$)/i, function(bot, trigger) {
 ```
 
 
-#### Changelog
 
-*2016-03-24 - v.2.0.6*
-* Added publish and subscribe functionality
-* Added simple reverse proxy functionality
-* Added webhook callback authentication to prevent spoofing of Spark callbacks
-* Added optional domain and user whitelists to prevent bot from responding to unauthorized users
-* Extended trigger.person JSON object
+
+
+#### Changelog
+*v.3.0.x*
+* Cleaned up code
+* bug fixes
+* Added Events
+* Added Logger
+* Added support for remote relay/proxy of webhook callback using [socket2me](https://github.com/nmarus/socket2me)
+* Room monitor is now faster and uses less API calls
+* Added additional validation
+* Added Flint.* functions that run commands across all rooms
+* Added optional Room entry greeting when bot comes online
+* Removed duplicate parameter for OAUTH setup (username)
+* Changed inbound webhook handling to validate relavance of message before querying related API objects.
 
 
 #### Related Projects
-* [node-sparky](https://github.com/nmarus/node-sparky) - The Node-JS Spark API framework that Flint uses
+* [node-sparky](https://github.com/nmarus/sparky) - The Node-JS Spark API framework that Flint uses
 * [sparkbot-token](https://github.com/nmarus/sparkbot-token) - The OAUTH framework for Flint's authentication
 
 
-## Installation
 
+
+## Installation
 Flint can be installed via NPM:
 ```bash
 npm install node-flint --save
 ```
 
 
-# Reference
 
+
+# Reference
 Flint generates a bot object for each Spark room the account has been added to.  The bot object tracks the specifics about the room and is passed to the command trigger's callback when a phrase is heard. A background monitor constantly watches which rooms the bot account is currently part of. The monitor automatically generates and tears down the associated webhooks and bot objects as needed.
+
+
 
 ## API Initialization and Configuration
 Flint must authenticate to the Cisco Spark API through the use of tokens. There are two ways to get an auth token and Flint can use both. The first way is through access tokens. Access tokens are acquired from the profile page of the Bot's account after logging in at https://developer.ciscospark.com. This is the easiest way to get started. However, the access token will expire after a period of time or if you log out of the profile (closing the browser does not expire the token).
@@ -94,7 +106,6 @@ var config = {
   clientID: 'Cab7fa9b26c1571f797086d427ce347f3ec99616f31390e4a07ff3d84af414026',
   clientSecret: '0d3673535c5b9d84a575735bb01fbb93f499bb19454bafa372bbb38355bdf4fc',
   redirectURL: 'http://mycallbackhost.io/bogus',
-  username: 'mybot@domain.com',
   password: 'supers3cret'
 };
 
@@ -102,39 +113,43 @@ var flint = new Flint(config);
 ```
 * `baseUrl` : The callback URL sent when setting up a webhook
 * `localPort` : The localport that Flint listens on for callback hooks
-* `sparkEmail` : The email address of the bot account
+* `sparkEmail` : The email address and login of the bot account
 * `clientID` : The Client ID generated when creating your application
 * `clientSecret` : The Client Secret generated when creating your application
 * `redirectURL` : The Redirect URL used when creating your application
-* `username` : The Bot username used to log into developer.ciscospark.com
 * `password` : The Bot password used to log into developer.ciscospark.com
 
 *Note: The `redirectURL` does not need to be a valid URL path as it is never used. This is because we are not using OAUTH to grant access to other user accounts. However you must use the same URL here that you used when setting up your application under the Bot's CiscoSpark.com profile.*
 
 #### Optional Config Parameters
-The following are optional parameters. If unset, they will use the defaults as specified. It is recommended to leave the defaults unless you fully understand the impact as some of these directly affect the outgoing API rate limiter. 
+The following are optional parameters. If unset, they will use the defaults as specified. It is recommended to leave the defaults unless you fully understand the impact as some of these directly affect the outgoing API rate limiter.
 
-````js
+```js
 var config = {
   [...]
-  remotePort: 80,
+  externalPort: 80,
+  s2mHost: 'socket2meServer.com'
   maxItems: 500,
   maxConcurrent: 1,
   minTime: 500,
   domainWhiteList: [],
-  userWhiteList: []
+  userWhiteList: [],
+  announceMessage: 'Flint is on F-I-R-E!'
 };
-````
-* `remotePort` : The tcp port specified when creating webhooks (defaults to localPort)
+```
+* `externalPort` : The tcp port specified when creating webhooks (defaults to localPort)
+* `s2mHost` : The host that is running the [socket2me](https://github.com/nmarus/socket2me) service this bot will use for webhook proxy/relay. *Optional, if enabled, this disables all webhook hosting via the local webserver. Options baseUrl and externalPort are ignored.*
 * `maxItems` : The maximum items to return in a query (defaults to 500)
 * `maxConcurrent` : The maximum concurrent API requests to send to the Spark API (defaults to 1)
 * `minTime` : The minimum time between successive API requests (defaults to 500ms)
 * `domainWhiteList` : Array of email domains that bot will accept commands from (if unset, allow all)
 * `userWhiteList` : Array of user emails that bot will accept commands from (if unset, allow all)
+* `announceMessage` : If set, this message will be sent to the room when Flint has been added. *Note: This message will also be sent to the room when Flint is restarted as it discovers which rooms it is in.*
+
+
 
 
 ## Command Structure
-
 ```js
 flint.hears(phrase, function(bot, trigger) {
   //commands
@@ -152,9 +167,11 @@ flint.hears('/hello', function(bot, trigger) {
 });
 ```
 
-## Trigger Properties
 
-### trigger.room
+
+
+## Trigger Properties
+#### trigger.room
 This is the room object that the phrase was triggered from.
 
 ###### Example Room Object:
@@ -167,7 +184,7 @@ This is the room object that the phrase was triggered from.
 }
 ```
 
-### trigger.person
+#### trigger.person
 This is the person object that the phrase was triggered by.
 
 ###### Example Person Object:
@@ -183,7 +200,7 @@ This is the person object that the phrase was triggered by.
 }
 ```
 
-### trigger.message
+#### trigger.message
 This is the message object that the phrase was triggered in.
 
 ###### Example Message Object:
@@ -199,7 +216,7 @@ This is the message object that the phrase was triggered in.
 }
 ```
 
-### trigger.command
+#### trigger.command
 This is the first word of `trigger.message.text` that is normalized to lower case.
 
 ###### Example:
@@ -208,7 +225,7 @@ console.log(trigger.message.text); // '/say Hello Bob!'
 console.log(trigger.command); // '/say'
 ```
 
-### trigger.args
+#### trigger.args
 This is an array of the words following `trigger.command` that is normalized to lower case.
 
 ###### Example:
@@ -218,69 +235,64 @@ console.log(trigger.args); // [ 'hello', 'bob!' ]
 ```
 
 
-## Room & People Interaction
 
-### bot.say(message *, callback(error, messageObj)* );
-Send text and/or file attachments to room.
-* `message` : either a string, a string plus variables, or an object
-* `callback` : *optional callback*
 
-###### Example: Send a simple message to room
+## Bot Properties
+#### Bot.myroom
+The Spark room object associated to this bot instance.
+
+#### Bot.myperson
+The Spark person object associated to this bot instance.
+
+#### Bot.mymembership
+The Spark membership object associated to this bot instance.
+
+#### Bot.mywebhook
+The Spark webhook object associated to this bot instance.
+
+#### Bot.myemail
+The Spark email used to authenticate Flint.
+
+#### Bot.lastActivity
+A moment.js object representing the last time Flint recieved a webhook call for this room.
+
+#### Bot.companions
+An array of email addresses of the users in the room. This updates when the bot is added to the room and every 10 minutes after, however, every time that the function `bot.rollcall()` is ran, the property will also get updated.
+
+#### Bot.log
+An array that contains the last 1000 (or maxLogSize) messages in room.
+
+Note: When Flint is added to a room it will automatically grab the last 1000 (or maxLogSize) messages to populate this field. Additionally if any of those 1000 messages are files, it will add them the Bot.files array. *(See Bot.files)* Once in the bot is in the room, all messages are added and parsed as they arrive on the webhook callback.
+
+#### Bot.files (in dev/test)
+This WILL change. Currently containes the direct contents API link URLs of the last 1000 (or maxLogSize) files posted to the room. The URL in this array requires authentication and parsing in order to recieve the file contents.
+
+This is manual at the moment, but you can grab the file (and save to disk, etc) by making a call to the low level framework of node-sparky.
+
+###### Example:
 ```js
-bot.say('hello');
-```
+flint.on('files', function(bot, files) {
+  flint.sparky.contents.get.byUrl(files[0], function(err, file) {
+    console.log('Filename: %s', file.name);
+    console.log('Type: %s', file.type);
 
-###### Example: Send a message with variables to room
-```js
-var name = 'John Doe';
-
-bot.say('Hello, %s!', name);
-```
-
-###### Example: Send a message and file to room
-```js
-bot.say({text: 'hello', file:'http://myurl/file.doc'});
-```
-
-
-### bot.file(url *, callback(error, messageObj)* );
-Send just a file attachment to room.
-* `url` : url string
-* `callback` : *optional callback*
-
-###### Example: Send a file to room
-```js
-var url = 'http://myurl/file.doc';
-
-bot.file(url);
-```
-
-
-### bot.dm(email, message *, callback(error, messageObj)* );
-Send text and/or file attachments to a person
-* `email` : email address of person for bot to direct message
-* `message` : either a string, a string plus variables, or an object
-* `callback` : *optional callback*
-
-###### Example: Send a simple message to person
-```js
-bot.dm('person@domain.com', 'hello');
-```
-
-###### Example: Send a message with variables to person
-```js
-var name = 'John Doe';
-
-bot.dm('person@domain.com', 'Hello, %s!', name);
-```
-
-###### Example: Send a message and file to person
-```js
-bot.dm({text: 'hello', file:'http://myurl/file.doc'});
+    // write to disk
+    fs.writeFile('/spark-files/' + file.name, file.binary, function(err) {
+      if(err) {
+        console.log(err);
+      } else {
+        console.log('done');
+      }
+    });
+  });
+});
 ```
 
 
-### bot.add(email *, callback(error, email)* );
+
+
+## Bot Admin and Info Functions
+#### bot.add(email *, callback(error, email)* );
 Add a person or group of people to a room.
 * `email` : this is either a string or an array
 * `callback` : *optional callback*
@@ -309,7 +321,7 @@ bot.add(emails, function(error, emails) {
 ```
 
 
-### bot.remove(email *, callback(error, email)*);
+#### bot.remove(email *, callback(error, email)*);
 Remove a person or a group of people from room.
 * `email` : this is either a string or an array
 * `callback` : *optional callback*
@@ -322,7 +334,7 @@ bot.remove('person@domain.com');
 *(For other examples, see bot.add)*
 
 
-### bot.rollcall(callback(error, emails));
+#### bot.rollcall(callback(error, emails));
 Get array of emails for all people in room.
 * `emails` : this is an array of email addresses for room
 * `callback` : required callback that contains results of query
@@ -338,7 +350,8 @@ bot.rollcall(function(error, emails) {
 });
 ```
 
-### bot.inspect(person, callback(error, person));
+
+#### bot.inspect(person, callback(error, person));
 Get person object from email or personId.
 * `person` : this is the email address or personId of a Spark account
 * `callback` : required callback that contains results of query
@@ -354,7 +367,7 @@ bot.inspect('person@domain.com', function(error, person) {
 });
 ```
 
-### bot.room(name, people *, callback(error, roomObj)*);
+#### bot.room(name, people *, callback(error, roomObj)*);
 Creates a new room with specified people defined by email addresses in an array.
 * `name` : The name of the room to create
 * `people` : An array of emails to add to room
@@ -375,7 +388,7 @@ flint.hears('/room', function(bot, trigger) {
 ```
 
 
-### bot.implode();
+#### bot.implode(*callback(err)*);
 Removes everyone from a room and then removes self.
 
 ###### Example:
@@ -383,10 +396,108 @@ Removes everyone from a room and then removes self.
 bot.implode();
 ```
 
-## Time Based
+
+#### bot.isModerated(callback(locked));
+Callback returns boolean representing room moderation status.
+
+###### Example:
+```js
+//TODO
+```
 
 
-### bot.repeat(action(bot), interval);
+#### bot.exit(*callback(err)*);
+Instructs bot to exit room.
+
+###### Example:
+```js
+//TODO
+```
+
+
+## Message Functions
+#### bot.say(message *, callback(error, messageObj)* );
+Send text and/or file attachments to room.
+* `message` : either a string, a string plus variables, or an object
+* `callback` : *optional callback*
+
+###### Example: Send a simple message to room
+```js
+bot.say('hello');
+```
+
+###### Example: Send a message with variables to room
+```js
+var name = 'John Doe';
+
+bot.say('Hello, %s!', name);
+```
+
+###### Example: Send a message and file to room
+```js
+bot.say({text: 'hello', file:'http://myurl/file.doc'});
+```
+
+
+#### bot.file(url *, callback(error, messageObj)* );
+Send just a file attachment to room.
+* `url` : url string
+* `callback` : *optional callback*
+
+###### Example: Send a file to room
+```js
+var url = 'http://myurl/file.doc';
+
+bot.file(url);
+```
+
+
+#### bot.dm(email, message *, callback(error, messageObj)* );
+Send text and/or file attachments to a person
+* `email` : email address of person for bot to direct message
+* `message` : either a string, a string plus variables, or an object
+* `callback` : *optional callback*
+
+###### Example: Send a simple message to person
+```js
+bot.dm('person@domain.com', 'hello');
+```
+
+###### Example: Send a message with variables to person
+```js
+var name = 'John Doe';
+
+bot.dm('person@domain.com', 'Hello, %s!', name);
+```
+
+###### Example: Send a message and file to person
+```js
+bot.dm({text: 'hello', file:'http://myurl/file.doc'});
+```
+
+
+#### bot.getMessages(*count,* callback(error, messages)); (in dev/test)
+Gets all messages in room (up to count or maxLogSize) as an array of parsed message objects.
+
+###### Example:
+```js
+// get last 5 messages for room
+bot.getMessages(5, function(err, messages) {
+  if(!err) messages.forEach(function(message) {
+    // display message object
+    console.log(JSON.stringify(message));
+
+    // display just message text
+    console.log(message.text));
+  });
+});
+```
+
+
+
+
+## Time Based Functions
+#### bot.repeat(action(bot), interval);
 Repeat an action at a specific interval.
 * `action` : function that gets called at each interval
 * `interval` : integer seconds between action
@@ -404,17 +515,14 @@ bot.repeat(function(bot) {
 * `bot.repeaterStart();` : Starts the repeater queue
 * `bot.repeaterStop();` : Stops the repeater queue
 
-### bot.schedule(action(bot), datetime);
+#### bot.schedule(action(bot), datetime);
 Schedule an action at a specific time.
 * `action` : function that gets called at each interval
-* `datetime` : date object when action should happen
+* `datetime` : ISO-8601 date string (or parsable moment.js string/object) that defines when action should happen
 
 ###### Example: Tell the room 'Happy New Year' on Jan 1, 2017 at 8AM EST
 ```js
-// using moment.js
-var moment = require('moment');
-
-var nyd2017 = moment('2017-01-01 08:00:00-05');
+var nyd2017 = '2017-01-01 08:00:00-05';
 
 bot.schedule(function(bot) {
   bot.say('Happy New Year');
@@ -427,10 +535,10 @@ bot.schedule(function(bot) {
 * `bot.schedulerStop();` : Stops the scheduler queue
 
 
-## Local Bot Memory
 
 
-### bot.store(namespace, key, value);
+## Bot Memory Functions
+#### bot.store(namespace, key, value);
 Store namespace/key/value data specific to a room the bot is in.
 * `namespace` : namespace as a string in local bot's memory
 * `key` : key as a string in local bot's memory
@@ -455,7 +563,7 @@ flint.hears('/callme', function(bot, trigger) {
 ```
 
 
-### bot.recall(namespace, key);
+#### bot.recall(namespace, key);
 Recall namespace/key/value data that was stored.
 * `namespace` : namespace as a string in local bot's memory
 * `key` : key as a string in local bot's memory
@@ -479,7 +587,7 @@ flint.hears('/hello', function(bot, trigger) {
 ```
 
 
-### bot.forget(namespace *, key*);
+#### bot.forget(namespace *, key*);
 Forget all data stored under a namespace and/or key.
 * `namespace` : namespace as a string in local bot's memory
 * `key` : *key as a string in local bot's memory (optional)*
@@ -490,14 +598,14 @@ bot.forget('nicknames');
 ```
 
 
+
+
 ## Subscriptions
-
-
 Publisher/Subscriber functions allow Flint to provision inbound routes that individual rooms (via their bot instance) can subscribe to. The publish function happens globally (flint) and the subscribe function happens at the bot. This hierarchy allows Flint to be triggered by external systems. Flint will answer on get, post, put, and del http requests. The request object is passed to the the subscriber. All published routes are created under http://myserver/s so that a route named "myapp" would be accessible at http://myserver/s/myapp. URL, body JSON, and body form url-encoded parameters are parsed into "request.params".
 
 
-### flint.publish(name *, callback(error, url)*);
-Publish a inbound route to http://myserver/s/name. Returns url. 
+#### flint.publish(name *, callback(error, url)*);
+Publish a inbound route to http://myserver/s/name. Returns url.
 * `name` : name of published route
 * `url` : the generated url in a format of http://myserver/s/name
 
@@ -507,11 +615,11 @@ flint.publish('myroute', function(err, url) {
   if(!err) {
     console.log('new route published at %s', url);
   }
-}); 
+});
 ```
 
 
-### bot.subscribe(name, action(req) *, callback(error)*);
+#### bot.subscribe(name, action(req) *, callback(error)*);
 Subscribe bot to a published inbound route.
 * `name` : name of published route
 * `action` : function that is called with the request to subscribed route
@@ -528,7 +636,7 @@ bot.subscribe('myroute', function(req) {
 ```
 
 
-### bot.unsubscribe(name);
+#### bot.unsubscribe(name);
 Unsubscribe bot from a published inbound route.
 * `name` : name of published route
 
@@ -538,12 +646,12 @@ bot.unsubscribe('myroute');
 ```
 
 
-## Proxy Content
 
 
-A simple file proxy is provided with Flint in order to serve files from other URLs. The main purpose of this is to expose internal files that may be only URL accssible from the host Flint is running on. This is in order to serve the file to the Spark API by passing the internet accessible URL in the API call. The proxy mapping expires after 60 seconds. 
+## Expose URL
+A simple reverse file proxy is provided with Flint in order to serve files from other URLs. The main purpose of this is to expose internal files that may be only URL accssible from the host Flint is running on. This is in order to serve the file to the Spark API by passing the internet accessible URL in the API call. The proxy mapping expires after 60 seconds.
 
-### flint.expose(url, filename);
+#### flint.expose(url, filename);
 Serve an external URL file locally. Returns proxied url.
 * `url` : url of file to proxy
 * `filename` : filename to expose as http://myserver/p/myfilename
@@ -553,5 +661,79 @@ Serve an external URL file locally. Returns proxied url.
 bot.say({
   text: 'Here is your file.',
   file: flint.expose('http://192.168.10.10/files/mychart.jpg', 'mychart.jpg')
+});
+```
+
+
+
+
+## Flint Global Bot Control Functions
+#### Flint.exit(*callback(err)*);
+Performs exactly like `Bot.exit()`, except on all rooms.
+
+#### Flint.say(message *, callback(err)*);
+Performs exactly like `Bot.say()`, except on all rooms.
+
+#### Flint.file(url *, callback(err)*);
+Performs exactly like `Bot.file()`, except on all rooms.
+
+#### Flint.add(email *, callback(err)*);
+Performs exactly like `Bot.add()`, except on all rooms.
+
+#### Flint.remove(email *, callback(err)*);
+Performs exactly like `Bot.remove()`, except on all rooms.
+
+
+
+
+## Events
+#### Flint.on('spawn', callback(bot)**);
+Emitted when a new bot is spawned to handle a room Flint is added to.
+
+###### Example:
+```js
+flint.on('spawn', function(bot) {
+  console.log('new bot spawned in room: %s', bot.myroom.title);
+});
+```
+
+#### Flint.on('despawn', callback(bot));
+Emitted when a Flint is removed from a room and the bot object is flagged for deletion.
+
+###### Example:
+```js
+flint.on('despawn', function(bot) {
+  console.log('bot despawned in room: %s', bot.myroom.title);
+});
+```
+
+#### Flint.on('message', callback(bot, message);
+Emitted when a message is recieved from a room that Flint has a Bot instance in.
+
+###### Example:
+```js
+flint.on('message', function(bot, message) {
+  console.log('recieved message "%s" in room "%s"', message.text, bot.myroom.title);
+});
+```
+
+#### Flint.on('files', callback(bot, files);
+Emitted when new file(s) are added to a room that Flint has a Bot instance in.
+
+###### Example:
+```js
+flint.on('files', function(bot, files) {
+  console.log('recieved file %s', JSON.stringify(files));
+  bot.say('Nice file..');
+});
+```
+
+#### Flint.on('error', callback(error);
+Emmitted when there is a error...
+
+###### Example:
+```js
+flint.on('error', function(err) {
+  console.log(err);
 });
 ```

@@ -1,6 +1,6 @@
 {
   "name": "node-flint",
-  "version": "2.0.12",
+  "version": "3.0.0",
   "description": "Making Bots Spark",
   "main": "index.js",
   "scripts": {
@@ -26,10 +26,11 @@
     "debug": "^2.2.0",
     "lodash": "^4.3.0",
     "moment": "^2.11.2",
-    "node-sparky": "^2.0.15",
+    "node-sparky": "^2.0.17",
     "request": "^2.69.0",
     "restify": "^4.0.3",
-    "sparkbot-token": "^1.0.0",
+    "socket2me-client": "^1.0.0",
+    "sparkbot-token": "^1.0.3",
     "util": "^0.10.3",
     "validator": "^4.8.0"
   }

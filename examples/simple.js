@@ -42,11 +42,6 @@ flint.hears('/room', function(bot, trigger) {
   }
 });
 
-// remove all from room and delete room
-flint.hears('/implode', function(bot, trigger) {
-  bot.implode();
-});
-
 // anytime someone says beer
 flint.hears(/(^| )beer( |.|$)/i, function(bot, trigger) {
   bot.say('Enjoy a beer, %s!', trigger.person.displayName);
