@@ -38,12 +38,13 @@ flint.hears(/(^| )beer( |.|$)/i, function(bot, trigger) {
 * bug fixes
 * Added Events
 * Added Logger
+* Added support for remote relay/proxy of webhook callback using [socket2me](https://github.com/nmarus/socket2me)
 * Room monitor is now faster and uses less API calls
 * Added additional validation
 * Added Flint.* functions that run commands across all rooms
 * Added optional Room entry greeting when bot comes online
 * Removed duplicate parameter for OAUTH setup (username)
-* Changed inbound webhook handling to validate relavance of message before querying related API objects. 
+* Changed inbound webhook handling to validate relavance of message before querying related API objects.
 
 
 #### Related Projects
@@ -121,12 +122,13 @@ var flint = new Flint(config);
 *Note: The `redirectURL` does not need to be a valid URL path as it is never used. This is because we are not using OAUTH to grant access to other user accounts. However you must use the same URL here that you used when setting up your application under the Bot's CiscoSpark.com profile.*
 
 #### Optional Config Parameters
-The following are optional parameters. If unset, they will use the defaults as specified. It is recommended to leave the defaults unless you fully understand the impact as some of these directly affect the outgoing API rate limiter. 
+The following are optional parameters. If unset, they will use the defaults as specified. It is recommended to leave the defaults unless you fully understand the impact as some of these directly affect the outgoing API rate limiter.
 
-````js
+```js
 var config = {
   [...]
   externalPort: 80,
+  s2mHost: 'socket2meServer.com'
   maxItems: 500,
   maxConcurrent: 1,
   minTime: 500,
@@ -134,8 +136,9 @@ var config = {
   userWhiteList: [],
   announceMessage: 'Flint is on F-I-R-E!'
 };
-````
+```
 * `externalPort` : The tcp port specified when creating webhooks (defaults to localPort)
+* `s2mHost` : The host that is running the [socket2me](https://github.com/nmarus/socket2me) service this bot will use for webhook proxy/relay. *Optional, if enabled, this disables all webhook hosting via the local webserver. Options baseUrl and externalPort are ignored.*
 * `maxItems` : The maximum items to return in a query (defaults to 500)
 * `maxConcurrent` : The maximum concurrent API requests to send to the Spark API (defaults to 1)
 * `minTime` : The minimum time between successive API requests (defaults to 500ms)
@@ -236,7 +239,7 @@ console.log(trigger.args); // [ 'hello', 'bob!' ]
 
 ## Bot Properties
 #### Bot.myroom
-The Spark room object associated to this bot instance. 
+The Spark room object associated to this bot instance.
 
 #### Bot.myperson
 The Spark person object associated to this bot instance.
@@ -251,18 +254,18 @@ The Spark webhook object associated to this bot instance.
 The Spark email used to authenticate Flint.
 
 #### Bot.lastActivity
-A moment.js object representing the last time Flint recieved a webhook call for this room. 
+A moment.js object representing the last time Flint recieved a webhook call for this room.
 
 #### Bot.companions
 An array of email addresses of the users in the room. This updates when the bot is added to the room and every 10 minutes after, however, every time that the function `bot.rollcall()` is ran, the property will also get updated.
 
 #### Bot.log
-An array that contains the last 1000 (or maxLogSize) messages in room. 
+An array that contains the last 1000 (or maxLogSize) messages in room.
 
-Note: When Flint is added to a room it will automatically grab the last 1000 (or maxLogSize) messages to populate this field. Additionally if any of those 1000 messages are files, it will add them the Bot.files array. *(See Bot.files)* Once in the bot is in the room, all messages are added and parsed as they arrive on the webhook callback.  
+Note: When Flint is added to a room it will automatically grab the last 1000 (or maxLogSize) messages to populate this field. Additionally if any of those 1000 messages are files, it will add them the Bot.files array. *(See Bot.files)* Once in the bot is in the room, all messages are added and parsed as they arrive on the webhook callback.
 
 #### Bot.files (in dev/test)
-This WILL change. Currently containes the direct contents API link URLs of the last 1000 (or maxLogSize) files posted to the room. The URL in this array requires authentication and parsing in order to recieve the file contents. 
+This WILL change. Currently containes the direct contents API link URLs of the last 1000 (or maxLogSize) files posted to the room. The URL in this array requires authentication and parsing in order to recieve the file contents.
 
 This is manual at the moment, but you can grab the file (and save to disk, etc) by making a call to the low level framework of node-sparky.
 
@@ -483,7 +486,7 @@ bot.getMessages(5, function(err, messages) {
   if(!err) messages.forEach(function(message) {
     // display message object
     console.log(JSON.stringify(message));
-    
+
     // display just message text
     console.log(message.text));
   });
@@ -602,7 +605,7 @@ Publisher/Subscriber functions allow Flint to provision inbound routes that indi
 
 
 #### flint.publish(name *, callback(error, url)*);
-Publish a inbound route to http://myserver/s/name. Returns url. 
+Publish a inbound route to http://myserver/s/name. Returns url.
 * `name` : name of published route
 * `url` : the generated url in a format of http://myserver/s/name
 
@@ -612,7 +615,7 @@ flint.publish('myroute', function(err, url) {
   if(!err) {
     console.log('new route published at %s', url);
   }
-}); 
+});
 ```
 
 
@@ -646,7 +649,7 @@ bot.unsubscribe('myroute');
 
 
 ## Expose URL
-A simple reverse file proxy is provided with Flint in order to serve files from other URLs. The main purpose of this is to expose internal files that may be only URL accssible from the host Flint is running on. This is in order to serve the file to the Spark API by passing the internet accessible URL in the API call. The proxy mapping expires after 60 seconds. 
+A simple reverse file proxy is provided with Flint in order to serve files from other URLs. The main purpose of this is to expose internal files that may be only URL accssible from the host Flint is running on. This is in order to serve the file to the Spark API by passing the internet accessible URL in the API call. The proxy mapping expires after 60 seconds.
 
 #### flint.expose(url, filename);
 Serve an external URL file locally. Returns proxied url.
@@ -695,7 +698,7 @@ flint.on('spawn', function(bot) {
 ```
 
 #### Flint.on('despawn', callback(bot));
-Emitted when a Flint is removed from a room and the bot object is flagged for deletion. 
+Emitted when a Flint is removed from a room and the bot object is flagged for deletion.
 
 ###### Example:
 ```js
@@ -705,7 +708,7 @@ flint.on('despawn', function(bot) {
 ```
 
 #### Flint.on('message', callback(bot, message);
-Emitted when a message is recieved from a room that Flint has a Bot instance in. 
+Emitted when a message is recieved from a room that Flint has a Bot instance in.
 
 ###### Example:
 ```js
@@ -726,7 +729,7 @@ flint.on('files', function(bot, files) {
 ```
 
 #### Flint.on('error', callback(error);
-Emmitted when there is a error... 
+Emmitted when there is a error...
 
 ###### Example:
 ```js
