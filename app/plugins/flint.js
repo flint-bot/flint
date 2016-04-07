@@ -1,18 +1,41 @@
 'use strict';
 
+var debug = require('debug')('flint-cmd');
+var validator = require('validator');
+var moment = require('moment');
+
 module.exports = function(flint) {
 
-  // flint <command> <args>
-  flint.hears('/f', function(bot, trigger) {
-    var command = trigger.args[0] ? trigger.args.shift() : null;
+  flint.on('spawn', function(bot) {
+    debug('new bot spawned in room: %s', bot.myroom.title);
+  });
+  
+  flint.on('despawn', function(bot) {
+    debug('bot despawned in room: %s', bot.myroom.title);
+  });
+  
+  flint.on('message', function(bot, message) {
+    debug('recieved message "%s" in room "%s"', message.text, bot.myroom.title);
+  });
+  
+  flint.on('files', function(bot, files) {
+    debug('recieved file %s', JSON.stringify(files));
+    bot.say('Nice file..');
+  });
+  
+  flint.on('error', function(err) {
+    debug(err);
+  });
 
-    var email;
+  // flint <command> <args>
+  flint.hears('/flint', function(bot, trigger) {
+    var command = trigger.args[0] ? trigger.args.shift() : null;
     
     switch(command) {
 
       case 'add':
         // add to room
-        email = trigger.args;
+        var email = trigger.args;
         if(email) bot.add(email, function(err) {
           if(err) {
             console.log('error %s', err);
@@ -22,8 +45,8 @@ module.exports = function(flint) {
 
       case 'remove':
         // remove from room
-        email = trigger.args;
-        if(email) bot.remove(email, function(err) {
+        var remove = trigger.args;
+        if(remove) bot.remove(remove, function(err) {
           if(err) {
             console.log('error %s', err);
           }
@@ -32,9 +55,9 @@ module.exports = function(flint) {
       
       case 'inspect':
         // inspect a person
-        email = trigger.args[0];
-        if(email) {
-          bot.inspect(email, function(err, person) {
+        var inspect = trigger.args[0];
+        if(inspect) {
+          bot.inspect(inspect, function(err, person) {
             if(err) {
               console.log('error %s', err);
             } else {
@@ -42,6 +65,20 @@ module.exports = function(flint) {
             }
           });
         }
+        break;
+
+      case 'say':
+        var say = trigger.message.text.split(' ');
+        say = say.slice(2);
+        say = say.join(' ');
+        bot.say(say);
+        break;
+
+      case 'broadcast':
+        var bc = trigger.message.text.split(' ');
+        bc = bc.slice(2);
+        bc = bc.join(' ');
+        flint.say(bc);
         break;
       
       case 'rollcall':
@@ -76,6 +113,61 @@ module.exports = function(flint) {
             console.log('error %s', err);
           }
         });
+        break;
+
+      case 'download':
+        var urlDefault = 'https://i.imgflip.com/8ee46.jpg';
+        var url;
+        if(trigger.args.length > 0 && typeof trigger.args[0] === 'string') {
+          url = validator.isURL(trigger.args[0]) ? trigger.args[0] : urlDefault;
+        } else {
+          url = urlDefault;
+        }
+        bot.file(url);
+        break;
+
+      case 'avatar':
+        var avatar = trigger.args[0];
+        avatar = avatar || bot.myemail;
+        if(avatar) {
+          bot.inspect(avatar, function(err, person) {
+            if(!err && person.avatar && validator.isURL(person.avatar)) {
+              bot.file(person.avatar);
+            }
+          });
+        }
+        break;
+
+      case 'log':
+        var logsize = trigger.args[0] < 10 ? trigger.args[0] : 1;
+        bot.log.slice(0,logsize).forEach(function(message) {
+          bot.say(JSON.stringify(message));
+        });
+        break;
+
+      case 'debug':
+        bot.say('person who ran this command:\n%s\n\n', JSON.stringify(trigger.person));
+        bot.say('this room:\n%s\n\n', JSON.stringify(trigger.room));
+        bot.say('total rooms: %s\n\n', flint.bots.length);
+        bot.say('total messages logged in this room: %s\n\n', bot.log.length);
+        bot.say('total files logged in this room: %s\n\n', bot.files.length);
+        bot.isModerated(function(isModerated) {
+          if(isModerated) {
+            bot.say('This is room is moderated');
+          } else {
+            bot.say('This room is not moderated');
+          }
+        });
+        break;
+
+      case 'exit':
+        // ask bot to exit room
+        bot.exit();
+        break;
+
+      case 'exit-all':
+        // ask bot to exit all rooms
+        flint.exit();
         break;
 
       default:
