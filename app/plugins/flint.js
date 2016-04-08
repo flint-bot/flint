@@ -14,11 +14,11 @@ module.exports = function(flint) {
     debug('bot despawned in room: %s', bot.myroom.title);
   });
   
-  flint.on('message', function(bot, message) {
+  flint.on('message', function(message, bot) {
     debug('recieved message "%s" in room "%s"', message.text, bot.myroom.title);
   });
   
-  flint.on('files', function(bot, files) {
+  flint.on('files', function(files, bot) {
     debug('recieved file %s', JSON.stringify(files));
     bot.say('Nice file..');
   });

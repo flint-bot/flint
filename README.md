@@ -216,6 +216,14 @@ This is the message object that the phrase was triggered in.
 }
 ```
 
+#### trigger.files //TODO
+If there are files in the trigger, this contains an array object with each file URL.
+
+###### Example Files Array:
+```json
+['', '']
+```
+
 #### trigger.command
 This is the first word of `trigger.message.text` that is normalized to lower case.
 
@@ -269,7 +277,7 @@ This WILL change. Currently containes the direct contents API link URLs of the l
 
 This is manual at the moment, but you can grab the file (and save to disk, etc) by making a call to the low level framework of node-sparky.
 
-###### Example:
+###### Example using the 'files' Event emitter:
 ```js
 flint.on('files', function(bot, files) {
   flint.sparky.contents.get.byUrl(files[0], function(err, file) {
@@ -707,22 +715,22 @@ flint.on('despawn', function(bot) {
 });
 ```
 
-#### Flint.on('message', callback(bot, message);
+#### Flint.on('message', callback(message, bot, trigger);
 Emitted when a message is recieved from a room that Flint has a Bot instance in.
 
 ###### Example:
 ```js
-flint.on('message', function(bot, message) {
+flint.on('message', function(message, bot) {
   console.log('recieved message "%s" in room "%s"', message.text, bot.myroom.title);
 });
 ```
 
-#### Flint.on('files', callback(bot, files);
+#### Flint.on('files', callback(files, bot, trigger);
 Emitted when new file(s) are added to a room that Flint has a Bot instance in.
 
 ###### Example:
 ```js
-flint.on('files', function(bot, files) {
+flint.on('files', function(files, bot) {
   console.log('recieved file %s', JSON.stringify(files));
   bot.say('Nice file..');
 });
