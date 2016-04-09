@@ -3,12 +3,6 @@
 // define flint setup
 var settings = {
 
-  // Interface IP to bind to
-  // bindAddress: '0.0.0.0',
-
-  // Port that local server listens on
-  localPort: 80,
-
   // webhooks (socket2me)
   //
   // s2mHost -h ost of the socket2me webhook relay
@@ -50,8 +44,11 @@ var settings = {
   // Bot Config
   // announceMessage: 'Flint is on',
 
-  // Logging
-  maxLogSize: 1000
+  // Interface IP to bind to
+  // bindAddress: '0.0.0.0',
+
+  // Port that local server listens on
+  localPort: 80
 
 };
 

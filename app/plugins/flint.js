@@ -15,12 +15,11 @@ module.exports = function(flint) {
   });
   
   flint.on('message', function(message, bot) {
-    debug('recieved message "%s" in room "%s"', message.text, bot.myroom.title);
+    debug('"%s" said "%s" in room "%s"', message.personEmail, message.text, bot.myroom.title);
   });
   
-  flint.on('files', function(files, bot) {
-    debug('recieved file %s', JSON.stringify(files));
-    bot.say('Nice file..');
+  flint.on('file', function(file, bot) {
+    debug('recieved file "%s"', file.name);
   });
   
   flint.on('error', function(err) {
@@ -138,19 +137,10 @@ module.exports = function(flint) {
         }
         break;
 
-      case 'log':
-        var logsize = trigger.args[0] < 10 ? trigger.args[0] : 1;
-        bot.log.slice(0,logsize).forEach(function(message) {
-          bot.say(JSON.stringify(message));
-        });
-        break;
-
       case 'debug':
         bot.say('person who ran this command:\n%s\n\n', JSON.stringify(trigger.person));
         bot.say('this room:\n%s\n\n', JSON.stringify(trigger.room));
         bot.say('total rooms: %s\n\n', flint.bots.length);
-        bot.say('total messages logged in this room: %s\n\n', bot.log.length);
-        bot.say('total files logged in this room: %s\n\n', bot.files.length);
         bot.isModerated(function(isModerated) {
           if(isModerated) {
             bot.say('This is room is moderated');
