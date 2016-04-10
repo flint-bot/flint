@@ -70,7 +70,7 @@ var settings = {
 
   // Rate Limiter:
   // 
-  // These setting affect how fast Flint sends messages to teh Spark API. If 
+  // These settings affect how fast Flint sends messages to the Spark API. If 
   // changing from the defaults, watch your console logs for 429 errors. 
 
   // maxItems: 500,
