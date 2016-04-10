@@ -29,7 +29,7 @@
     "node-sparky": "^2.0.20",
     "request": "^2.69.0",
     "restify": "^4.0.3",
-    "socket2me-wrapper": "^1.0.0",
+    "socket2me-wrapper": "^1.0.1",
     "sparkbot-token": "^1.0.3",
     "util": "^0.10.3",
     "validator": "^4.8.0"

@@ -33,7 +33,7 @@ var settings = {
   //
   // s2mHost - host of the socket2me webhook relay
 
-  // s2mHost: 'mysockethost.com',
+  // s2mHost: 'http://mysockethost.com',
 
 
 
