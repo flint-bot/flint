@@ -44,6 +44,7 @@ flint.hears(/(^| )beer( |.|$)/i, function(bot, trigger) {
 * Removed duplicate parameter for OAUTH setup (username)
 * Changed inbound webhook handling to validate relavance of message before querying related API objects.
 * Extended trigger.message.files array to include parsed file objects instead of secured URLs. 
+* Implemented plugin system and moved advanced features out of Flint core
 
 
 #### Related Projects
@@ -146,7 +147,7 @@ var config = {
 * `userWhiteList` : Array of user emails that bot will accept commands from (if unset, allow all)
 * `announceMessage` : If set, this message will be sent to the room when Flint has been added. *Note: This message will also be sent to the room when Flint is restarted as it discovers which rooms it is in.*
 
-*Note: If s2mHost is enabled, this disables all webhook hosting via the local webserver. The also affects how flint.expose(), flint.publish(), and bot.subscribe() work.*
+*Note: If s2mHost is enabled, this disables all webhook hosting via the local webserver.*
 
 
 ## Command Structure
@@ -622,74 +623,6 @@ bot.forget('nicknames');
 
 
 
-## Subscriptions
-Publisher/Subscriber functions allow Flint to provision inbound routes that individual rooms (via their bot instance) can subscribe to. The publish function happens globally (flint) and the subscribe function happens at the bot. This hierarchy allows Flint to be triggered by external systems. Flint will answer on get, post, put, and del http requests. The request object is passed to the the subscriber. URL, body JSON, and body form url-encoded parameters are parsed into "request.params".
-
-
-#### Flint#publish(string:name, fn:callback)
-Publish a inbound route to http://myserver/s/name. Returns url.
-* `name` : name of published route
-* `callback` : callback with parameters `error` and `url`
-
-###### Example:
-```js
-flint.publish('myroute', function(err, url) {
-  if(!err) {
-    console.log('new route published at %s', url);
-  }
-});
-```
-
-
-#### Bot#subscribe(string:name, fn:action, fn:callback)
-Subscribe bot to a published inbound route.
-* `name` : name of published route
-* `action` : function that is called with the request to subscribed route
-* `callback` : callback with parameter `error`
-
-###### Example:
-```js
-bot.subscribe('myroute', function(req) {
-  bot.say('This just in: %s', req.body);
-}, function(err) {
-  if(err) {
-    console.log('route not found');
-  }
-});
-```
-
-
-#### Bot#unsubscribe(string:name)
-Unsubscribe bot from a published inbound route.
-* `name` : name of published route
-
-###### Example:
-```js
-bot.unsubscribe('myroute');
-```
-
-
-
-
-## Expose URL
-A simple reverse file proxy is provided with Flint in order to serve files from other URLs. The main purpose of this is to expose internal files that may be only URL accssible from the host Flint is running on. This is in order to serve the file to the Spark API by passing the internet accessible URL in the API call. The proxy mapping expires after 60 seconds.
-
-#### Flint#expose(string:url, string:filename)
-Serve an external URL file locally. Returns proxied url.
-* `url` : url of file to proxy
-* `filename` : filename to expose as
-
-###### Example:
-```js
-bot.say({
-  text: 'Here is your file.',
-  file: flint.expose('http://192.168.10.10/files/mychart.jpg', 'mychart.jpg')
-});
-```
-
-
-
-
 ## Flint Global Bot Control Functions
 #### Flint#exit(fn:callback)
 Performs exactly like `Bot.exit()`, except on all rooms.
@@ -710,6 +643,16 @@ Performs exactly like `Bot.remove()`, except on all rooms.
 
 
 ## Events
+#### Flint#on('started')
+Emitted when Flint has finsihed it's startup.
+
+###### Example:
+```js
+flint.on('started', function(bot) {
+  console.log('Flint started.');
+});
+```
+
 #### Flint#on('spawn', fn:callback)
 Emitted when a new bot is spawned to handle a room Flint is added to.
 

@@ -9,9 +9,12 @@ var plugins = '/plugins';
 var flint = new Flint(settings);
 
 // register plugins
-fs.readdirSync(path.join(__dirname, plugins)).forEach(function(p) {
-  var newPlugin = path.join(__dirname, plugins, p);
-  if(path.parse(newPlugin).ext === '.js') {
-    require(newPlugin)(flint);
-  }
+flint.on('started', function() {
+  // register plugins
+  fs.readdirSync(path.join(__dirname, plugins)).forEach(function(p) {
+    var newPlugin = path.join(__dirname, plugins, p);
+    if(path.parse(newPlugin).ext === '.js') {
+      require(newPlugin)(flint);
+    }
+  });
 });

@@ -1,6 +1,6 @@
 'use strict';
 
-var debug = require('debug')('flint-cmd');
+var debug = require('debug')('flint-plugin');
 var validator = require('validator');
 var moment = require('moment');
 

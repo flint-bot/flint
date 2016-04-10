@@ -23,8 +23,8 @@ WORKDIR /app
 RUN find /app -type f -exec chmod 666 {} +
 RUN find /app -type d -exec chmod 777 {} +
 
-# Install Flint dev branch
-RUN git clone -b dev https://github.com/nmarus/flint
+# Install Flint from git repo
+RUN git clone https://github.com/nmarus/flint
 RUN npm install ./flint
 
 # install dependencies
