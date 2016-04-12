@@ -1,25 +1,25 @@
 'use strict';
 
-var debug = require('debug')('flint-plugin');
+var debug = require('debug')('flint');
 var validator = require('validator');
 var moment = require('moment');
 
 module.exports = function(flint) {
 
   flint.on('spawn', function(bot) {
-    debug('new bot spawned in room: %s', bot.myroom.title);
+    // debug('new bot spawned in room: %s', bot.myroom.title);
   });
   
   flint.on('despawn', function(bot) {
-    debug('bot despawned in room: %s', bot.myroom.title);
+    // debug('bot despawned in room: %s', bot.myroom.title);
   });
   
   flint.on('message', function(message, bot) {
-    debug('"%s" said "%s" in room "%s"', message.personEmail, message.text, bot.myroom.title);
+    // debug('"%s" said "%s" in room "%s"', message.personEmail, message.text, bot.myroom.title);
   });
   
   flint.on('file', function(file, bot) {
-    debug('recieved file "%s"', file.name);
+    // debug('recieved file "%s"', file.name);
   });
   
   flint.on('error', function(err) {

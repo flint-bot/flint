@@ -26,7 +26,7 @@ var settings = {
   
   // Webhooks: (socket2me)
   //
-  // This section is enabled if youa re using a socket relay server called 
+  // This section is enabled if you are using a socket relay server called 
   // socket2me. This allows webhooks to be used without pinholing your firewall.
   //
   // Parameters:
