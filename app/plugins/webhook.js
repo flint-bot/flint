@@ -22,7 +22,9 @@ module.exports = function(flint) {
   // function to create a webhook url that is triggered via 'method' at 'path'
   function webhook(method, path, fn) {
     flint.server.route(method, path, function(req, res, next) {
-      fn(req);
+      // Run function
+      // In callback, return request object and url to trigger the new webhook
+      fn(req, flint.config.baseUrl + path);
       res.send(200);
       next();
     });
