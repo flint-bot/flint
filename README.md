@@ -129,7 +129,7 @@ The following are optional parameters. If unset, they will use the defaults as s
 var config = {
   [...]
   externalPort: 80,
-  s2mHost: 'socket2meServer.com'
+  s2mHost: 'http://socket2meServer.com'
   maxItems: 500,
   maxConcurrent: 1,
   minTime: 500,
@@ -148,6 +148,25 @@ var config = {
 * `announceMessage` : If set, this message will be sent to the room when Flint has been added. *Note: This message will also be sent to the room when Flint is restarted as it discovers which rooms it is in.*
 
 *Note: If s2mHost is enabled, this disables all webhook hosting via the local webserver.*
+
+## Remote Sockets via [Socket2Me](https://github.com/nmarus/socket2me)
+An inbound, internet reachable port, is required for the Spark API to notify Flint of webhook events. This is not always easy or possible. 
+
+Flint has a remote socket client that utilizes a socket2me server in the event you want to stand up a bot where forwarding a port is not possible.
+
+The remote socket2me server allows you to run Flint behind a NAT without adding a port forward configuration to your firewall. To make use of a socket2me server, you can either stand up your own socket2me server or make use of a public/shared socket2me server. A single socket2me server can support many clients/bots simultaneously. 
+
+A minimal config using socket2me looks like this:
+
+```js
+var config = {
+  sparkEmail: 'mybot@domain.com',
+  sparkToken: '0d3673535c5b9d84a575735bb01fbb93f499bb19454bafa372bbb38355bdf4fc',
+  s2mHost: 'http://mysocketserver.com'
+};
+```
+
+*Note: This does not require you to define a baseUrl, or localPort.*
 
 
 ## Command Structure
