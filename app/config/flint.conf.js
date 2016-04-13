@@ -3,11 +3,9 @@
 // define flint setup
 var settings = {
 
+  //
   // FLINT SETTINGS
   //
-  // Rename this file to "settings.js"
-
-  
 
   // Webhooks: (direct)
   //

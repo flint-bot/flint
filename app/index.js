@@ -2,7 +2,7 @@ var Flint = require('./flint');
 var path = require('path');
 var fs = require('fs');
 
-var settings = require('./config/settings');
+var settings = require('./config/flint.conf');
 var plugins = '/plugins';
 
 // init flint framework
