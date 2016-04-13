@@ -1,4 +1,4 @@
-var Flint = require('./flint');
+var Flint = require('node-flint');
 var path = require('path');
 var fs = require('fs');
 

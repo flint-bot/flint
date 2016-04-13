@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "node-flint": "^3.0.0",
-    "validator": "^4.8.0"
-  }
-}
