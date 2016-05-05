@@ -126,7 +126,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
 
 3. Open up the `package.json` file and verify that the `node-flint` dependency is now there. Additionally, you should now see the “node-modules” folder in your application tree.
 
-    *Note: The version of the `node-flint` package may differ. It's only important that the dependency is listed.*
+    *Note: The version of the `node-flint` package may differ when comparing your package.json to the one in the screenshot. It's only important that the dependency is listed. The `npm install` command you ran above will download the latest version and that will be reflected in package.json*
 
     ```json
     {
@@ -137,7 +137,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
       "repository": "",
       "author": "Nicholas Marus <nmarus@gmail.com>",
       "dependencies": {
-        "node-flint": "^1.0.8"
+        "node-flint": "^X.X.X"
       }
     }
     ```
@@ -149,7 +149,7 @@ Cloud9 is an online Integrated Development Environment (IDE). This allows you to
 1. Run the bot manually from the Cloud9 Terminal:
 
     ```bash
-    DEBUG=flint node server.js
+    DEBUG=flint* node server.js
     ```
 
   ![Cloud 9 run flint](https://raw.githubusercontent.com/nmarus/flint/master/quickstart/c9.io.08.jpg)
