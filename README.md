@@ -272,7 +272,7 @@ npm install node-flint
 <dt><a href="#event_start">"start"</a></dt>
 <dd><p>Flint start event.</p>
 </dd>
-<dt><a href="#event_initialize">"initialize"</a></dt>
+<dt><a href="#event_initialized">"initialized"</a></dt>
 <dd><p>Flint initialized event.</p>
 </dd>
 <dt><a href="#event_roomLocked">"roomLocked"</a></dt>
@@ -1012,9 +1012,9 @@ Flint start event.
 | --- | --- | --- |
 | id | <code>string</code> | Flint UUID |
 
-<a name="event_initialize"></a>
+<a name="event_initialized"></a>
 
-## "initialize"
+## "initialized"
 Flint initialized event.
 
 **Kind**: event emitted  
