@@ -32,7 +32,7 @@ server.on('connected', function(webhookUrl) {
 
   // say hello
   flint.hears('/hello', function(bot, trigger) {
-    bot.say('Hello %s!', trigger.displayName);
+    bot.say('Hello %s!', trigger.personDisplayName);
   });
 
   server.requestHandler(webhook(flint));

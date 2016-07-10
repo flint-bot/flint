@@ -30,7 +30,7 @@ flint.start();
 
 // say hello
 flint.hears('/hello', function(bot, trigger) {
-  bot.say('Hello %s!', trigger.displayName);
+  bot.say('Hello %s!', trigger.personDisplayName);
 });
 
 // define express path for incoming webhooks
@@ -71,7 +71,7 @@ flint.start();
 
 // say hello
 flint.hears('/hello', function(bot, trigger) {
-  bot.say('Hello %s!', trigger.displayName);
+  bot.say('Hello %s!', trigger.personDisplayName);
 });
 
 // define restify path for incoming webhooks
