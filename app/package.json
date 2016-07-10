@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "debug": "^2.2.0",
-    "lodash": "^4.3.0",
-    "moment": "^2.11.2",
-    "node-flint": "^3.0.0",
-    "validator": "^4.8.0"
-  }
-}
