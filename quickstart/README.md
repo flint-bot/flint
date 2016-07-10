@@ -1,5 +1,8 @@
 # Flint Quick Start on Cloud 9
+The following is a quick demo of building a bot using the new FLint version 4 framework. The example code used in the video is included below.
 
+
+#### Video
 [![Flint version 4 Howto](https://img.youtube.com/vi/nx3kvs-gB_I/0.jpg)](https://www.youtube.com/watch?v=nx3kvs-gB_I)
 
 #### package.json
