@@ -266,6 +266,9 @@ npm install node-flint
 ## Events
 
 <dl>
+<dt><a href="#event_log">"log"</a></dt>
+<dd><p>Flint log event.</p>
+</dd>
 <dt><a href="#event_stop">"stop"</a></dt>
 <dd><p>Flint stop event.</p>
 </dd>
@@ -1008,6 +1011,18 @@ Trigger Object
 | personDomain | <code>string</code> | Person Domain name |
 | personAvatar | <code>string</code> | Person Avatar URL |
 | personMembership | <code>object</code> | Person Membership object for person |
+
+<a name="event_log"></a>
+
+## "log"
+Flint log event.
+
+**Kind**: event emitted  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| message | <code>string</code> | Log Message |
 
 <a name="event_stop"></a>
 
