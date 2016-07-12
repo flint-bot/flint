@@ -623,6 +623,7 @@ module.exports = function(flint) {
     * [.implode()](#Bot+implode) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
     * [.say(message)](#Bot+say) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.file(url)](#Bot+file) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+    * [.upload(stream)](#Bot+upload) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.dm(email, message)](#Bot+dm) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.roomRename(title)](#Bot+roomRename) ⇒ <code>Promise.&lt;Room&gt;</code>
     * [.getMessages(count)](#Bot+getMessages) ⇒ <code>Promise.&lt;Array&gt;</code>
@@ -850,6 +851,24 @@ flint.hears('/file', function(trigger, bot) {
   bot.file('http://myurl/file.doc');
 });
 ```
+<a name="Bot+upload"></a>
+
+### bot.upload(stream) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+Stream a file to room.
+
+**Kind**: instance method of <code>[Bot](#Bot)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| stream | <code>Stream</code> | Stream Readable |
+
+**Example**  
+```js
+flint.hears('/file', function(trigger, bot) {
+  var stream = fs.createReadStream('test.png');
+  bot.upload(stream);
+});
+```
 <a name="Bot+dm"></a>
 
 ### bot.dm(email, message) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
@@ -972,6 +991,8 @@ Trigger Object
 | --- | --- | --- |
 | id | <code>string</code> | Message ID |
 | text | <code>string</code> | Message Text |
+| html | <code>string</code> | Message HTML |
+| markdown | <code>string</code> | Message Markdown |
 | phrase | <code>string</code> &#124; <code>regex</code> | Matched lexicon phrase |
 | files | <code>array</code> | Message Files |
 | args | <code>array</code> | Message Text as array |
