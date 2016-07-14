@@ -626,7 +626,8 @@ module.exports = function(flint) {
     * [.implode()](#Bot+implode) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
     * [.say(message)](#Bot+say) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.file(url)](#Bot+file) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
-    * [.upload(stream)](#Bot+upload) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+    * [.uploadStream(filename, stream)](#Bot+uploadStream) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+    * [.upload(filepath)](#Bot+upload) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.dm(email, message)](#Bot+dm) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.roomRename(title)](#Bot+roomRename) ⇒ <code>Promise.&lt;Room&gt;</code>
     * [.getMessages(count)](#Bot+getMessages) ⇒ <code>Promise.&lt;Array&gt;</code>
@@ -854,22 +855,46 @@ flint.hears('/file', function(trigger, bot) {
   bot.file('http://myurl/file.doc');
 });
 ```
-<a name="Bot+upload"></a>
+<a name="Bot+uploadStream"></a>
 
-### bot.upload(stream) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+### bot.uploadStream(filename, stream) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
 Stream a file to room.
 
 **Kind**: instance method of <code>[Bot](#Bot)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
+| filename | <code>String</code> | File name used when uploading to room |
 | stream | <code>Stream</code> | Stream Readable |
 
 **Example**  
 ```js
 flint.hears('/file', function(trigger, bot) {
-  var stream = fs.createReadStream('test.png');
-  bot.upload(stream);
+
+  // define filename used when uploading to room
+  var filename = 'test.png';
+
+  // create readable stream
+  var stream = fs.createReadStream('/my/file/test.png');
+
+  bot.uploadStream(filename, stream);
+});
+```
+<a name="Bot+upload"></a>
+
+### bot.upload(filepath) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+Upload a file to room.
+
+**Kind**: instance method of <code>[Bot](#Bot)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| filepath | <code>String</code> | File Path to upload |
+
+**Example**  
+```js
+flint.hears('/file', function(trigger, bot) {
+  bot.upload('test.png');
 });
 ```
 <a name="Bot+dm"></a>
