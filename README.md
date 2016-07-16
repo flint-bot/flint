@@ -623,7 +623,7 @@ module.exports = function(flint) {
     * [.unmoderateRoom()](#Bot+unmoderateRoom) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
     * [.moderatorSet(email(s))](#Bot+moderatorSet) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
     * [.moderatorClear(email(s))](#Bot+moderatorClear) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
-    * [.implode()](#Bot+implode) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
+    * [.implode()](#Bot+implode) ⇒ <code>Promise.&lt;Boolean&gt;</code>
     * [.say(message)](#Bot+say) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.file(url)](#Bot+file) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.uploadStream(filename, stream)](#Bot+uploadStream) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
@@ -805,7 +805,7 @@ bot.moderatorClear('john@test.com')
 ```
 <a name="Bot+implode"></a>
 
-### bot.implode() ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
+### bot.implode() ⇒ <code>Promise.&lt;Boolean&gt;</code>
 Remove a room and all memberships.
 
 **Kind**: instance method of <code>[Bot](#Bot)</code>  
