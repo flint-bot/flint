@@ -299,6 +299,9 @@ npm install node-flint
 <dt><a href="#event_personExits">"personExits"</a></dt>
 <dd><p>Person Exits Room.</p>
 </dd>
+<dt><a href="#event_mentioned">"mentioned"</a></dt>
+<dd><p>Bot Mentioned.</p>
+</dd>
 <dt><a href="#event_message">"message"</a></dt>
 <dd><p>Message Recieved.</p>
 </dd>
@@ -1009,6 +1012,7 @@ Trigger Object
 | text | <code>string</code> | Message Text |
 | html | <code>string</code> | Message HTML |
 | markdown | <code>string</code> | Message Markdown |
+| mentionedPeople | <code>array</code> | Mentioned People |
 | phrase | <code>string</code> &#124; <code>regex</code> | Matched lexicon phrase |
 | files | <code>array</code> | Message Files |
 | args | <code>array</code> | Message Text as array |
@@ -1017,7 +1021,7 @@ Trigger Object
 | roomTitle | <code>string</code> | Room Title |
 | roomType | <code>string</code> | Room Type (group or direct) |
 | roomIsLocked | <code>boolean</code> | Room Locked/Moderated status |
-| personID | <code>string</code> | Person ID |
+| personId | <code>string</code> | Person ID |
 | personEmail | <code>string</code> | Person Email |
 | personDisplayName | <code>string</code> | Person Display Name |
 | personUsername | <code>string</code> | Person Username |
@@ -1166,6 +1170,20 @@ Person Exits Room.
 | --- | --- | --- |
 | bot | <code>object</code> | Bot Object |
 | person | <code>object</code> | Person Object |
+| id | <code>string</code> | Flint UUID |
+
+<a name="event_mentioned"></a>
+
+## "mentioned"
+Bot Mentioned.
+
+**Kind**: event emitted  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| bot | <code>object</code> | Bot Object |
+| trigger | <code>object</code> | Trigger Object |
 | id | <code>string</code> | Flint UUID |
 
 <a name="event_message"></a>
