@@ -625,7 +625,6 @@ module.exports = function(flint) {
     * [.moderatorClear(email(s))](#Bot+moderatorClear) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
     * [.implode()](#Bot+implode) ⇒ <code>Promise.&lt;Boolean&gt;</code>
     * [.say(message)](#Bot+say) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
-    * [.file(url)](#Bot+file) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.uploadStream(filename, stream)](#Bot+uploadStream) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.upload(filepath)](#Bot+upload) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.dm(email, message)](#Bot+dm) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
@@ -811,7 +810,7 @@ Remove a room and all memberships.
 **Kind**: instance method of <code>[Bot](#Bot)</code>  
 **Example**  
 ```js
-flint.hears('/implode', function(trigger, bot) {
+flint.hears('/implode', function(bot, trigger) {
   bot.implode();
 });
 ```
@@ -828,31 +827,20 @@ Send text with optional file to room.
 
 **Example**  
 ```js
-flint.hears('/hello', function(trigger, bot) {
+flint.hears('/hello', function(bot, trigger) {
   bot.say('hello');
 });
 ```
 **Example**  
 ```js
-flint.hears('/file', function(trigger, bot) {
-  bot.say({text: 'Here is your file!', file: 'http://myurl/file.doc'});
+flint.hears('/hello', function(bot, trigger) {
+  bot.say({markdown: '*Hello <@personEmail:' + trigger.personEmail + '|' + trigger.personDisplayName + '>*'});
 });
 ```
-<a name="Bot+file"></a>
-
-### bot.file(url) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
-Send a file to room.
-
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| url | <code>String</code> | URL of file to send to room |
-
 **Example**  
 ```js
-flint.hears('/file', function(trigger, bot) {
-  bot.file('http://myurl/file.doc');
+flint.hears('/file', function(bot, trigger) {
+  bot.say({text: 'Here is your file!', file: 'http://myurl/file.doc'});
 });
 ```
 <a name="Bot+uploadStream"></a>
@@ -869,7 +857,7 @@ Stream a file to room.
 
 **Example**  
 ```js
-flint.hears('/file', function(trigger, bot) {
+flint.hears('/file', function(bot, trigger) {
 
   // define filename used when uploading to room
   var filename = 'test.png';
@@ -893,7 +881,7 @@ Upload a file to room.
 
 **Example**  
 ```js
-flint.hears('/file', function(trigger, bot) {
+flint.hears('/file', function(bot, trigger) {
   bot.upload('test.png');
 });
 ```
@@ -911,14 +899,14 @@ Send text with optional file in a direct message.
 
 **Example**  
 ```js
-flint.hears('/dm', function(trigger, bot) {
+flint.hears('/dm', function(bot, trigger) {
   var email = trigger.args[1];
   bot.dm(email, 'hello');
 });
 ```
 **Example**  
 ```js
-flint.hears('/dm', function(trigger, bot) {
+flint.hears('/dm', function(bot, trigger) {
   var email = trigger.args[1];
   bot.dm(email, {text: 'hello', file: 'http://myurl/file.doc'});
 });
