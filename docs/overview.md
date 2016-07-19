@@ -9,20 +9,14 @@
   * Event emitters tied to request, response, error, retry, and queue drops.
   * Returns promises that comply with A+ standards..
   * Handles pagination transparently. (Receive unlimited records)
-  * Support for Spark API Advanced Webhooks
-  * Support Teams API
+  * **(new)** Support for Spark API Advanced Webhooks
+  * **(new)** Support Teams API
+  * **(new)** Support for markdown formatted messages
+  * **(new)** Support for [authenticated HMAC-SHA1 webhooks](https://developer.ciscospark.com/webhooks-explained.html#sensitive-data)
 * Flint can now be easily embedded into existing Express, Restify, or other 
   Connect based apps.
 * Flint can be used for building standalone bot "scripts", but also web applications 
   that interact with Spark API.
-* Reference this repository's examples folder for application examples that expand 
-  on the simple "hello world" examples above.
-* Reference this repository's tutorials folder for directions on hosting a 
-  Flint application on:
-  * cloud9
-  * ciscoshipped
-  * docker
-  
 
 ## Overview
 
