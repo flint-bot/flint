@@ -376,6 +376,7 @@ Options Object
 | --- | --- | --- | --- |
 | token | <code>string</code> |  | Spark Token. |
 | webhookUrl | <code>string</code> |  | URL that is used for SPark API to send callbacks. |
+| webhookSecret | <code>string</code> |  | If specified, inbound webhooks are authorized before being processed. |
 | maxPageItems | <code>number</code> | <code>50</code> | Max results that the paginator uses. |
 | maxConcurrent | <code>number</code> | <code>3</code> | Max concurrent sessions to the Spark API |
 | minTime | <code>number</code> | <code>600</code> | Min time between consecutive request starts. |
@@ -468,8 +469,8 @@ Add action to be performed when bot hears a phrase.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| phrase | <code>Regex</code> &#124; <code>String</code> | The phrase as either a regex or string. If  regex, matches on entire message.If string, matches on first word. |
-| action | <code>function</code> | The function to execute when phrase is matched.  Function is executed with 2 variables. Trigger and Bot. The Trigger Object  contains information about the person who entered a message that matched the  phrase. The Bot Object is an instance of the Bot Class as it relates to the  room the message was heard. |
+| phrase | <code>Regex</code> &#124; <code>String</code> | The phrase as either a regex or string. If regex, matches on entire message.If string, matches on first word. |
+| action | <code>function</code> | The function to execute when phrase is matched. Function is executed with 2 variables. Trigger and Bot. The Trigger Object contains information about the person who entered a message that matched the phrase. The Bot Object is an instance of the Bot Class as it relates to the room the message was heard. |
 | [helpText] | <code>String</code> | The string of text that describes how this command operates. |
 
 **Example**  
@@ -532,7 +533,7 @@ Attaches authorizer function.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| Action | <code>function</code> | The function to execute when phrase is matched  to authenticate a user.  The function is passed the bot, trigger, and id and  expects a return value of true or false. |
+| Action | <code>function</code> | The function to execute when phrase is matched to authenticate a user.  The function is passed the bot, trigger, and id and expects a return value of true or false. |
 
 **Example**  
 ```js
