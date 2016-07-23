@@ -1,6 +1,6 @@
 ## Features
 
-* Utilizes [node-sparky](https://gitbub.com/nmarus/node-sparky). As such, 
+* Utilizes [node-sparky](https://github.com/nmarus/sparky). As such, 
   includes the following node-sparky features:
   * Built in rate limiter and outbound queue that allows control over the number 
     of parallel API calls and the minimum time between each call.
