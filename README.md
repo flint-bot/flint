@@ -628,7 +628,7 @@ module.exports = function(flint) {
     * [.uploadStream(filename, stream)](#Bot+uploadStream) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.upload(filepath)](#Bot+upload) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.dm(email, message)](#Bot+dm) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
-    * [.censor(messageId)](#Bot+censor) ⇒ <code>Promise.&lt;message&gt;</code>
+    * [.censor(messageId)](#Bot+censor) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.roomRename(title)](#Bot+roomRename) ⇒ <code>Promise.&lt;Room&gt;</code>
     * [.getMessages(count)](#Bot+getMessages) ⇒ <code>Promise.&lt;Array&gt;</code>
 
@@ -914,7 +914,7 @@ flint.hears('/dm', function(bot, trigger) {
 ```
 <a name="Bot+censor"></a>
 
-### bot.censor(messageId) ⇒ <code>Promise.&lt;message&gt;</code>
+### bot.censor(messageId) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
 Remove Message By Id.
 
 **Kind**: instance method of <code>[Bot](#Bot)</code>  
