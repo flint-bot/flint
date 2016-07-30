@@ -1021,7 +1021,7 @@ Trigger Object
 | markdown | <code>string</code> | Message Markdown (or false if no markdown) |
 | mentionedPeople | <code>array</code> | Mentioned People (or false if no mentioned) |
 | files | <code>array</code> | Message Files (or false if no files in trigger) |
-| args | <code>array</code> | Filtered array of words in message text. If regex match, array will include all words. If phrase match, array will include all words. |
+| args | <code>array</code> | Filtered array of words in message text. |
 | created | <code>date</code> | Message Created date |
 | roomId | <code>string</code> | Room ID |
 | roomTitle | <code>string</code> | Room Title |
