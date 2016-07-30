@@ -304,9 +304,6 @@ npm install node-flint
 <dt><a href="#event_files">"files"</a></dt>
 <dd><p>File Recieved.</p>
 </dd>
-<dt><a href="#event_hears">"hears"</a></dt>
-<dd><p>Flint Hears.</p>
-</dd>
 <dt><a href="#event_spawn">"spawn"</a></dt>
 <dd><p>Bot Spawned.</p>
 </dd>
@@ -1018,13 +1015,13 @@ Trigger Object
 | Name | Type | Description |
 | --- | --- | --- |
 | id | <code>string</code> | Message ID |
-| text | <code>string</code> | Message Text |
-| html | <code>string</code> | Message HTML |
-| markdown | <code>string</code> | Message Markdown |
-| mentionedPeople | <code>array</code> | Mentioned People |
 | phrase | <code>string</code> &#124; <code>regex</code> | Matched lexicon phrase |
-| files | <code>array</code> | Message Files |
-| args | <code>array</code> | Message Text as array |
+| text | <code>string</code> | Message Text (or false if no text) |
+| html | <code>string</code> | Message HTML (or false if no html) |
+| markdown | <code>string</code> | Message Markdown (or false if no markdown) |
+| mentionedPeople | <code>array</code> | Mentioned People (or false if no mentioned) |
+| files | <code>array</code> | Message Files (or false if no files in trigger) |
+| args | <code>array</code> | Filtered array of words in message text. If regex match, array will include all words. If phrase match, array will include all words. |
 | created | <code>date</code> | Message Created date |
 | roomId | <code>string</code> | Room ID |
 | roomTitle | <code>string</code> | Room Title |
@@ -1213,20 +1210,6 @@ Message Recieved.
 
 ## "files"
 File Recieved.
-
-**Kind**: event emitted  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| bot | <code>object</code> | Bot Object |
-| trigger | <code>trigger</code> | Trigger Object |
-| id | <code>string</code> | Flint UUID |
-
-<a name="event_hears"></a>
-
-## "hears"
-Flint Hears.
 
 **Kind**: event emitted  
 **Properties**
