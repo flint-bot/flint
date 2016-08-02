@@ -628,6 +628,9 @@ module.exports = function(flint) {
     * [.censor(messageId)](#Bot+censor) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.roomRename(title)](#Bot+roomRename) ⇒ <code>Promise.&lt;Room&gt;</code>
     * [.getMessages(count)](#Bot+getMessages) ⇒ <code>Promise.&lt;Array&gt;</code>
+    * [.store(key, value)](#Bot+store) ⇒ <code>Boolean</code>
+    * [.recall(key)](#Bot+recall) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code>
+    * [.forget([key])](#Bot+forget) ⇒ <code>Boolean</code>
 
 <a name="new_Bot_new"></a>
 
@@ -844,14 +847,14 @@ flint.hears('/file', function(bot, trigger) {
 <a name="Bot+uploadStream"></a>
 
 ### bot.uploadStream(filename, stream) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
-Stream a file to room.
+Upload a file to a room using a Reeadable Stream
 
 **Kind**: instance method of <code>[Bot](#Bot)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | filename | <code>String</code> | File name used when uploading to room |
-| stream | <code>Stream</code> | Stream Readable |
+| stream | <code>Stream.Readable</code> | Stream Readable |
 
 **Example**  
 ```js
@@ -960,6 +963,40 @@ bot.getMessages(5).then(function(messages) {
   });
 });
 ```
+<a name="Bot+store"></a>
+
+### bot.store(key, value) ⇒ <code>Boolean</code>
+Store key/value data in this bot instance
+
+**Kind**: instance method of <code>[Bot](#Bot)</code>  
+
+| Param | Type |
+| --- | --- |
+| key | <code>String</code> | 
+| value | <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code> | 
+
+<a name="Bot+recall"></a>
+
+### bot.recall(key) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code>
+Recall value of data stored by 'key' in this bot instance
+
+**Kind**: instance method of <code>[Bot](#Bot)</code>  
+
+| Param | Type |
+| --- | --- |
+| key | <code>String</code> | 
+
+<a name="Bot+forget"></a>
+
+### bot.forget([key]) ⇒ <code>Boolean</code>
+Forget a key or entire store.
+
+**Kind**: instance method of <code>[Bot](#Bot)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [key] | <code>String</code> | Optional key value to forget. If key is not passed, bot forgets everything. |
+
 <a name="Message"></a>
 
 ## Message : <code>object</code>
