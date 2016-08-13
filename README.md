@@ -280,6 +280,9 @@ npm install node-flint
 <dt><a href="#event_roomLocked">"roomLocked"</a></dt>
 <dd><p>Room Locked event.</p>
 </dd>
+<dt><a href="#event_roomUnocked">"roomUnocked"</a></dt>
+<dd><p>Room Unocked event.</p>
+</dd>
 <dt><a href="#event_personEnters">"personEnters"</a></dt>
 <dd><p>Person Enter Room event.</p>
 </dd>
@@ -909,7 +912,7 @@ flint.hears('/dm', function(bot, trigger) {
 ```js
 // Mardown Method 2 - Define message format as part of argument string
 flint.hears('/dm', function(bot, trigger) {
-  bot.dm('someone@domain.com', 'markdown', '**hello**, How are you today?');
+  bot.dm('markdown', 'someone@domain.com', '**hello**, How are you today?');
 });
 ```
 **Example**  
@@ -1185,6 +1188,19 @@ Flint initialized event.
 
 ## "roomLocked"
 Room Locked event.
+
+**Kind**: event emitted  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| bot | <code>object</code> | Bot Object |
+| id | <code>string</code> | Flint UUID |
+
+<a name="event_roomUnocked"></a>
+
+## "roomUnocked"
+Room Unocked event.
 
 **Kind**: event emitted  
 **Properties**
