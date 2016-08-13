@@ -10,6 +10,9 @@ is similar to previous versions, there are some major differences. Please read
 the API docs below before migrating your code to this release. If you are 
 looking for the old release version, node-flint@3.0.7 is still available to be 
 installed through NPM.***
+
+Be sure to check out the [wiki](https://github.com/nmarus/flint/wiki) for troubleshooting and examples!
+
 ## Example #1 Using Express
 ```js
 var Flint = require('node-flint');
@@ -376,6 +379,7 @@ Options Object
 | token | <code>string</code> |  | Spark Token. |
 | webhookUrl | <code>string</code> |  | URL that is used for SPark API to send callbacks. |
 | webhookSecret | <code>string</code> |  | If specified, inbound webhooks are authorized before being processed. |
+| messageFormat | <code>string</code> | <code>&quot;text&quot;</code> | Default Spark message format to use with bot.say(). |
 | maxPageItems | <code>number</code> | <code>50</code> | Max results that the paginator uses. |
 | maxConcurrent | <code>number</code> | <code>3</code> | Max concurrent sessions to the Spark API |
 | minTime | <code>number</code> | <code>600</code> | Min time between consecutive request starts. |
@@ -475,9 +479,9 @@ Add action to be performed when bot hears a phrase.
 **Example**  
 ```js
 // using a string to match first word and defines help text
-flint.hears('/flint', function(bot, trigger, id) {
-  bot.say('Hello %s!', trigger.personDisplayName);
-}, 'Responds with a greeting.');
+flint.hears('/say', function(bot, trigger, id) {
+  bot.say(trigger.args.slice(1, trigger.arges.length - 1));
+}, '/say <greeting> - Responds with a greeting');
 ```
 **Example**  
 ```js
@@ -514,8 +518,8 @@ Display help for registered Flint Commands.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [header] | <code>String</code> | <code>Usage:\n\n</code> | String to use in header before displaying help message. |
-| [footer] | <code>String</code> | <code>\nPowered by Flint - https://github.com/nmarus/flint\n\n</code> | String to use in footer before displaying help message. |
+| [header] | <code>String</code> | <code>Usage:</code> | String to use in header before displaying help message. |
+| [footer] | <code>String</code> | <code>Powered by Flint - https://github.com/nmarus/flint</code> | String to use in footer before displaying help message. |
 
 **Example**  
 ```js
@@ -573,6 +577,9 @@ Load a Plugin from a external file.
 **Example**  
 ```js
 flint.use('events.js');
+```
+**Example**  
+```js
 // events.js
 module.exports = function(flint) {
   flint.on('spawn', function(bot) {
@@ -621,14 +628,14 @@ module.exports = function(flint) {
     * [.moderatorSet(email(s))](#Bot+moderatorSet) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
     * [.moderatorClear(email(s))](#Bot+moderatorClear) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
     * [.implode()](#Bot+implode) ⇒ <code>Promise.&lt;Boolean&gt;</code>
-    * [.say(message)](#Bot+say) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+    * [.say([format], message)](#Bot+say) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+    * [.dm(email, [format], message)](#Bot+dm) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.uploadStream(filename, stream)](#Bot+uploadStream) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.upload(filepath)](#Bot+upload) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
-    * [.dm(email, message)](#Bot+dm) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.censor(messageId)](#Bot+censor) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.roomRename(title)](#Bot+roomRename) ⇒ <code>Promise.&lt;Room&gt;</code>
     * [.getMessages(count)](#Bot+getMessages) ⇒ <code>Promise.&lt;Array&gt;</code>
-    * [.store(key, value)](#Bot+store) ⇒ <code>Boolean</code>
+    * [.store(key, value)](#Bot+store) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code>
     * [.recall(key)](#Bot+recall) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code>
     * [.forget([key])](#Bot+forget) ⇒ <code>Boolean</code>
 
@@ -817,37 +824,105 @@ flint.hears('/implode', function(bot, trigger) {
 ```
 <a name="Bot+say"></a>
 
-### bot.say(message) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+### bot.say([format], message) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
 Send text with optional file to room.
 
 **Kind**: instance method of <code>[Bot](#Bot)</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| message | <code>String</code> &#124; <code>Object</code> | Message to send to room as either string or object. |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [format] | <code>String</code> | <code>text</code> | Set message format. Valid options are 'text' or 'markdown'. |
+| message | <code>String</code> &#124; <code>Object</code> |  | Message to send to room. This can be a simple string, or a object for advanced use. |
 
 **Example**  
 ```js
+// Simple example
 flint.hears('/hello', function(bot, trigger) {
   bot.say('hello');
 });
 ```
 **Example**  
 ```js
-flint.hears('/hello', function(bot, trigger) {
-  bot.say({markdown: '*Hello <@personEmail:' + trigger.personEmail + '|' + trigger.personDisplayName + '>*'});
+// Simple example to send message and file
+flint.hears('/file', function(bot, trigger) {
+  bot.say({text: 'Here is your file!', file: 'http://myurl/file.doc'});
 });
 ```
 **Example**  
 ```js
-flint.hears('/file', function(bot, trigger) {
-  bot.say({text: 'Here is your file!', file: 'http://myurl/file.doc'});
+// Markdown Method 1 - Define markdown as default
+flint.messageFormat = 'markdown';
+flint.hears('/hello', function(bot, trigger) {
+  bot.say('**hello**, How are you today?');
+});
+```
+**Example**  
+```js
+// Mardown Method 2 - Define message format as part of argument string
+flint.hears('/hello', function(bot, trigger) {
+  bot.say('markdown', '**hello**, How are you today?');
+});
+```
+**Example**  
+```js
+// Mardown Method 3 - Use an object (use this method of bot.say() when needing to send a file in the same message as markdown text.
+flint.hears('/hello', function(bot, trigger) {
+  bot.say({markdown: '*Hello <@personEmail:' + trigger.personEmail + '|' + trigger.personDisplayName + '>*'});
+});
+```
+<a name="Bot+dm"></a>
+
+### bot.dm(email, [format], message) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+Send text with optional file in a direct message. This sends a message to a 1:1 room with the user (creates 1:1, if one does not already exist)
+
+**Kind**: instance method of <code>[Bot](#Bot)</code>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| email | <code>String</code> |  | Email of person to send Direct Message. |
+| [format] | <code>String</code> | <code>text</code> | Set message format. Valid options are 'text' or 'markdown'. |
+| message | <code>String</code> &#124; <code>Object</code> |  | Message to send to room. This can be a simple string, or a object for advanced use. |
+
+**Example**  
+```js
+// Simple example
+flint.hears('/dm', function(bot, trigger) {
+  bot.dm('someone@domain.com', 'hello');
+});
+```
+**Example**  
+```js
+// Simple example to send message and file
+flint.hears('/dm', function(bot, trigger) {
+  bot.dm('someone@domain.com', {text: 'Here is your file!', file: 'http://myurl/file.doc'});
+});
+```
+**Example**  
+```js
+// Markdown Method 1 - Define markdown as default
+flint.messageFormat = 'markdown';
+flint.hears('/dm', function(bot, trigger) {
+  bot.dm('someone@domain.com', '**hello**, How are you today?');
+});
+```
+**Example**  
+```js
+// Mardown Method 2 - Define message format as part of argument string
+flint.hears('/dm', function(bot, trigger) {
+  bot.dm('someone@domain.com', 'markdown', **hello**, How are you today?');
+});
+```
+**Example**  
+```js
+// Mardown Method 3 - Use an object (use this method of bot.dm() when needing to send a file in the same message as markdown text.
+flint.hears('/dm', function(bot, trigger) {
+  bot.dm('someone@domain.com', {markdown: '*Hello <@personEmail:' + trigger.personEmail + '|' + trigger.personDisplayName + '>*'});
 });
 ```
 <a name="Bot+uploadStream"></a>
 
 ### bot.uploadStream(filename, stream) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
-Upload a file to a room using a Reeadable Stream
+Upload a file to a room using a Readable Stream
 
 **Kind**: instance method of <code>[Bot](#Bot)</code>  
 
@@ -884,32 +959,6 @@ Upload a file to room.
 ```js
 flint.hears('/file', function(bot, trigger) {
   bot.upload('test.png');
-});
-```
-<a name="Bot+dm"></a>
-
-### bot.dm(email, message) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
-Send text with optional file in a direct message.
-
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| email | <code>String</code> | Email of person to send Direct Message. |
-| message | <code>String</code> &#124; <code>Object</code> | Message to send to room as either string or object. |
-
-**Example**  
-```js
-flint.hears('/dm', function(bot, trigger) {
-  var email = trigger.args[1];
-  bot.dm(email, 'hello');
-});
-```
-**Example**  
-```js
-flint.hears('/dm', function(bot, trigger) {
-  var email = trigger.args[1];
-  bot.dm(email, {text: 'hello', file: 'http://myurl/file.doc'});
 });
 ```
 <a name="Bot+censor"></a>
@@ -965,7 +1014,7 @@ bot.getMessages(5).then(function(messages) {
 ```
 <a name="Bot+store"></a>
 
-### bot.store(key, value) ⇒ <code>Boolean</code>
+### bot.store(key, value) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code>
 Store key/value data in this bot instance
 
 **Kind**: instance method of <code>[Bot](#Bot)</code>  
@@ -975,6 +1024,11 @@ Store key/value data in this bot instance
 | key | <code>String</code> | 
 | value | <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code> | 
 
+**Example**  
+```js
+var myAppSettings = bot.store('myAppSettings', {});
+myAppSettings.myParam = 'true';
+```
 <a name="Bot+recall"></a>
 
 ### bot.recall(key) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code>
@@ -986,6 +1040,13 @@ Recall value of data stored by 'key' in this bot instance
 | --- | --- |
 | key | <code>String</code> | 
 
+**Example**  
+```js
+var myAppSettings = bot.recall('myAppSettings');
+if(myAppSettings && myAppSettings.myParam) {
+  // do stuff
+}
+```
 <a name="Bot+forget"></a>
 
 ### bot.forget([key]) ⇒ <code>Boolean</code>
