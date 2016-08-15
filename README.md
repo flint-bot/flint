@@ -4,11 +4,11 @@
 
 Cisco Spark Bot SDK for Node JS (Version 4)
 
-***If you are coming from using node-flint version 3.x or earlier, note that the 
-architecture, commands, and some variable names have changed. While this release 
-is similar to previous versions, there are some major differences. Please read 
-the API docs below before migrating your code to this release. If you are 
-looking for the old release version, node-flint@3.0.7 is still available to be 
+***If you are coming from using node-flint version 3.x or earlier, note that the
+architecture, commands, and some variable names have changed. While this release
+is similar to previous versions, there are some major differences. Please read
+the API docs below before migrating your code to this release. If you are
+looking for the old release version, node-flint@3.0.7 is still available to be
 installed through NPM.***
 
 Be sure to check out the [wiki](https://github.com/nmarus/flint/wiki) for troubleshooting and examples!
@@ -98,9 +98,9 @@ process.on('SIGINT', function() {
 ```
 ## Features
 
-* Utilizes [node-sparky](https://github.com/nmarus/sparky). As such, 
+* Utilizes [node-sparky](https://github.com/nmarus/sparky). As such,
   includes the following node-sparky features:
-  * Built in rate limiter and outbound queue that allows control over the number 
+  * Built in rate limiter and outbound queue that allows control over the number
     of parallel API calls and the minimum time between each call.
   * Transparently handles some (429, 500, 502) errors and re-queues the request.
   * File processor for retrieving attachments from room
@@ -111,24 +111,24 @@ process.on('SIGINT', function() {
   * **(new)** Support Teams API
   * **(new)** Support for markdown formatted messages
   * **(new)** Support for [authenticated HMAC-SHA1 webhooks](https://developer.ciscospark.com/webhooks-explained.html#sensitive-data)
-* Flint can now be easily embedded into existing Express, Restify, or other 
+* Flint can now be easily embedded into existing Express, Restify, or other
   Connect based apps.
-* Flint can be used for building standalone bot "scripts", but also web applications 
+* Flint can be used for building standalone bot "scripts", but also web applications
   that interact with Spark API.
 
 ## Overview
 
-Most of FLint's functionality is based around the flint.hears function. This 
-defines the phrase or pattern the bot is listening for and what actions to take 
-when that phrase or pattern is matched. The flint.hears function gets a callback 
+Most of Flint's functionality is based around the flint.hears function. This
+defines the phrase or pattern the bot is listening for and what actions to take
+when that phrase or pattern is matched. The flint.hears function gets a callback
 than includes two objects. The bot object, and the trigger object.
 
-Flint generates a bot object instance of the Bot class for each room the Spark 
-account Flint is running under. The bot object instance tracks the specifics 
-about the room it is running in and is passed to the  "hears" command callback 
-when a phrase is heard. 
+Flint generates a bot object instance of the Bot class for each room the Spark
+account Flint is running under. The bot object instance tracks the specifics
+about the room it is running in and is passed to the  "hears" command callback
+when a phrase is heard.
 
-Flint also generates a trigger object based on the person and room that the 
+Flint also generates a trigger object based on the person and room that the
 flint.hears function was triggered.
 
 A simple example of a flint.hears() function setup:
@@ -145,9 +145,8 @@ flint.hears(phrase, function(bot, trigger) {
 });
 ```
 
-* `phrase` : This can be either a string or a regex pattern. 
-If a string, the string is matched against the forst word in the room message. 
-message. 
+* `phrase` : This can be either a string or a regex pattern.
+If a string, the string is matched against the first word in the room message.
 If a regex pattern is used, it is matched against the entire message text.
 * `bot` : The bot object that is used to execute commands when the `phrase` is
 triggered.
@@ -161,24 +160,24 @@ of the chained 'then' functions.
 * `commands` : The commands that are ran when the `phrase` is heard.
 
 ### Node JS Promises
-Flint version 4 makes use Node JS promises verses using callbacks as was the 
-case in previous versions. It is not necessary to process the promise returned 
+Flint version 4 makes use Node JS promises verses using callbacks as was the
+case in previous versions. It is not necessary to process the promise returned
 from the Flint command in most cases, but this can also be used for creating
-chains of logic that proceed based on the success of the previous command. It 
+chains of logic that proceed based on the success of the previous command. It
 also allows a single error handler for the entire chain.
 
 All promises returned by Flint functions comply with
 [A+ standards](https://promisesaplus.com/).
 
-A simple example of using promises vs using callbacks. More complicated logic 
-can lead to waht is termed [callback hell](callback hell) and heavy use of the 
+A simple example of using promises vs using callbacks. More complicated logic
+can lead to waht is termed [callback hell](callback hell) and heavy use of the
 async library without careful planning. Promises make this less  of a challenge.
 
 ```js
 // callback version Flint 3.x
 flint.hears('/add', function(bot, trigger) {
   var email = trigger.args[0];
-  
+
   bot.add(email, function(err, membership) {
     if(err) {
       console.log(err);
@@ -196,7 +195,7 @@ flint.hears('/add', function(bot, trigger) {
 // Promise Example with arrow functions in version Flint 4.x
 flint.hears('/add', (bot, trigger) => {
   var email = trigger.args[1];
-  
+
   bot.add(email)
     .then(membership => membership.personEmail)
     .then(email => {
@@ -973,7 +972,7 @@ Remove Message By Id.
 
 | Param | Type |
 | --- | --- |
-| messageId | <code>String</code> | 
+| messageId | <code>String</code> |
 
 <a name="Bot+roomRename"></a>
 
@@ -984,7 +983,7 @@ Set Title of Room.
 
 | Param | Type |
 | --- | --- |
-| title | <code>String</code> | 
+| title | <code>String</code> |
 
 **Example**  
 ```js
@@ -1002,7 +1001,7 @@ Get messages from room. Returned data has newest message at bottom.
 
 | Param | Type |
 | --- | --- |
-| count | <code>Integer</code> | 
+| count | <code>Integer</code> |
 
 **Example**  
 ```js
@@ -1024,8 +1023,8 @@ Store key/value data in this bot instance
 
 | Param | Type |
 | --- | --- |
-| key | <code>String</code> | 
-| value | <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code> | 
+| key | <code>String</code> |
+| value | <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code> |
 
 **Example**  
 ```js
@@ -1041,7 +1040,7 @@ Recall value of data stored by 'key' in this bot instance
 
 | Param | Type |
 | --- | --- |
-| key | <code>String</code> | 
+| key | <code>String</code> |
 
 **Example**  
 ```js
