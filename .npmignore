@@ -23,6 +23,5 @@ Thumbs.db
 venv
 node_modules
 docs
-tsuru-flint-template
+templates
 quickstart
-
