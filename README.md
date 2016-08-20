@@ -343,7 +343,7 @@ npm install node-flint
     * [.restart()](#Flint+restart) ⇒ <code>Promise.&lt;Boolean&gt;</code>
     * [.getMessage(messageId)](#Flint+getMessage) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.getFiles(messageId)](#Flint+getFiles) ⇒ <code>Promise.&lt;Array&gt;</code>
-    * [.hears(phrase, action, [helpText])](#Flint+hears) ⇒ <code>String</code>
+    * [.hears(phrase, action, [helpText], [preference])](#Flint+hears) ⇒ <code>String</code>
     * [.clearHears(id)](#Flint+clearHears) ⇒ <code>null</code>
     * [.showHelp([header], [footer])](#Flint+showHelp) ⇒ <code>String</code>
     * [.setAuthorizer(Action)](#Flint+setAuthorizer) ⇒ <code>Boolean</code>
@@ -467,16 +467,17 @@ Get Files from Message Object by ID
 
 <a name="Flint+hears"></a>
 
-### flint.hears(phrase, action, [helpText]) ⇒ <code>String</code>
+### flint.hears(phrase, action, [helpText], [preference]) ⇒ <code>String</code>
 Add action to be performed when bot hears a phrase.
 
 **Kind**: instance method of <code>[Flint](#Flint)</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| phrase | <code>Regex</code> &#124; <code>String</code> | The phrase as either a regex or string. If regex, matches on entire message.If string, matches on first word. |
-| action | <code>function</code> | The function to execute when phrase is matched. Function is executed with 2 variables. Trigger and Bot. The Trigger Object contains information about the person who entered a message that matched the phrase. The Bot Object is an instance of the Bot Class as it relates to the room the message was heard. |
-| [helpText] | <code>String</code> | The string of text that describes how this command operates. |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| phrase | <code>Regex</code> &#124; <code>String</code> |  | The phrase as either a regex or string. If regex, matches on entire message.If string, matches on first word. |
+| action | <code>function</code> |  | The function to execute when phrase is matched. Function is executed with 2 variables. Trigger and Bot. The Trigger Object contains information about the person who entered a message that matched the phrase. The Bot Object is an instance of the Bot Class as it relates to the room the message was heard. |
+| [helpText] | <code>String</code> |  | The string of text that describes how this command operates. |
+| [preference] | <code>Number</code> | <code>0</code> | Specifies preference of phrase action when overlapping phrases are matched. On multiple matches with same preference, all matched actions are excuted. On multiple matches with difference preference values, only the lower preferenced matched action(s) are executed. |
 
 **Example**  
 ```js
