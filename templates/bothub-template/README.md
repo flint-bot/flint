@@ -1,9 +1,11 @@
 #bothub-template
 (work in progress...)
 
+
 ### Prerequisites
 * Account username and password for bothub.io account
 * Tsuru.io client installed
+
 
 ### Template Files
 * .nvmrc - Node JS Version
@@ -13,6 +15,7 @@
 * flint.js - Flint Bot Application
 * package.json - npm dependencies
 * test.js - Local App Runner
+
 
 ### Create and Configure
 
@@ -53,16 +56,19 @@
     tsuru env-set -a <name> TOKEN=<token>
     ```
 
+
 ### Test
 
 1. Install Packages (defined in package.json)
     ```bash
     npm install
     ```
+
 2. Run Locally (using BotHub.io remote webhook forwarding)
     ```bash
     node test.js
     ```
+
 
 ### Deploy
 
