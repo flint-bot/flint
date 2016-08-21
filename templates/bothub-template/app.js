@@ -5,7 +5,6 @@ var bodyParser = require('body-parser');
 var path = require('path');
 
 var config = require(path.join(__dirname, 'config.js'));
-config.webhookUrl = 'http://' + process.env.TSURU_APPNAME + '.engine.bothub.io/flint';
 
 var app = express();
 app.use(bodyParser.json());
