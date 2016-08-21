@@ -1,31 +1,44 @@
 #bothub-template
 (work in progress...)
 
-### Files
+### Prerequisites
+* Account username and password for bothub.io account
+* Tsuru.io client installed
+
+### Template Files
 * .nvmrc - Node JS Version
-* Procfile - App Config
+* Procfile - Executable Config
 * app.js - Remote App Runner
-* config.js - PaaS Config
-* flint.js - Flint Logic
+* config.js - BotHub.io PaaS Config
+* flint.js - Flint Bot Application
 * package.json - npm dependencies
 * test.js - Local App Runner
 
 ### Create and Configure
 
-1. Create App on bothub.io PaaS
+1. Login
+    ```bash
+    tsuru target-add default controller01.bothub.io:8080 -s
+    tsuru login <username>
+    ```
+
+2. Create App
     ```bash
     tsuru app-create <name> nodejs
     ```
-2. Install required packages
+
+3. Install required packages
     ```bash
     npm install
     ```
-3. Install and any save additional packages
+
+4. Install and any save additional packages
     ```bash
     npm install lodash --save
     ```
-4. Edit/Create flint.js
-    ```javascript
+
+5. Edit/Create flint.js
+    ```js
     var _ = require('lodash');
 
     module.exports = function(flint) {
@@ -34,7 +47,8 @@
       });
     };
     ```
-5. Define Spark API Token
+
+6. Define Spark API Token
     ```bash
     tsuru env-set -a <name> TOKEN=<token>
     ```
@@ -45,7 +59,7 @@
     ```bash
     npm install
     ```
-2. Run Locally (using socket.bothub.io webhook forwarding)
+2. Run Locally (using BotHub.io remote webhook forwarding)
     ```bash
     node test.js
     ```
