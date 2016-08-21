@@ -21,7 +21,7 @@
 
 1. Login
     ```bash
-    tsuru target-add default controller01.bothub.io:8080 -s
+    tsuru target-add default engine.bothub.io:8080 -s
     tsuru login <username>
     ```
 
