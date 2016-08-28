@@ -22,5 +22,8 @@ server.on('connected', function(webhookUrl) {
       flint.debug('Flint has started');
     });
 
-  server.requestHandler(webhook(flint));
+  server.requestHandler(function(request, respond) {
+    webhook(flint)(request);
+    respond(200, 'OK');
+  });
 });

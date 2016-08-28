@@ -6,6 +6,6 @@ module.exports = {
   requeueCodes: [ 429, 500, 501, 502, 503 ],
   requeueMinTime: 500,
   removeWebhooksOnStart: true,
-  webhookSecret: process.env.TSURU_APP_TOKEN,
-  webhookUrl: 'http://' + process.env.TSURU_APPNAME + '.engine.bothub.io/flint'
+  webhookSecret: process.env.FLYNN_APP_ID,
+  webhookUrl: 'http://' + process.env.FLYNN_APP_NAME + '.engine.bothub.io/flint'
 };
