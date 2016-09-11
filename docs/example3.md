@@ -16,7 +16,7 @@ clients/bots simultaneously.
 var Flint = require('node-flint');
 var webhook = require('node-flint/webhook');
 var Socket2meClient = require('socket2me-client');
-var server = new Socket2meClient('http://socket.bothub.io');
+var server = new Socket2meClient('https://socket.bothub.io');
 
 // flint options
 var config = {
