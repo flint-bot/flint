@@ -3,7 +3,7 @@ var webhook = require('node-flint/webhook');
 var Socket2meClient = require('socket2me-client');
 var path = require('path');
 
-var server = new Socket2meClient('http://socket.bothub.io');
+var server = new Socket2meClient('https://socket.bothub.io');
 
 // flint options
 var config = require(path.join(__dirname, 'config.js'));
