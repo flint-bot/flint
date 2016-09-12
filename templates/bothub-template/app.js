@@ -1,3 +1,5 @@
+"use strict";
+
 var Flint = require('node-flint');
 var webhook = require('node-flint/webhook');
 var express = require('express');
