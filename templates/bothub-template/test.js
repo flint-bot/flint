@@ -7,6 +7,8 @@ var path = require('path');
 
 var server = new Socket2meClient('https://socket.bothub.io');
 
+// var RedisStore = require('node-flint/storage/redis');
+
 // flint options
 var config = require(path.join(__dirname, 'config.js'));
 
@@ -15,6 +17,10 @@ server.on('connected', function(webhookUrl) {
   config.webhookUrl = webhookUrl;
 
   var flint = new Flint(config);
+
+  // use redis storage
+  // flint.storageDriver(new RedisStore('redis://127.0.0.1'));
+
   //start flint, load plugin(s)
   flint.start()
     .then(() => {

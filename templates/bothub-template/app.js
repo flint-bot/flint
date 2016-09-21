@@ -8,11 +8,16 @@ var path = require('path');
 
 var config = require(path.join(__dirname, 'config.js'));
 
+// var RedisStore = require('node-flint/storage/redis');
+
 var app = express();
 app.use(bodyParser.json());
 
 // init flint
 var flint = new Flint(config);
+
+// use redis storage
+// flint.storageDriver(new RedisStore(process.env.REDIS_URL));
 
 //start flint, load plugin(s)
 flint.start()
