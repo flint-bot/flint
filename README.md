@@ -1,18 +1,61 @@
 # node-flint
 
+### Cisco Spark Bot SDK for Node JS
+
 [![NPM](https://nodei.co/npm/node-flint.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/node-flint/)
 
-Cisco Spark Bot SDK for Node JS (Version 4)
+**New Features in 4.2.x**
 
-***If you are coming from using node-flint version 3.x or earlier, note that the
-architecture, commands, and some variable names have changed. While this release
-is similar to previous versions, there are some major differences. Please read
-the API docs below before migrating your code to this release. If you are
-looking for the old release version, node-flint@3.0.7 is still available to be
-installed through NPM.***
+* Persistent Storage for `bot.store()`, `bot.recall()`, and `bot.forget()`
+  through new modular storage functionality.
+* Added in-memory storage module (default unless storage module is specified)
+* Added Redis storage module
+* Added boolean property flint.isUserAccount
+* Added method `flint.storageDriver()` to define storage backend
+* The `flint.hears()` method now can have a weight specified. This allows for
+  overlapping and default actions.
+* Auto detection of Bot accounts
+* If Bot account is detected, the behavior of the `trigger.args` property inside
+  the `flint.hears()` method performs additional parsing.
 
-Be sure to check out the [wiki](https://github.com/nmarus/flint/wiki) for troubleshooting and examples!
-## Example #1 Using Express
+**Potential Breaking Changes in 4.2.x**
+
+* `flint.machine` boolean property renamed to `flint.isBotAccount`
+
+## Contents
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+  - [Installation](#installation)
+      - [Via Git](#via-git)
+      - [Via NPM](#via-npm)
+      - [Example Template Using Express](#example-template-using-express)
+  - [Overview](#overview)
+  - [Authentication](#authentication)
+  - [Storage](#storage)
+  - [Bot Accounts](#bot-accounts)
+- [Flint Reference](#flint-reference)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+## Installation
+
+#### Via Git
+```bash
+mkdir myproj
+cd myproj
+git clone https://github.com/nmarus/flint
+npm install ./flint
+```
+
+#### Via NPM
+```bash
+mkdir myproj
+cd myproj
+npm install node-flint
+```
+#### Example Template Using Express
 ```js
 var Flint = require('node-flint');
 var webhook = require('node-flint/webhook');
@@ -54,67 +97,8 @@ process.on('SIGINT', function() {
   });
 });
 ```
-## Example #2 Using Restify
-```js
-var Flint = require('node-flint');
-var webhook = require('node-flint/webhook');
-var Restify = require('restify');
-var server = Restify.createServer();
-server.use(Restify.bodyParser());
 
-// flint options
-var config = {
-  webhookUrl: 'http://myserver.com/flint',
-  token: 'Tm90aGluZyB0byBzZWUgaGVyZS4uLiBNb3ZlIGFsb25nLi4u',
-  port: 80
-};
-
-// init flint
-var flint = new Flint(config);
-flint.start();
-
-// say hello
-flint.hears('/hello', function(bot, trigger) {
-  bot.say('Hello %s!', trigger.personDisplayName);
-});
-
-// define restify path for incoming webhooks
-server.post('/flint', webhook(flint));
-
-// start restify server
-server.listen(config.port, function () {
-  flint.debug('Flint listening on port %s', config.port);
-});
-
-// gracefully shutdown (ctrl-c)
-process.on('SIGINT', function() {
-  flint.debug('stoppping...');
-  server.close();
-  flint.stop().then(function() {
-    process.exit();
-  });
-});
-```
-## Features
-
-* Utilizes [node-sparky](https://github.com/nmarus/sparky). As such,
-  includes the following node-sparky features:
-  * Built in rate limiter and outbound queue that allows control over the number
-    of parallel API calls and the minimum time between each call.
-  * Transparently handles some (429, 500, 502) errors and re-queues the request.
-  * File processor for retrieving attachments from room
-  * Event emitters tied to request, response, error, retry, and queue drops.
-  * Returns promises that comply with A+ standards..
-  * Handles pagination transparently. (Receive unlimited records)
-  * **(new)** Support for Spark API Advanced Webhooks
-  * **(new)** Support Teams API
-  * **(new)** Support for markdown formatted messages
-  * **(new)** Support for [authenticated HMAC-SHA1 webhooks](https://developer.ciscospark.com/webhooks-explained.html#sensitive-data)
-* Flint can now be easily embedded into existing Express, Restify, or other
-  Connect based apps.
-* Flint can be used for building standalone bot "scripts", but also web applications
-  that interact with Spark API.
-
+[**Restify Example**](https://github.com/nmarus/flint/blob/master/docs/example2.md)
 ## Overview
 
 Most of Flint's functionality is based around the flint.hears function. This
@@ -159,85 +143,218 @@ of the chained 'then' functions.
 `phrase`.
 * `commands` : The commands that are ran when the `phrase` is heard.
 
-### Node JS Promises
-Flint version 4 makes use Node JS promises verses using callbacks as was the
-case in previous versions. It is not necessary to process the promise returned
-from the Flint command in most cases, but this can also be used for creating
-chains of logic that proceed based on the success of the previous command. It
-also allows a single error handler for the entire chain.
-
-All promises returned by Flint functions comply with
-[A+ standards](https://promisesaplus.com/).
-
-A simple example of using promises vs using callbacks. More complicated logic
-can lead to waht is termed [callback hell](callback hell) and heavy use of the
-async library without careful planning. Promises make this less  of a challenge.
-
-```js
-// callback version Flint 3.x
-flint.hears('/add', function(bot, trigger) {
-  var email = trigger.args[0];
-
-  bot.add(email, function(err, membership) {
-    if(err) {
-      console.log(err);
-    } else {
-      bot.say('Flint was not able to add %s to this room', email, function(err) {
-        if(err) {
-         console.log(err);
-        }
-      });
-    }
-  })
-});
-
-
-// Promise Example with arrow functions in version Flint 4.x
-flint.hears('/add', (bot, trigger) => {
-  var email = trigger.args[1];
-
-  bot.add(email)
-    .then(membership => membership.personEmail)
-    .then(email => {
-      return bot.say('Flint has added %s to this room %s', email, trigger.displayName);
-    })
-    .catch(function(err) {
-      console.log(err);
-    });
-});
-```
-
-#### Authentication
+## Authentication
 The token used to authenticate Flint to the Spark API is passed as part of the
 options used when instantiating the Flint class. To change or update the
 token, use the Flint#setSparkToken() method.
 
-###### Example:
+**Example:**
 
 ```js
 var newToken = 'Tm90aGluZyB0byBzZWUgaGVyZS4uLiBNb3ZlIGFsb25nLi4u';
 
 flint.setSparkToken(newToken)
-  .then(function(token) {
-    console.log('token updated to: ' + token);
-  };
-```
-## Installation
-
-##### Via Git
-```bash
-mkdir myproj
-cd myproj
-git clone https://github.com/nmarus/flint
-npm install ./flint
+.then(function(token) {
+  console.log('token updated to: ' + token);
+});
 ```
 
-##### Via NPM:
-```bash
-mkdir myproj
-cd myproj
-npm install node-flint
+## Storage
+The storage system used in flint is a simple key/value store and resolves around
+these 3 methods:
+
+* `bot.store(key, value)` - Store a value to a bot instance where 'key' is a
+  string and 'value' is a boolean, number, string, array, or object. *This does
+  not not support functions or any non serializable data.* Returns the value.
+* `bot.recall(key)` - Recall a value by 'key' from a bot instance. Returns the
+  value or undefined if not found.
+* `bot.forget([key])` - Forget (remove) value(s) from a bot instance where 'key'
+  is an optional property that when defined, removes the specific key, and when
+  undefined, removes all keys.
+
+When a bot despawns (removed from room), the key/value store for that bot
+instance will automatically be removed from the store. Flint currently has an
+in-memory store and a Redis based store. By default, the in-memory store is
+used. Other backend stores are possible by replicating any one of the built-in
+storage modules and passing it to the `flint.storeageDriver()` method.
+
+The following app is titled "Hotel California" and demonstrates how to use the
+Redis driver along with `bot.store()` and `bot.recall()`.
+
+**Hotel California:**
+
+```js
+var Flint = require('node-flint');
+var webhook = require('node-flint/webhook');
+var RedisStore = require('node-flint/storage/redis'); // load driver
+var express = require('express');
+var bodyParser = require('body-parser');
+var _ = require('lodash');
+
+var app = express();
+app.use(bodyParser.json());
+
+// flint options
+var config = {
+  webhookUrl: 'http://myserver.com/flint',
+  token: 'Tm90aGluZyB0byBzZWUgaGVyZS4uLiBNb3ZlIGFsb25nLi4u',
+  port: 80
+};
+
+// init flint
+var flint = new Flint(config);
+
+// use redis storage
+flint.storageDriver(new RedisStore('redis://127.0.0.1')); // select driver
+
+//start flint
+flint.start();
+
+// The Flint event is expecting a function that has a bot, person, and id parameter.
+function checkin(eventBot, person, id) {
+  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
+  var htc = eventBot.recall('htc');
+
+  // if room bot has htc.enabled...
+  if(eventBot && eventBot.active && htc.enabled) {
+    // wait 5 seconds, add person back, and let them know they can never leave!
+    setTimeout(() => {
+      var email = person.emails[0];
+      var name = person.displayName.split(' ')[0]; // reference first name
+
+      // add person back to room...
+      eventBot.add(email);
+
+      // let person know  where they ended up...
+      eventBot.say('<@personEmail:%s|%s>, you can **check out any time you like**, but you can **never** leave!', email, name);
+    }, 5000); // 5000 ms = 5 seconds
+  }
+}
+
+// check if htc is already active in room...
+flint.on('spawn', bot => {
+  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
+  var htc = bot.recall('htc');
+
+  // if enabled...
+  if(htc && htc.enabled) {
+    // resume event
+    bot.on('personExits', checkin);
+  }
+});
+
+// set default messages to use markdown globally for this flint instance...
+flint.messageFormat = 'markdown';
+
+// open the hotel
+flint.hears('open', function(bot, trigger) {
+  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
+  var htc = bot.recall('htc');
+
+  // if htc has not been initialized to bot memory...
+  if(!htc) {
+    // init key
+    htc = bot.store('htc', {});
+
+    // store default value
+    htc.enabled = false;
+  }
+
+  // if not enabled...
+  if(!htc.enabled) {
+    htc.enabled = true;
+
+    // create event
+    bot.on('personExits', checkin);
+
+    // announce Hotel California is open
+    bot.say('**Hotel California** mode activated!');
+  } else {
+    // announce Hotel California is already open
+    bot.say('**Hotel California** mode is already activated!');
+  }
+});
+
+// close the hotel
+flint.hears('close', function(bot, trigger) {
+  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
+  var htc = bot.recall('htc');
+
+  if(htc && htc.enabled) {
+    htc.enabled = false;
+
+    // remove event (removeListener is an inherited function from EventEmitter)
+    bot.removeListener('personExits', checkin);
+
+    // announce Hotel California is closed
+    bot.say('**Hotel California** mode deactivated!');
+  } else {
+    // announce Hotel California is already closed
+    bot.say('**Hotel California** mode is already deactivated!');
+  }
+
+});
+
+// default message for unrecognized commands
+flint.hears(/.*/, function(bot, trigger) {
+  bot.say('You see a shimmering light, but it is growing dim...');
+}, 20);
+
+// define express path for incoming webhooks
+app.post('/flint', webhook(flint));
+
+// start express server
+var server = app.listen(config.port, function () {
+  flint.debug('Flint listening on port %s', config.port);
+});
+
+// gracefully shutdown (ctrl-c)
+process.on('SIGINT', function() {
+  flint.debug('stoppping...');
+  server.close();
+  flint.stop().then(function() {
+    process.exit();
+  });
+});
 ```
+
+## Bot Accounts
+
+**When using "Bot Accounts" the major differences are:**
+
+* Webhooks for message:created only trigger when the Bot is mentioned by name
+* Unable to read messages in rooms using the Spark API
+
+**Differences with trigger.args using Flint with a "Bot Account":**
+
+The trigger.args array is a shortcut in processing the trigger.text string. It
+consists of an array of the words that are in the trigger.message string split
+by one or more spaces. Punctation is included if there is no space between the
+symbol and the word. With bot accounts, this behaves a bit differently.
+
+* If defining a `flint.hears()` using a string (not regex), `trigger.args` is a
+  filtered array of words from the message that begin with the first match of
+  the string.
+
+    * For example if the message.text is `'Yo yo yo Bot, find me tacos!'` (where
+      Bot is the mentioned name of the Bot Account) and the hears string is
+      defined as `'find'`, then:
+        * args[0] : `'find'`
+        * args[1] : `'me'`
+        * etc..
+
+    * If the message text is "Hey, Find me tacos, Bot!", then:
+        * args[0] : `'Find'`
+        * args[1] : `'me'`
+        * args[2] : `'tacos,'`
+        * args[3] : `'Bot!'`
+
+* If defining a flint.hears() using regex, the trigger.args array is the entire
+  message.
+
+# Flint Reference
+
+
 ## Classes
 
 <dl>
@@ -328,7 +445,8 @@ npm install node-flint
 | id | <code>string</code> | Flint UUID |
 | active | <code>boolean</code> | Flint active state |
 | intialized | <code>boolean</code> | Flint fully initialized |
-| machine | <code>boolean</code> | Is Flint attached to Spark using a machine account? |
+| isBotAccount | <code>boolean</code> | Is Flint attached to Spark using a bot account? |
+| isUserAccount | <code>boolean</code> | Is Flint attached to Spark using a user account? |
 | person | <code>object</code> | Flint person object |
 | email | <code>string</code> | Flint email |
 | spark | <code>object</code> | The Spark instance used by flint |
@@ -348,6 +466,7 @@ npm install node-flint
     * [.showHelp([header], [footer])](#Flint+showHelp) ⇒ <code>String</code>
     * [.setAuthorizer(Action)](#Flint+setAuthorizer) ⇒ <code>Boolean</code>
     * [.clearAuthorizer()](#Flint+clearAuthorizer) ⇒ <code>null</code>
+    * [.storageDriver(Driver)](#Flint+storageDriver) ⇒ <code>null</code>
     * [.use(path)](#Flint+use) ⇒ <code>Boolean</code>
 
 <a name="new_Flint_new"></a>
@@ -566,6 +685,27 @@ Removes authorizer function.
 ```js
 flint.clearAuthorizer();
 ```
+<a name="Flint+storageDriver"></a>
+
+### flint.storageDriver(Driver) ⇒ <code>null</code>
+Defines storage backend.
+
+**Kind**: instance method of <code>[Flint](#Flint)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Driver | <code>function</code> | The storage driver. |
+
+**Example**  
+```js
+// define redis store
+flint.storageDriver(new RedisStore('redis://user:password@redishost:6379'));
+```
+**Example**  
+```js
+// define memory store
+flint.storageDriver(new MemStore());
+```
 <a name="Flint+use"></a>
 
 ### flint.use(path) ⇒ <code>Boolean</code>
@@ -612,9 +752,10 @@ module.exports = function(flint) {
 | room | <code>object</code> | Bot room object |
 | membership | <code>object</code> | Bot membership object |
 | isLocked | <code>boolean</code> | If bot is locked |
-| isGroup | <code>boolean</code> | If bot is Group |
-| isDirect | <code>boolean</code> | If bot is 1:1/Direct |
-| isTeam | <code>boolean</code> | if bot is in Team |
+| isModerator | <code>boolean</code> | If bot is a moderator |
+| isGroup | <code>boolean</code> | If bot is in Group Room |
+| isDirect | <code>boolean</code> | If bot is in 1:1/Direct Room |
+| isTeam | <code>boolean</code> | If bot is in Team Room |
 | lastActivity | <code>date</code> | Last bot activity |
 
 
@@ -638,9 +779,9 @@ module.exports = function(flint) {
     * [.censor(messageId)](#Bot+censor) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
     * [.roomRename(title)](#Bot+roomRename) ⇒ <code>Promise.&lt;Room&gt;</code>
     * [.getMessages(count)](#Bot+getMessages) ⇒ <code>Promise.&lt;Array&gt;</code>
-    * [.store(key, value)](#Bot+store) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code>
-    * [.recall(key)](#Bot+recall) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code>
-    * [.forget([key])](#Bot+forget) ⇒ <code>Boolean</code>
+    * [.store(id, key, value)](#Bot+store) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code>
+    * [.recall(id, key)](#Bot+recall) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>undefined</code>
+    * [.forget(id, [key])](#Bot+forget) ⇒ <code>Boolean</code>
 
 <a name="new_Bot_new"></a>
 
@@ -861,7 +1002,7 @@ flint.hears('/hello', function(bot, trigger) {
 ```
 **Example**  
 ```js
-// Mardown Method 2 - Define message format as part of argument string
+// Markdown Method 2 - Define message format as part of argument string
 flint.hears('/hello', function(bot, trigger) {
   bot.say('markdown', '**hello**, How are you today?');
 });
@@ -910,7 +1051,7 @@ flint.hears('/dm', function(bot, trigger) {
 ```
 **Example**  
 ```js
-// Mardown Method 2 - Define message format as part of argument string
+// Markdown Method 2 - Define message format as part of argument string
 flint.hears('/dm', function(bot, trigger) {
   bot.dm('markdown', 'someone@domain.com', '**hello**, How are you today?');
 });
@@ -1017,49 +1158,40 @@ bot.getMessages(5).then(function(messages) {
 ```
 <a name="Bot+store"></a>
 
-### bot.store(key, value) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code>
-Store key/value data in this bot instance
+### bot.store(id, key, value) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code>
+Store key/value data.
 
 **Kind**: instance method of <code>[Bot](#Bot)</code>  
 
 | Param | Type |
 | --- | --- |
+| id | <code>String</code> | 
 | key | <code>String</code> | 
-| value | <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code> | 
+| value | <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> | 
 
-**Example**  
-```js
-var myAppSettings = bot.store('myAppSettings', {});
-myAppSettings.myParam = 'true';
-```
 <a name="Bot+recall"></a>
 
-### bot.recall(key) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>function</code>
-Recall value of data stored by 'key' in this bot instance
+### bot.recall(id, key) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>undefined</code>
+Recall value of data stored by 'key'.
 
 **Kind**: instance method of <code>[Bot](#Bot)</code>  
 
 | Param | Type |
 | --- | --- |
+| id | <code>String</code> | 
 | key | <code>String</code> | 
 
-**Example**  
-```js
-var myAppSettings = bot.recall('myAppSettings');
-if(myAppSettings && myAppSettings.myParam) {
-  // do stuff
-}
-```
 <a name="Bot+forget"></a>
 
-### bot.forget([key]) ⇒ <code>Boolean</code>
+### bot.forget(id, [key]) ⇒ <code>Boolean</code>
 Forget a key or entire store.
 
 **Kind**: instance method of <code>[Bot](#Bot)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [key] | <code>String</code> | Optional key value to forget. If key is not passed, bot forgets everything. |
+| id | <code>String</code> |  |
+| [key] | <code>String</code> | Optional key value to forget. If key is not passed, id is removed. |
 
 <a name="Message"></a>
 

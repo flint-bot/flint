@@ -1,4 +1,4 @@
-## Example #1 Using Express
+#### Example Template Using Express
 ```js
 var Flint = require('node-flint');
 var webhook = require('node-flint/webhook');
@@ -40,3 +40,5 @@ process.on('SIGINT', function() {
   });
 });
 ```
+
+[**Restify Example**](https://github.com/nmarus/flint/blob/master/docs/example2.md)

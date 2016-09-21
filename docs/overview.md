@@ -1,23 +1,3 @@
-## Features
-
-* Utilizes [node-sparky](https://github.com/nmarus/sparky). As such,
-  includes the following node-sparky features:
-  * Built in rate limiter and outbound queue that allows control over the number
-    of parallel API calls and the minimum time between each call.
-  * Transparently handles some (429, 500, 502) errors and re-queues the request.
-  * File processor for retrieving attachments from room
-  * Event emitters tied to request, response, error, retry, and queue drops.
-  * Returns promises that comply with A+ standards..
-  * Handles pagination transparently. (Receive unlimited records)
-  * **(new)** Support for Spark API Advanced Webhooks
-  * **(new)** Support Teams API
-  * **(new)** Support for markdown formatted messages
-  * **(new)** Support for [authenticated HMAC-SHA1 webhooks](https://developer.ciscospark.com/webhooks-explained.html#sensitive-data)
-* Flint can now be easily embedded into existing Express, Restify, or other
-  Connect based apps.
-* Flint can be used for building standalone bot "scripts", but also web applications
-  that interact with Spark API.
-
 ## Overview
 
 Most of Flint's functionality is based around the flint.hears function. This
@@ -62,66 +42,211 @@ of the chained 'then' functions.
 `phrase`.
 * `commands` : The commands that are ran when the `phrase` is heard.
 
-### Node JS Promises
-Flint version 4 makes use Node JS promises verses using callbacks as was the
-case in previous versions. It is not necessary to process the promise returned
-from the Flint command in most cases, but this can also be used for creating
-chains of logic that proceed based on the success of the previous command. It
-also allows a single error handler for the entire chain.
-
-All promises returned by Flint functions comply with
-[A+ standards](https://promisesaplus.com/).
-
-A simple example of using promises vs using callbacks. More complicated logic
-can lead to waht is termed [callback hell](callback hell) and heavy use of the
-async library without careful planning. Promises make this less  of a challenge.
-
-```js
-// callback version Flint 3.x
-flint.hears('/add', function(bot, trigger) {
-  var email = trigger.args[0];
-
-  bot.add(email, function(err, membership) {
-    if(err) {
-      console.log(err);
-    } else {
-      bot.say('Flint was not able to add %s to this room', email, function(err) {
-        if(err) {
-         console.log(err);
-        }
-      });
-    }
-  })
-});
-
-
-// Promise Example with arrow functions in version Flint 4.x
-flint.hears('/add', (bot, trigger) => {
-  var email = trigger.args[1];
-
-  bot.add(email)
-    .then(membership => membership.personEmail)
-    .then(email => {
-      return bot.say('Flint has added %s to this room %s', email, trigger.displayName);
-    })
-    .catch(function(err) {
-      console.log(err);
-    });
-});
-```
-
-#### Authentication
+## Authentication
 The token used to authenticate Flint to the Spark API is passed as part of the
 options used when instantiating the Flint class. To change or update the
 token, use the Flint#setSparkToken() method.
 
-###### Example:
+**Example:**
 
 ```js
 var newToken = 'Tm90aGluZyB0byBzZWUgaGVyZS4uLiBNb3ZlIGFsb25nLi4u';
 
 flint.setSparkToken(newToken)
-  .then(function(token) {
-    console.log('token updated to: ' + token);
-  };
+.then(function(token) {
+  console.log('token updated to: ' + token);
+});
 ```
+
+## Storage
+The storage system used in flint is a simple key/value store and resolves around
+these 3 methods:
+
+* `bot.store(key, value)` - Store a value to a bot instance where 'key' is a
+  string and 'value' is a boolean, number, string, array, or object. *This does
+  not not support functions or any non serializable data.* Returns the value.
+* `bot.recall(key)` - Recall a value by 'key' from a bot instance. Returns the
+  value or undefined if not found.
+* `bot.forget([key])` - Forget (remove) value(s) from a bot instance where 'key'
+  is an optional property that when defined, removes the specific key, and when
+  undefined, removes all keys.
+
+When a bot despawns (removed from room), the key/value store for that bot
+instance will automatically be removed from the store. Flint currently has an
+in-memory store and a Redis based store. By default, the in-memory store is
+used. Other backend stores are possible by replicating any one of the built-in
+storage modules and passing it to the `flint.storeageDriver()` method.
+
+The following app is titled "Hotel California" and demonstrates how to use the
+Redis driver along with `bot.store()` and `bot.recall()`.
+
+**Hotel California:**
+
+```js
+var Flint = require('node-flint');
+var webhook = require('node-flint/webhook');
+var RedisStore = require('node-flint/storage/redis'); // load driver
+var express = require('express');
+var bodyParser = require('body-parser');
+var _ = require('lodash');
+
+var app = express();
+app.use(bodyParser.json());
+
+// flint options
+var config = {
+  webhookUrl: 'http://myserver.com/flint',
+  token: 'Tm90aGluZyB0byBzZWUgaGVyZS4uLiBNb3ZlIGFsb25nLi4u',
+  port: 80
+};
+
+// init flint
+var flint = new Flint(config);
+
+// use redis storage
+flint.storageDriver(new RedisStore('redis://127.0.0.1')); // select driver
+
+//start flint
+flint.start();
+
+// The Flint event is expecting a function that has a bot, person, and id parameter.
+function checkin(eventBot, person, id) {
+  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
+  var htc = eventBot.recall('htc');
+
+  // if room bot has htc.enabled...
+  if(eventBot && eventBot.active && htc.enabled) {
+    // wait 5 seconds, add person back, and let them know they can never leave!
+    setTimeout(() => {
+      var email = person.emails[0];
+      var name = person.displayName.split(' ')[0]; // reference first name
+
+      // add person back to room...
+      eventBot.add(email);
+
+      // let person know  where they ended up...
+      eventBot.say('<@personEmail:%s|%s>, you can **check out any time you like**, but you can **never** leave!', email, name);
+    }, 5000); // 5000 ms = 5 seconds
+  }
+}
+
+// check if htc is already active in room...
+flint.on('spawn', bot => {
+  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
+  var htc = bot.recall('htc');
+
+  // if enabled...
+  if(htc && htc.enabled) {
+    // resume event
+    bot.on('personExits', checkin);
+  }
+});
+
+// set default messages to use markdown globally for this flint instance...
+flint.messageFormat = 'markdown';
+
+// open the hotel
+flint.hears('open', function(bot, trigger) {
+  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
+  var htc = bot.recall('htc');
+
+  // if htc has not been initialized to bot memory...
+  if(!htc) {
+    // init key
+    htc = bot.store('htc', {});
+
+    // store default value
+    htc.enabled = false;
+  }
+
+  // if not enabled...
+  if(!htc.enabled) {
+    htc.enabled = true;
+
+    // create event
+    bot.on('personExits', checkin);
+
+    // announce Hotel California is open
+    bot.say('**Hotel California** mode activated!');
+  } else {
+    // announce Hotel California is already open
+    bot.say('**Hotel California** mode is already activated!');
+  }
+});
+
+// close the hotel
+flint.hears('close', function(bot, trigger) {
+  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
+  var htc = bot.recall('htc');
+
+  if(htc && htc.enabled) {
+    htc.enabled = false;
+
+    // remove event (removeListener is an inherited function from EventEmitter)
+    bot.removeListener('personExits', checkin);
+
+    // announce Hotel California is closed
+    bot.say('**Hotel California** mode deactivated!');
+  } else {
+    // announce Hotel California is already closed
+    bot.say('**Hotel California** mode is already deactivated!');
+  }
+
+});
+
+// default message for unrecognized commands
+flint.hears(/.*/, function(bot, trigger) {
+  bot.say('You see a shimmering light, but it is growing dim...');
+}, 20);
+
+// define express path for incoming webhooks
+app.post('/flint', webhook(flint));
+
+// start express server
+var server = app.listen(config.port, function () {
+  flint.debug('Flint listening on port %s', config.port);
+});
+
+// gracefully shutdown (ctrl-c)
+process.on('SIGINT', function() {
+  flint.debug('stoppping...');
+  server.close();
+  flint.stop().then(function() {
+    process.exit();
+  });
+});
+```
+
+## Bot Accounts
+
+**When using "Bot Accounts" the major differences are:**
+
+* Webhooks for message:created only trigger when the Bot is mentioned by name
+* Unable to read messages in rooms using the Spark API
+
+**Differences with trigger.args using Flint with a "Bot Account":**
+
+The trigger.args array is a shortcut in processing the trigger.text string. It
+consists of an array of the words that are in the trigger.message string split
+by one or more spaces. Punctation is included if there is no space between the
+symbol and the word. With bot accounts, this behaves a bit differently.
+
+* If defining a `flint.hears()` using a string (not regex), `trigger.args` is a
+  filtered array of words from the message that begin with the first match of
+  the string.
+
+    * For example if the message.text is `'Yo yo yo Bot, find me tacos!'` (where
+      Bot is the mentioned name of the Bot Account) and the hears string is
+      defined as `'find'`, then:
+        * args[0] : `'find'`
+        * args[1] : `'me'`
+        * etc..
+
+    * If the message text is "Hey, Find me tacos, Bot!", then:
+        * args[0] : `'Find'`
+        * args[1] : `'me'`
+        * args[2] : `'tacos,'`
+        * args[3] : `'Bot!'`
+
+* If defining a flint.hears() using regex, the trigger.args array is the entire
+  message.

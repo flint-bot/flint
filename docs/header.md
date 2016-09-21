@@ -1,14 +1,28 @@
 # node-flint
 
+### Cisco Spark Bot SDK for Node JS
+
 [![NPM](https://nodei.co/npm/node-flint.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/node-flint/)
 
-Cisco Spark Bot SDK for Node JS (Version 4)
+**New Features in 4.2.x**
 
-***If you are coming from using node-flint version 3.x or earlier, note that the
-architecture, commands, and some variable names have changed. While this release
-is similar to previous versions, there are some major differences. Please read
-the API docs below before migrating your code to this release. If you are
-looking for the old release version, node-flint@3.0.7 is still available to be
-installed through NPM.***
+* Persistent Storage for `bot.store()`, `bot.recall()`, and `bot.forget()`
+  through new modular storage functionality.
+* Added in-memory storage module (default unless storage module is specified)
+* Added Redis storage module
+* Added boolean property flint.isUserAccount
+* Added method `flint.storageDriver()` to define storage backend
+* The `flint.hears()` method now can have a weight specified. This allows for
+  overlapping and default actions.
+* Auto detection of Bot accounts
+* If Bot account is detected, the behavior of the `trigger.args` property inside
+  the `flint.hears()` method performs additional parsing.
 
-Be sure to check out the [wiki](https://github.com/nmarus/flint/wiki) for troubleshooting and examples!
+**Potential Breaking Changes in 4.2.x**
+
+* `flint.machine` boolean property renamed to `flint.isBotAccount`
+
+## Contents
+
+<!-- START doctoc -->
+<!-- END doctoc -->
