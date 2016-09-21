@@ -28,15 +28,14 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-  - [Installation](#installation)
-      - [Via Git](#via-git)
-      - [Via NPM](#via-npm)
-      - [Example Template Using Express](#example-template-using-express)
-  - [Overview](#overview)
-  - [Authentication](#authentication)
-  - [Storage](#storage)
-  - [Bot Accounts](#bot-accounts)
-- [Flint Reference](#flint-reference)
+- [Installation](#installation)
+    - [Via Git](#via-git)
+    - [Via NPM](#via-npm)
+    - [Example Template Using Express](#example-template-using-express)
+- [Overview](#overview)
+- [Authentication](#authentication)
+- [Storage](#storage)
+- [Bot Accounts](#bot-accounts)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ## Installation

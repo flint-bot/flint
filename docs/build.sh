@@ -8,9 +8,10 @@ cat header.md > ${README}
 cat installation.md >> ${README}
 cat example1.md >> ${README}
 cat overview.md >> ${README}
-echo -e "\n# Flint Reference\n\n" >> ${README}
 
 ${DOCTOC} --github --notitle --maxlevel 4 ${README}
+
+echo -e "\n# Flint Reference\n\n" >> ${README}
 
 ${JSDOC} ../lib/flint.js ../lib/bot.js >> ${README}
 
