@@ -3,7 +3,7 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "node-flint": "^4.1.0",
+    "node-flint": "^4.2.0",
     "socket2me-client": "^1.2.0"
   },
   "engines": {
