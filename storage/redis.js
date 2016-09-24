@@ -6,7 +6,6 @@
 
 'use strict';
 
-// var moment = require('moment');
 var Redis = require('redis');
 var when = require('when');
 var _ = require('lodash');
