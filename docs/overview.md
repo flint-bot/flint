@@ -130,6 +130,9 @@ function checkin(eventBot, person, id) {
   }
 }
 
+// set default messages to use markdown globally for this flint instance...
+flint.messageFormat = 'markdown';
+
 // check if htc is already active in room...
 flint.on('spawn', bot => {
   // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
@@ -141,9 +144,6 @@ flint.on('spawn', bot => {
     bot.on('personExits', checkin);
   }
 });
-
-// set default messages to use markdown globally for this flint instance...
-flint.messageFormat = 'markdown';
 
 // open the hotel
 flint.hears('open', function(bot, trigger) {
