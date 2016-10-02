@@ -761,8 +761,8 @@ module.exports = function(flint) {
 * [Bot](#Bot)
     * [new Bot(flint)](#new_Bot_new)
     * [.exit()](#Bot+exit) ⇒ <code>Promise.&lt;Boolean&gt;</code>
-    * [.add(email(s), [moderator])](#Bot+add) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
-    * [.remove(email(s))](#Bot+remove) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
+    * [.add(email(s), [moderator])](#Bot+add) ⇒ <code>Promise.&lt;Array&gt;</code>
+    * [.remove(email(s))](#Bot+remove) ⇒ <code>Promise.&lt;Array&gt;</code>
     * [.getModerators()](#Bot+getModerators) ⇒ <code>Promise.&lt;Array&gt;</code>
     * [.newRoom(name, emails)](#Bot+newRoom) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
     * [.newTeamRoom(name, emails)](#Bot+newTeamRoom) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
@@ -804,10 +804,11 @@ bot.exit();
 ```
 <a name="Bot+add"></a>
 
-### bot.add(email(s), [moderator]) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
+### bot.add(email(s), [moderator]) ⇒ <code>Promise.&lt;Array&gt;</code>
 Instructs Bot to add person(s) to room.
 
 **Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Returns**: <code>Promise.&lt;Array&gt;</code> - Array of emails added  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -835,10 +836,11 @@ bot.add(['john@test.com', 'jane@test.com', 'bill@test.com']);
 ```
 <a name="Bot+remove"></a>
 
-### bot.remove(email(s)) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
+### bot.remove(email(s)) ⇒ <code>Promise.&lt;Array&gt;</code>
 Instructs Bot to remove person from room.
 
 **Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Returns**: <code>Promise.&lt;Array&gt;</code> - Array of emails removed  
 
 | Param | Type | Description |
 | --- | --- | --- |
