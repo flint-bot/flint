@@ -4,7 +4,9 @@
 
 [![NPM](https://nodei.co/npm/node-flint.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/node-flint/)
 
-**New Features in 4.2.x**
+## News
+
+**4.2.x Update**
 
 * Persistent Storage for `bot.store()`, `bot.recall()`, and `bot.forget()`
   through new modular storage functionality.
@@ -21,6 +23,12 @@
 **Potential Breaking Changes in 4.2.x**
 
 * `flint.machine` boolean property renamed to `flint.isBotAccount`
+
+**4.3.x Update**
+
+* `bot.add()` and `bot.remove()` now return an array of successfully
+added / removed room membership emails rather than the bot object itself.
+* Debug error messages for archived team rooms suppressed.
 
 ## Contents
 
