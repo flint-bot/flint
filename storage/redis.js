@@ -17,7 +17,7 @@ function Storage(connectionUrl, name) {
   var memStore = {};
   var memCache = {};
   var active = false;
-  var syncInterval = 5000;
+  var syncInterval = 1000;
 
   // load memStore state from redis
   function initRedis() {
