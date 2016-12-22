@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/nmarus/flint#readme",
   "author": "Nicholas Marus <nmarus@gmail.com>",
-  "license": "LGPL-3.0",
+  "license": "MIT",
   "dependencies": {
     "debug": "2.2.0",
     "lodash": "4.11.1",
