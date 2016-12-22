@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nmarus/flint.git"
+    "url": "git+https://github.com/flint-bot/flint.git"
   },
   "keywords": [
     "cisco",
@@ -16,9 +16,9 @@
     "bot"
   ],
   "bugs": {
-    "url": "https://github.com/nmarus/flint/issues"
+    "url": "https://github.com/flint-bot/flint/issues"
   },
-  "homepage": "https://github.com/nmarus/flint#readme",
+  "homepage": "https://github.com/flint-bot/flint#readme",
   "author": "Nicholas Marus <nmarus@gmail.com>",
   "license": "MIT",
   "dependencies": {
