@@ -30,6 +30,11 @@
 added / removed room membership emails rather than the bot object itself.
 * Debug error messages for archived team rooms suppressed.
 
+**4.4.x Update**
+
+* `bot.isDirectTo` property added. This is set to the email of the other conversant in rooms of type 'direct'.
+* `trigger.raw` property added to `flint.hears` trigger callback object. This is the raw message without any processing to remove multiple spaces, CR/LF, or leading/trailing spaces.
+
 ## Contents
 
 <!-- START doctoc -->

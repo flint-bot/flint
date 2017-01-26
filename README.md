@@ -30,6 +30,11 @@
 added / removed room membership emails rather than the bot object itself.
 * Debug error messages for archived team rooms suppressed.
 
+**4.4.x Update**
+
+* `bot.isDirectTo` property added. This is set to the email of the other conversant in rooms of type 'direct'.
+* `trigger.raw` property added to `flint.hears` trigger callback object. This is the raw message without any processing to remove multiple spaces, CR/LF, or leading/trailing spaces.
+
 ## Contents
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -762,6 +767,7 @@ module.exports = function(flint) {
 | isModerator | <code>boolean</code> | If bot is a moderator |
 | isGroup | <code>boolean</code> | If bot is in Group Room |
 | isDirect | <code>boolean</code> | If bot is in 1:1/Direct Room |
+| isDirectTo | <code>string</code> | Recipient Email if bot is in 1:1/Direct Room |
 | isTeam | <code>boolean</code> | If bot is in Team Room |
 | lastActivity | <code>date</code> | Last bot activity |
 
@@ -1259,6 +1265,7 @@ Trigger Object
 | id | <code>string</code> | Message ID |
 | phrase | <code>string</code> &#124; <code>regex</code> | Matched lexicon phrase |
 | text | <code>string</code> | Message Text (or false if no text) |
+| raw | <code>string</code> | Unprocessed Message Text (or false if no text) |
 | html | <code>string</code> | Message HTML (or false if no html) |
 | markdown | <code>string</code> | Message Markdown (or false if no markdown) |
 | mentionedPeople | <code>array</code> | Mentioned People (or false if no mentioned) |
