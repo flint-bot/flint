@@ -1068,7 +1068,7 @@ flint.hears('/dm', function(bot, trigger) {
 ```js
 // Markdown Method 2 - Define message format as part of argument string
 flint.hears('/dm', function(bot, trigger) {
-  bot.dm('markdown', 'someone@domain.com', '**hello**, How are you today?');
+  bot.dm('someone@domain.com', 'markdown', '**hello**, How are you today?');
 });
 ```
 **Example**  
