@@ -1,10 +1,31 @@
-# node-flint
+# node-flint (v4)
 
-### Cisco Spark Bot SDK for Node JS
-
-[![NPM](https://nodei.co/npm/node-flint.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/node-flint/)
+### Bot SDK for Node JS
 
 ## News
+
+**2/22/17 IMPORTANT:**
+
+* Note that Flint v4 is still using the node-sparky library version 3.1.19.
+  However the repo for node-sparky is now on version 4 which has some major
+  differences. This misalignment between Flint and Sparky version
+  will be fixed in the severalweeks with the release of Flint v5. In the short
+  term if you are accessing the spark object directly from Flint via
+  `flint.spark` be sure to use the documentation for [node-sparky 3.1.19](https://github.com/flint-bot/sparky/tree/bcfe307a6b90f8ad3d26837c2bc06e48eb6328f4#Spark+membershipsByRoom).  
+
+**4.4.x Update**
+
+* `bot.isDirectTo` property added. This is set to the email of the other
+  conversant in rooms of type 'direct'.
+* `trigger.raw` property added to `flint.hears` trigger callback object. This is
+  the raw message without any processing to remove multiple spaces, CR/LF, or
+  leading/trailing spaces.
+
+**4.3.x Update**
+
+* `bot.add()` and `bot.remove()` now return an array of successfully
+  added / removed room membership emails rather than the bot object itself.
+* Debug error messages for archived team rooms suppressed.
 
 **4.2.x Update**
 
@@ -23,17 +44,6 @@
 **Potential Breaking Changes in 4.2.x**
 
 * `flint.machine` boolean property renamed to `flint.isBotAccount`
-
-**4.3.x Update**
-
-* `bot.add()` and `bot.remove()` now return an array of successfully
-added / removed room membership emails rather than the bot object itself.
-* Debug error messages for archived team rooms suppressed.
-
-**4.4.x Update**
-
-* `bot.isDirectTo` property added. This is set to the email of the other conversant in rooms of type 'direct'.
-* `trigger.raw` property added to `flint.hears` trigger callback object. This is the raw message without any processing to remove multiple spaces, CR/LF, or leading/trailing spaces.
 
 ## Contents
 
