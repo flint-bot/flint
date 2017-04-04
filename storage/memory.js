@@ -3,11 +3,11 @@
 const when = require('when');
 const _ = require('lodash');
 
-function Storage() {
+module.exports = exports = function() {
+  // define memstore object
   let memStore = {};
 
   return {
-
     /**
      * Store key/value data.
      *
@@ -124,7 +124,6 @@ function Storage() {
         return when.reject(new Error('bot.forget() Storage module must include a "id" argument of type "string"'));
       }
     }
-
   };
-}
-module.exports = exports = Storage();
+
+};

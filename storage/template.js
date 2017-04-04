@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function() {
+module.exports = exports = function() {
 
   return {
     /**
