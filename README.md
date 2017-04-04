@@ -720,12 +720,7 @@ Defines storage backend.
 
 **Example**  
 ```js
-// define redis store
-flint.storageDriver(new RedisStore('redis://user:password@redishost:6379'));
-```
-**Example**  
-```js
-// define memory store
+// define memory store (default if not specified)
 flint.storageDriver(new MemStore());
 ```
 <a name="Flint+use"></a>
