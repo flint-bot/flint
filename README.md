@@ -200,8 +200,8 @@ in-memory store and a Redis based store. By default, the in-memory store is
 used. Other backend stores are possible by replicating any one of the built-in
 storage modules and passing it to the `flint.storeageDriver()` method.
 
-The following app is titled "Hotel California" and demonstrates how to use the
-Redis driver along with `bot.store()` and `bot.recall()`.
+The following app is titled "Hotel California" and demonstrates how to use
+`bot.store()` and `bot.recall()`.
 
 **Hotel California:**
 
@@ -225,9 +225,6 @@ var config = {
 
 // init flint
 var flint = new Flint(config);
-
-// use redis storage
-flint.storageDriver(new RedisStore('redis://127.0.0.1')); // select driver
 
 //start flint
 flint.start();
