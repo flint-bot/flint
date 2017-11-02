@@ -1,10 +1,10 @@
 {
   "name": "node-flint",
-  "version": "4.6.0",
-  "description": "Bot SDK for Node JS",
+  "version": "5.0.0",
+  "description": "Spark Bot SDK for Node JS",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -15,24 +15,34 @@
     "sdk",
     "spark"
   ],
+  "author": "Nicholas Marus <nmarus@gmail.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/flint-bot/flint/issues"
   },
   "homepage": "https://github.com/flint-bot/flint#readme",
-  "author": "Nicholas Marus <nmarus@gmail.com>",
-  "license": "MIT",
   "dependencies": {
-    "debug": "2.6.8",
-    "lodash": "4.17.4",
-    "mime-types": "2.1.15",
-    "moment": "2.18.1",
-    "node-sparky": "3.1.19",
-    "redis": "2.7.1",
-    "uuid": "3.1.0",
-    "when": "3.7.8"
+    "body-parser": "^1.18.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "lodash": "^4.17.4",
+    "moment": "^2.19.1",
+    "mongoose": "^4.12.4",
+    "node-sparky": "^4.1.8",
+    "sentiment": "^4.1.0",
+    "talisman": "^0.20.0",
+    "uuid": "^3.1.0",
+    "when": "^3.7.8"
   },
   "devDependencies": {
-    "doctoc": "^1.3.0",
-    "jsdoc-to-markdown": "^3.0.0"
+    "babel-eslint": "8.0.x",
+    "babel-preset-env": "1.6.x",
+    "eslint": "4.7.x",
+    "eslint-config-airbnb": "15.1.x",
+    "eslint-plugin-import": "2.7.x",
+    "eslint-plugin-jsx-a11y": "5.1.1",
+    "eslint-plugin-react": "7.3.x",
+    "jsdoc-to-markdown": "^3.0.0",
+    "mocha": "^3.2.0"
   }
 }

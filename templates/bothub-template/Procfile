@@ -1,1 +1,0 @@
-web: DEBUG=flint,bot node app.js

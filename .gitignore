@@ -16,9 +16,13 @@ Thumbs.db
 # Compiled C++ files
 *.out
 
-# Database file
-*.db
-
 # Application specific files
 venv
 node_modules
+
+### Code ###
+# Visual Studio Code - https://code.visualstudio.com/
+.settings/
+.vscode/
+tsconfig.json
+jsconfig.json
