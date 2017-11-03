@@ -5,6 +5,7 @@
   "author": "Nicholas Marus <nmarus@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "node-flint": "../",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "when": "^3.7.8"
