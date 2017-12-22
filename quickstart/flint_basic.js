@@ -1,5 +1,5 @@
-const Flint = require('node-flint');
-const MemStore = require('node-flint/plugins/mem-store');
+const Flint = require('../index');
+const MemStore = require('../plugins/mem-store');
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -11,24 +11,44 @@ const flint = new Flint({
 
 // string match example
 flint.hears('/hello', (bot, trigger) => {
+  // specify markdown formatted message
   bot.say().markdown(`**Hello** ${trigger.personDisplayName}!`);
 });
 
 // array match example
+// triggers on anything said to bot that has all words in array as part of message
 flint.hears(['hey', 'world'], (bot, trigger) => {
+  // simple use of bot.say that default to text.
   bot.say('Hello!');
 });
 
 // regexp example
 flint.hears(/^goodbye.*/, (bot, trigger) => {
-  bot.say().text('Hello!');
+  // specify text formatted message
+  bot.say().text('Goodbye!');
+});
+
+// get a botObject for a room by id
+flint.getBot({ roomId: 'aabbcceeddff1234567890' })
+  .then(bot => bot.say.markdown('**Hello** Room!'));
+
+flint.hears('add', (bot, trigger) => {
+  // removes all users by email address that are found after add
+  // exampme: @Bot add test@example.com test2@example.com
+  // slice is used to drop the first word in the message array which is bot name
+  // and is then rejoined to a string.
+  bot.memberships.add(trigger.asArray.slice(1).join(' '));
+});
+
+flint.hears('remove', (bot, trigger) => {
+  bot.memberships.remove(trigger.asArray.slice(1).join(' '));
 });
 
 // add events
 flint.on('messages-created', msg => console.log(`${msg.personEmail} said: ${msg.text}`));
 
-// load a plugin (example that loads default storage plugin, this is done
-// automatically and does not need to be specified)
+// load a plugin (example ONLY that loads default storage plugin, this is done
+// automatically and does not need to be specified in normal setup)
 flint.use('storage', MemStore);
 
 // start flint
