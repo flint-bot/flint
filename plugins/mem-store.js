@@ -1,32 +1,73 @@
+const when = require('when');
 const _ = require('lodash');
 
 class Storage {
 
-  constructor(flint) {
-    this.flint = flint;
+  constructor() {
     this.store = {};
   }
 
-  create(key, val) {
-    if (_.get(this.store, key)) {
-      return false;
+  // name, key, [val]
+  create(...args) {
+    const name = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
+    const key = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
+    const val = args.length > 0 && typeof args[0] !== 'undefined' ? args.shift() : false;
+
+    let valPath = '';
+    if (name && key) {
+      valPath += `${name}.${key}`;
+      if (val) {
+        _.set(this.store, valPath, val);
+      } else {
+        _.set(this.store, valPath, null);
+      }
+      return when(_.get(this.store, valPath));
     }
-    return _.set(this.store, key, val);
+    return when.reject(new Error('invalid args'));
   }
 
-  read(key, _default) {
-    return _.get(this.store, key, _default);
-  }
+  // name, [key]
+  read(...args) {
+    const name = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
+    const key = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
 
-  update(key, val) {
-    if (_.get(this.store, key)) {
-      return _.set(this.store, key, val);
+    let valPath = '';
+    if (name) {
+      valPath += name;
+      if (key) {
+        valPath += `.${key}`;
+      }
+
+      const val = _.get(this.store, valPath, false);
+
+      if (val) {
+        return when(val);
+      }
+      return when.reject(new Error('not found'));
     }
-    return false;
+    return when.reject(new Error('invalid args'));
   }
 
-  delete(key) {
-    return _.unset(this.store, key);
+  // name, [key]
+  delete(...args) {
+    const name = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
+    const key = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
+
+    let valPath = '';
+    if (name) {
+      valPath += name;
+      if (key) {
+        valPath += `.${key}`;
+      }
+    }
+    _.unset(this.store, valPath);
+    return when(true);
+  }
+
+  // called by flint when stopping, perform cleanup here
+  stop() {
+    this.store = {};
+    return when(true);
   }
 
 }
