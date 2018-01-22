@@ -12,36 +12,36 @@ const flint = new Flint({
 // string match example
 flint.hears('/hello', (bot, trigger) => {
   // specify markdown formatted message
-  bot.say().markdown(`**Hello** ${trigger.personDisplayName}!`);
+  bot.message.say().markdown(`**Hello** ${trigger.personDisplayName}!`);
 });
 
 // array match example
 // triggers on anything said to bot that has all words in array as part of message
 flint.hears(['hey', 'world'], (bot, trigger) => {
   // simple use of bot.say that default to text.
-  bot.say('Hello!');
+  bot.message.say('Hello!');
 });
 
 // regexp example
 flint.hears(/^goodbye.*/, (bot, trigger) => {
   // specify text formatted message
-  bot.say().text('Goodbye!');
+  bot.message.say().text('Goodbye!');
 });
 
 // get a botObject for a room by id
 flint.getBot({ roomId: 'aabbcceeddff1234567890' })
-  .then(bot => bot.say.markdown('**Hello** Room!'));
+  .then(bot => bot.message.say().markdown('**Hello** Room!'));
 
 flint.hears('add', (bot, trigger) => {
-  // removes all users by email address that are found after add
-  // exampme: @Bot add test@example.com test2@example.com
+  // adds all users by email address that are found after add
+  // example: @Bot add test@example.com test2@example.com
   // slice is used to drop the first word in the message array which is bot name
   // and is then rejoined to a string.
-  bot.memberships.add(trigger.asArray.slice(1).join(' '));
+  bot.membership.add(trigger.asArray.slice(1).join(' '));
 });
 
 flint.hears('remove', (bot, trigger) => {
-  bot.memberships.remove(trigger.asArray.slice(1).join(' '));
+  bot.membership.remove(trigger.asArray.slice(1).join(' '));
 });
 
 // add events

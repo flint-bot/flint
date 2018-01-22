@@ -7,6 +7,18 @@ class Storage {
     this.store = {};
   }
 
+  // called by flint when starting...
+  start() {
+    // TODO
+    return when(true);
+  }
+
+  // called by flint when stopping...
+  stop() {
+    // TODO
+    return when(true);
+  }
+
   // name, key, [val]
   create(...args) {
     const name = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
@@ -61,12 +73,6 @@ class Storage {
       }
     }
     _.unset(this.store, valPath);
-    return when(true);
-  }
-
-  // called by flint when stopping, perform cleanup here
-  stop() {
-    this.store = {};
     return when(true);
   }
 
