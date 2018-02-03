@@ -64,155 +64,21 @@ these 3 methods:
 
 * `bot.store(key, value)` - Store a value to a bot instance where 'key' is a
   string and 'value' is a boolean, number, string, array, or object. *This does
-  not not support functions or any non serializable data.* Returns the value.
-* `bot.recall(key)` - Recall a value by 'key' from a bot instance. Returns the
-  value or undefined if not found.
+  not not support functions or any non serializable data.* Returns the a promise
+  with the value.
+* `bot.recall(key)` - Recall a value by 'key' from a bot instance. Returns a
+  resolved promise with the value or a rejected promise if not found.
 * `bot.forget([key])` - Forget (remove) value(s) from a bot instance where 'key'
   is an optional property that when defined, removes the specific key, and when
-  undefined, removes all keys.
+  undefined, removes all keys. Returns a resolved promise if deleted or a
+  rejected promise if not found.
 
 When a bot despawns (removed from room), the key/value store for that bot
 instance will automatically be removed from the store. Flint currently has an
 in-memory store and a Redis based store. By default, the in-memory store is
 used. Other backend stores are possible by replicating any one of the built-in
-storage modules and passing it to the `flint.storeageDriver()` method.
-
-The following app is titled "Hotel California" and demonstrates how to use
-`bot.store()` and `bot.recall()`.
-
-**Hotel California:**
-
-```js
-var Flint = require('node-flint');
-var webhook = require('node-flint/webhook');
-var RedisStore = require('node-flint/storage/redis'); // load driver
-var express = require('express');
-var bodyParser = require('body-parser');
-var _ = require('lodash');
-
-var app = express();
-app.use(bodyParser.json());
-
-// flint options
-var config = {
-  webhookUrl: 'http://myserver.com/flint',
-  token: 'Tm90aGluZyB0byBzZWUgaGVyZS4uLiBNb3ZlIGFsb25nLi4u',
-  port: 80
-};
-
-// init flint
-var flint = new Flint(config);
-
-//start flint
-flint.start();
-
-// The Flint event is expecting a function that has a bot, person, and id parameter.
-function checkin(eventBot, person, id) {
-  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
-  var htc = eventBot.recall('htc');
-
-  // if room bot has htc.enabled...
-  if(eventBot && eventBot.active && htc.enabled) {
-    // wait 5 seconds, add person back, and let them know they can never leave!
-    setTimeout(() => {
-      var email = person.emails[0];
-      var name = person.displayName.split(' ')[0]; // reference first name
-
-      // add person back to room...
-      eventBot.add(email);
-
-      // let person know  where they ended up...
-      eventBot.say('<@personEmail:%s|%s>, you can **check out any time you like**, but you can **never** leave!', email, name);
-    }, 5000); // 5000 ms = 5 seconds
-  }
-}
-
-// set default messages to use markdown globally for this flint instance...
-flint.messageFormat = 'markdown';
-
-// check if htc is already active in room...
-flint.on('spawn', bot => {
-  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
-  var htc = bot.recall('htc');
-
-  // if enabled...
-  if(htc && htc.enabled) {
-    // resume event
-    bot.on('personExits', checkin);
-  }
-});
-
-// open the hotel
-flint.hears('open', function(bot, trigger) {
-  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
-  var htc = bot.recall('htc');
-
-  // if htc has not been initialized to bot memory...
-  if(!htc) {
-    // init key
-    htc = bot.store('htc', {});
-
-    // store default value
-    htc.enabled = false;
-  }
-
-  // if not enabled...
-  if(!htc.enabled) {
-    htc.enabled = true;
-
-    // create event
-    bot.on('personExits', checkin);
-
-    // announce Hotel California is open
-    bot.say('**Hotel California** mode activated!');
-  } else {
-    // announce Hotel California is already open
-    bot.say('**Hotel California** mode is already activated!');
-  }
-});
-
-// close the hotel
-flint.hears('close', function(bot, trigger) {
-  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
-  var htc = bot.recall('htc');
-
-  if(htc && htc.enabled) {
-    htc.enabled = false;
-
-    // remove event (removeListener is an inherited function from EventEmitter)
-    bot.removeListener('personExits', checkin);
-
-    // announce Hotel California is closed
-    bot.say('**Hotel California** mode deactivated!');
-  } else {
-    // announce Hotel California is already closed
-    bot.say('**Hotel California** mode is already deactivated!');
-  }
-
-});
-
-// default message for unrecognized commands
-flint.hears(/.*/, function(bot, trigger) {
-  bot.say('You see a shimmering light, but it is growing dim...');
-}, 20);
-
-// define express path for incoming webhooks
-app.post('/flint', webhook(flint));
-
-// start express server
-var server = app.listen(config.port, function () {
-  flint.debug('Flint listening on port %s', config.port);
-});
-
-// gracefully shutdown (ctrl-c)
-process.on('SIGINT', function() {
-  flint.debug('stoppping...');
-  server.close();
-  flint.stop().then(function() {
-    process.exit();
-  });
-});
-```
+storage modules and passing it to the `flint.storeageDriver()` method. *See
+docs for store, recall, forget for more details.*
 
 ## Bot Accounts
 
@@ -229,21 +95,8 @@ by one or more spaces. Punctation is included if there is no space between the
 symbol and the word. With bot accounts, this behaves a bit differently.
 
 * If defining a `flint.hears()` using a string (not regex), `trigger.args` is a
-  filtered array of words from the message that begin with the first match of
-  the string.
-
-    * For example if the message.text is `'Yo yo yo Bot, find me tacos!'` (where
-      Bot is the mentioned name of the Bot Account) and the hears string is
-      defined as `'find'`, then:
-        * args[0] : `'find'`
-        * args[1] : `'me'`
-        * etc..
-
-    * If the message text is "Hey, Find me tacos, Bot!", then:
-        * args[0] : `'Find'`
-        * args[1] : `'me'`
-        * args[2] : `'tacos,'`
-        * args[3] : `'Bot!'`
+  filtered array of words from the message that begins *after* the first match of
+  bot mention.
 
 * If defining a flint.hears() using regex, the trigger.args array is the entire
   message.

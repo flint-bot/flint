@@ -9,41 +9,11 @@
 * Note that Flint v4 is still using the node-sparky library version 3.1.19.
   However the repo for node-sparky is now on version 4 which has some major
   differences. This misalignment between Flint and Sparky version
-  will be fixed in the next several weeks with the release of Flint v5. In the short
-  term if you are accessing the spark object directly from Flint via
-  `flint.spark` be sure to use the documentation for [node-sparky 3.1.19](https://github.com/flint-bot/sparky/tree/bcfe307a6b90f8ad3d26837c2bc06e48eb6328f4).  
+  will be fixed in the next several months with the release of Flint v5. In the
+  short term if you are accessing the spark object directly from Flint via
+  `flint.spark` be sure to use the documentation for [node-sparky 3.1.19](https://github.com/flint-bot/sparky/tree/bcfe307a6b90f8ad3d26837c2bc06e48eb6328f4).   
 
-**4.4.x Update**
-
-* `bot.isDirectTo` property added. This is set to the email of the other
-  conversant in rooms of type 'direct'.
-* `trigger.raw` property added to `flint.hears` trigger callback object. This is
-  the raw message without any processing to remove multiple spaces, CR/LF, or
-  leading/trailing spaces.
-
-**4.3.x Update**
-
-* `bot.add()` and `bot.remove()` now return an array of successfully
-  added / removed room membership emails rather than the bot object itself.
-* Debug error messages for archived team rooms suppressed.
-
-**4.2.x Update**
-
-* Persistent Storage for `bot.store()`, `bot.recall()`, and `bot.forget()`
-  through new modular storage functionality.
-* Added in-memory storage module (default unless storage module is specified)
-* Added Redis storage module
-* Added boolean property flint.isUserAccount
-* Added method `flint.storageDriver()` to define storage backend
-* The `flint.hears()` method now can have a weight specified. This allows for
-  overlapping and default actions.
-* Auto detection of Bot accounts
-* If Bot account is detected, the behavior of the `trigger.args` property inside
-  the `flint.hears()` method performs additional parsing.
-
-**Potential Breaking Changes in 4.2.x**
-
-* `flint.machine` boolean property renamed to `flint.isBotAccount`
+**See [CHANGELOG.md](/CHANGELOG.md) for details on changes to versions of Flint.**
 
 ## Contents
 
@@ -187,155 +157,21 @@ these 3 methods:
 
 * `bot.store(key, value)` - Store a value to a bot instance where 'key' is a
   string and 'value' is a boolean, number, string, array, or object. *This does
-  not not support functions or any non serializable data.* Returns the value.
-* `bot.recall(key)` - Recall a value by 'key' from a bot instance. Returns the
-  value or undefined if not found.
+  not not support functions or any non serializable data.* Returns the a promise
+  with the value.
+* `bot.recall(key)` - Recall a value by 'key' from a bot instance. Returns a
+  resolved promise with the value or a rejected promise if not found.
 * `bot.forget([key])` - Forget (remove) value(s) from a bot instance where 'key'
   is an optional property that when defined, removes the specific key, and when
-  undefined, removes all keys.
+  undefined, removes all keys. Returns a resolved promise if deleted or a
+  rejected promise if not found.
 
 When a bot despawns (removed from room), the key/value store for that bot
 instance will automatically be removed from the store. Flint currently has an
 in-memory store and a Redis based store. By default, the in-memory store is
 used. Other backend stores are possible by replicating any one of the built-in
-storage modules and passing it to the `flint.storeageDriver()` method.
-
-The following app is titled "Hotel California" and demonstrates how to use
-`bot.store()` and `bot.recall()`.
-
-**Hotel California:**
-
-```js
-var Flint = require('node-flint');
-var webhook = require('node-flint/webhook');
-var RedisStore = require('node-flint/storage/redis'); // load driver
-var express = require('express');
-var bodyParser = require('body-parser');
-var _ = require('lodash');
-
-var app = express();
-app.use(bodyParser.json());
-
-// flint options
-var config = {
-  webhookUrl: 'http://myserver.com/flint',
-  token: 'Tm90aGluZyB0byBzZWUgaGVyZS4uLiBNb3ZlIGFsb25nLi4u',
-  port: 80
-};
-
-// init flint
-var flint = new Flint(config);
-
-//start flint
-flint.start();
-
-// The Flint event is expecting a function that has a bot, person, and id parameter.
-function checkin(eventBot, person, id) {
-  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
-  var htc = eventBot.recall('htc');
-
-  // if room bot has htc.enabled...
-  if(eventBot && eventBot.active && htc.enabled) {
-    // wait 5 seconds, add person back, and let them know they can never leave!
-    setTimeout(() => {
-      var email = person.emails[0];
-      var name = person.displayName.split(' ')[0]; // reference first name
-
-      // add person back to room...
-      eventBot.add(email);
-
-      // let person know  where they ended up...
-      eventBot.say('<@personEmail:%s|%s>, you can **check out any time you like**, but you can **never** leave!', email, name);
-    }, 5000); // 5000 ms = 5 seconds
-  }
-}
-
-// set default messages to use markdown globally for this flint instance...
-flint.messageFormat = 'markdown';
-
-// check if htc is already active in room...
-flint.on('spawn', bot => {
-  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
-  var htc = bot.recall('htc');
-
-  // if enabled...
-  if(htc && htc.enabled) {
-    // resume event
-    bot.on('personExits', checkin);
-  }
-});
-
-// open the hotel
-flint.hears('open', function(bot, trigger) {
-  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
-  var htc = bot.recall('htc');
-
-  // if htc has not been initialized to bot memory...
-  if(!htc) {
-    // init key
-    htc = bot.store('htc', {});
-
-    // store default value
-    htc.enabled = false;
-  }
-
-  // if not enabled...
-  if(!htc.enabled) {
-    htc.enabled = true;
-
-    // create event
-    bot.on('personExits', checkin);
-
-    // announce Hotel California is open
-    bot.say('**Hotel California** mode activated!');
-  } else {
-    // announce Hotel California is already open
-    bot.say('**Hotel California** mode is already activated!');
-  }
-});
-
-// close the hotel
-flint.hears('close', function(bot, trigger) {
-  // retrieve value of key 'htc'. When this is ran initially, this will return 'undefined'.
-  var htc = bot.recall('htc');
-
-  if(htc && htc.enabled) {
-    htc.enabled = false;
-
-    // remove event (removeListener is an inherited function from EventEmitter)
-    bot.removeListener('personExits', checkin);
-
-    // announce Hotel California is closed
-    bot.say('**Hotel California** mode deactivated!');
-  } else {
-    // announce Hotel California is already closed
-    bot.say('**Hotel California** mode is already deactivated!');
-  }
-
-});
-
-// default message for unrecognized commands
-flint.hears(/.*/, function(bot, trigger) {
-  bot.say('You see a shimmering light, but it is growing dim...');
-}, 20);
-
-// define express path for incoming webhooks
-app.post('/flint', webhook(flint));
-
-// start express server
-var server = app.listen(config.port, function () {
-  flint.debug('Flint listening on port %s', config.port);
-});
-
-// gracefully shutdown (ctrl-c)
-process.on('SIGINT', function() {
-  flint.debug('stoppping...');
-  server.close();
-  flint.stop().then(function() {
-    process.exit();
-  });
-});
-```
+storage modules and passing it to the `flint.storeageDriver()` method. *See
+docs for store, recall, forget for more details.*
 
 ## Bot Accounts
 
@@ -352,21 +188,8 @@ by one or more spaces. Punctation is included if there is no space between the
 symbol and the word. With bot accounts, this behaves a bit differently.
 
 * If defining a `flint.hears()` using a string (not regex), `trigger.args` is a
-  filtered array of words from the message that begin with the first match of
-  the string.
-
-    * For example if the message.text is `'Yo yo yo Bot, find me tacos!'` (where
-      Bot is the mentioned name of the Bot Account) and the hears string is
-      defined as `'find'`, then:
-        * args[0] : `'find'`
-        * args[1] : `'me'`
-        * etc..
-
-    * If the message text is "Hey, Find me tacos, Bot!", then:
-        * args[0] : `'Find'`
-        * args[1] : `'me'`
-        * args[2] : `'tacos,'`
-        * args[3] : `'Bot!'`
+  filtered array of words from the message that begins *after* the first match of
+  bot mention.
 
 * If defining a flint.hears() using regex, the trigger.args array is the entire
   message.
@@ -478,7 +301,7 @@ symbol and the word. With bot accounts, this behaves a bit differently.
     * [.stop()](#Flint+stop) ⇒ <code>Promise.&lt;Boolean&gt;</code>
     * [.start()](#Flint+start) ⇒ <code>Promise.&lt;Boolean&gt;</code>
     * [.restart()](#Flint+restart) ⇒ <code>Promise.&lt;Boolean&gt;</code>
-    * [.getMessage(messageId)](#Flint+getMessage) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+    * [.getMessage(messageId)](#Flint+getMessage) ⇒ [<code>Promise.&lt;Message&gt;</code>](#Message)
     * [.getFiles(messageId)](#Flint+getFiles) ⇒ <code>Promise.&lt;Array&gt;</code>
     * [.hears(phrase, action, [helpText], [preference])](#Flint+hears) ⇒ <code>String</code>
     * [.clearHears(id)](#Flint+clearHears) ⇒ <code>null</code>
@@ -511,34 +334,34 @@ var flint = new Flint(options);
 ### flint.options : <code>object</code>
 Options Object
 
-**Kind**: instance namespace of <code>[Flint](#Flint)</code>  
+**Kind**: instance namespace of [<code>Flint</code>](#Flint)  
 **Properties**
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | token | <code>string</code> |  | Spark Token. |
 | webhookUrl | <code>string</code> |  | URL that is used for SPark API to send callbacks. |
-| webhookSecret | <code>string</code> |  | If specified, inbound webhooks are authorized before being processed. |
-| messageFormat | <code>string</code> | <code>&quot;text&quot;</code> | Default Spark message format to use with bot.say(). |
-| maxPageItems | <code>number</code> | <code>50</code> | Max results that the paginator uses. |
-| maxConcurrent | <code>number</code> | <code>3</code> | Max concurrent sessions to the Spark API |
-| minTime | <code>number</code> | <code>600</code> | Min time between consecutive request starts. |
-| requeueMinTime | <code>number</code> | <code>minTime*10</code> | Min time between consecutive request starts of requests that have been re-queued. |
-| requeueMaxRetry | <code>number</code> | <code>3</code> | Msx number of atteempts to make for failed request. |
-| requeueCodes | <code>array</code> | <code>[429,500,503]</code> | Array of http result codes that should be retried. |
-| requestTimeout | <code>number</code> | <code>20000</code> | Timeout for an individual request recieving a response. |
-| queueSize | <code>number</code> | <code>10000</code> | Size of the buffer that holds outbound requests. |
-| requeueSize | <code>number</code> | <code>10000</code> | Size of the buffer that holds outbound re-queue requests. |
-| id | <code>string</code> | <code>&quot;random&quot;</code> | The id this instance of flint uses. |
-| webhookRequestJSONLocation | <code>string</code> | <code>&quot;body&quot;</code> | The property under the Request to find the JSON contents. |
-| removeWebhooksOnStart | <code>Boolean</code> | <code>true</code> | If you wish to have the bot remove all account webhooks when starting. |
+| [webhookSecret] | <code>string</code> |  | If specified, inbound webhooks are authorized before being processed. |
+| [messageFormat] | <code>string</code> | <code>&quot;text&quot;</code> | Default Spark message format to use with bot.say(). |
+| [maxPageItems] | <code>number</code> | <code>50</code> | Max results that the paginator uses. |
+| [maxConcurrent] | <code>number</code> | <code>3</code> | Max concurrent sessions to the Spark API |
+| [minTime] | <code>number</code> | <code>600</code> | Min time between consecutive request starts. |
+| [requeueMinTime] | <code>number</code> | <code>minTime*10</code> | Min time between consecutive request starts of requests that have been re-queued. |
+| [requeueMaxRetry] | <code>number</code> | <code>3</code> | Msx number of atteempts to make for failed request. |
+| [requeueCodes] | <code>array</code> | <code>[429,500,503]</code> | Array of http result codes that should be retried. |
+| [requestTimeout] | <code>number</code> | <code>20000</code> | Timeout for an individual request recieving a response. |
+| [queueSize] | <code>number</code> | <code>10000</code> | Size of the buffer that holds outbound requests. |
+| [requeueSize] | <code>number</code> | <code>10000</code> | Size of the buffer that holds outbound re-queue requests. |
+| [id] | <code>string</code> | <code>&quot;random&quot;</code> | The id this instance of flint uses. |
+| [webhookRequestJSONLocation] | <code>string</code> | <code>&quot;body&quot;</code> | The property under the Request to find the JSON contents. |
+| [removeWebhooksOnStart] | <code>Boolean</code> | <code>true</code> | If you wish to have the bot remove all account webhooks when starting. |
 
 <a name="Flint+setSparkToken"></a>
 
 ### flint.setSparkToken(token) ⇒ <code>Promise.&lt;String&gt;</code>
 Tests, and then sets a new Spark Token.
 
-**Kind**: instance method of <code>[Flint](#Flint)</code>  
+**Kind**: instance method of [<code>Flint</code>](#Flint)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -556,7 +379,7 @@ flint.setSparkToken('Tm90aGluZyB0byBzZWUgaGVyZS4uLiBNb3ZlIGFsb25nLi4u')
 ### flint.stop() ⇒ <code>Promise.&lt;Boolean&gt;</code>
 Stop Flint.
 
-**Kind**: instance method of <code>[Flint](#Flint)</code>  
+**Kind**: instance method of [<code>Flint</code>](#Flint)  
 **Example**  
 ```js
 flint.stop();
@@ -566,7 +389,7 @@ flint.stop();
 ### flint.start() ⇒ <code>Promise.&lt;Boolean&gt;</code>
 Start Flint.
 
-**Kind**: instance method of <code>[Flint](#Flint)</code>  
+**Kind**: instance method of [<code>Flint</code>](#Flint)  
 **Example**  
 ```js
 flint.start();
@@ -576,17 +399,17 @@ flint.start();
 ### flint.restart() ⇒ <code>Promise.&lt;Boolean&gt;</code>
 Restart Flint.
 
-**Kind**: instance method of <code>[Flint](#Flint)</code>  
+**Kind**: instance method of [<code>Flint</code>](#Flint)  
 **Example**  
 ```js
 flint.restart();
 ```
 <a name="Flint+getMessage"></a>
 
-### flint.getMessage(messageId) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+### flint.getMessage(messageId) ⇒ [<code>Promise.&lt;Message&gt;</code>](#Message)
 Get Message Object by ID
 
-**Kind**: instance method of <code>[Flint](#Flint)</code>  
+**Kind**: instance method of [<code>Flint</code>](#Flint)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -597,7 +420,7 @@ Get Message Object by ID
 ### flint.getFiles(messageId) ⇒ <code>Promise.&lt;Array&gt;</code>
 Get Files from Message Object by ID
 
-**Kind**: instance method of <code>[Flint](#Flint)</code>  
+**Kind**: instance method of [<code>Flint</code>](#Flint)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -608,11 +431,11 @@ Get Files from Message Object by ID
 ### flint.hears(phrase, action, [helpText], [preference]) ⇒ <code>String</code>
 Add action to be performed when bot hears a phrase.
 
-**Kind**: instance method of <code>[Flint](#Flint)</code>  
+**Kind**: instance method of [<code>Flint</code>](#Flint)  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| phrase | <code>Regex</code> &#124; <code>String</code> |  | The phrase as either a regex or string. If regex, matches on entire message.If string, matches on first word. |
+| phrase | <code>Regex</code> \| <code>String</code> |  | The phrase as either a regex or string. If regex, matches on entire message.If string, matches on first word. |
 | action | <code>function</code> |  | The function to execute when phrase is matched. Function is executed with 2 variables. Trigger and Bot. The Trigger Object contains information about the person who entered a message that matched the phrase. The Bot Object is an instance of the Bot Class as it relates to the room the message was heard. |
 | [helpText] | <code>String</code> |  | The string of text that describes how this command operates. |
 | [preference] | <code>Number</code> | <code>0</code> | Specifies preference of phrase action when overlapping phrases are matched. On multiple matches with same preference, all matched actions are excuted. On multiple matches with difference preference values, only the lower preferenced matched action(s) are executed. |
@@ -636,7 +459,7 @@ flint.hears(/(^| )beer( |.|$)/i, function(bot, trigger, id) {
 ### flint.clearHears(id) ⇒ <code>null</code>
 Remove a "flint.hears()" entry.
 
-**Kind**: instance method of <code>[Flint](#Flint)</code>  
+**Kind**: instance method of [<code>Flint</code>](#Flint)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -655,7 +478,7 @@ flint.clearHears(hearsHello);
 ### flint.showHelp([header], [footer]) ⇒ <code>String</code>
 Display help for registered Flint Commands.
 
-**Kind**: instance method of <code>[Flint](#Flint)</code>  
+**Kind**: instance method of [<code>Flint</code>](#Flint)  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -673,7 +496,7 @@ flint.hears('/help', function(bot, trigger, id) {
 ### flint.setAuthorizer(Action) ⇒ <code>Boolean</code>
 Attaches authorizer function.
 
-**Kind**: instance method of <code>[Flint](#Flint)</code>  
+**Kind**: instance method of [<code>Flint</code>](#Flint)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -699,7 +522,7 @@ flint.setAuthorizer(myAuthorizer);
 ### flint.clearAuthorizer() ⇒ <code>null</code>
 Removes authorizer function.
 
-**Kind**: instance method of <code>[Flint](#Flint)</code>  
+**Kind**: instance method of [<code>Flint</code>](#Flint)  
 **Example**  
 ```js
 flint.clearAuthorizer();
@@ -709,7 +532,7 @@ flint.clearAuthorizer();
 ### flint.storageDriver(Driver) ⇒ <code>null</code>
 Defines storage backend.
 
-**Kind**: instance method of <code>[Flint](#Flint)</code>  
+**Kind**: instance method of [<code>Flint</code>](#Flint)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -725,7 +548,7 @@ flint.storageDriver(new MemStore());
 ### flint.use(path) ⇒ <code>Boolean</code>
 Load a Plugin from a external file.
 
-**Kind**: instance method of <code>[Flint](#Flint)</code>  
+**Kind**: instance method of [<code>Flint</code>](#Flint)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -780,23 +603,23 @@ module.exports = function(flint) {
     * [.add(email(s), [moderator])](#Bot+add) ⇒ <code>Promise.&lt;Array&gt;</code>
     * [.remove(email(s))](#Bot+remove) ⇒ <code>Promise.&lt;Array&gt;</code>
     * [.getModerators()](#Bot+getModerators) ⇒ <code>Promise.&lt;Array&gt;</code>
-    * [.newRoom(name, emails)](#Bot+newRoom) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
-    * [.newTeamRoom(name, emails)](#Bot+newTeamRoom) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
-    * [.moderateRoom()](#Bot+moderateRoom) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
-    * [.unmoderateRoom()](#Bot+unmoderateRoom) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
-    * [.moderatorSet(email(s))](#Bot+moderatorSet) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
-    * [.moderatorClear(email(s))](#Bot+moderatorClear) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
+    * [.newRoom(name, emails)](#Bot+newRoom) ⇒ [<code>Promise.&lt;Bot&gt;</code>](#Bot)
+    * [.newTeamRoom(name, emails)](#Bot+newTeamRoom) ⇒ [<code>Promise.&lt;Bot&gt;</code>](#Bot)
+    * [.moderateRoom()](#Bot+moderateRoom) ⇒ [<code>Promise.&lt;Bot&gt;</code>](#Bot)
+    * [.unmoderateRoom()](#Bot+unmoderateRoom) ⇒ [<code>Promise.&lt;Bot&gt;</code>](#Bot)
+    * [.moderatorSet(email(s))](#Bot+moderatorSet) ⇒ [<code>Promise.&lt;Bot&gt;</code>](#Bot)
+    * [.moderatorClear(email(s))](#Bot+moderatorClear) ⇒ [<code>Promise.&lt;Bot&gt;</code>](#Bot)
     * [.implode()](#Bot+implode) ⇒ <code>Promise.&lt;Boolean&gt;</code>
-    * [.say([format], message)](#Bot+say) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
-    * [.dm(email, [format], message)](#Bot+dm) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
-    * [.uploadStream(filename, stream)](#Bot+uploadStream) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
-    * [.upload(filepath)](#Bot+upload) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
-    * [.censor(messageId)](#Bot+censor) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+    * [.say([format], message)](#Bot+say) ⇒ [<code>Promise.&lt;Message&gt;</code>](#Message)
+    * [.dm(email, [format], message)](#Bot+dm) ⇒ [<code>Promise.&lt;Message&gt;</code>](#Message)
+    * [.uploadStream(filename, stream)](#Bot+uploadStream) ⇒ [<code>Promise.&lt;Message&gt;</code>](#Message)
+    * [.upload(filepath)](#Bot+upload) ⇒ [<code>Promise.&lt;Message&gt;</code>](#Message)
+    * [.censor(messageId)](#Bot+censor) ⇒ [<code>Promise.&lt;Message&gt;</code>](#Message)
     * [.roomRename(title)](#Bot+roomRename) ⇒ <code>Promise.&lt;Room&gt;</code>
     * [.getMessages(count)](#Bot+getMessages) ⇒ <code>Promise.&lt;Array&gt;</code>
-    * [.store(id, key, value)](#Bot+store) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code>
-    * [.recall(id, key)](#Bot+recall) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>undefined</code>
-    * [.forget(id, [key])](#Bot+forget) ⇒ <code>Boolean</code>
+    * [.store(key, value)](#Bot+store) ⇒ <code>Promise.&lt;String&gt;</code> \| <code>Promise.&lt;Number&gt;</code> \| <code>Promise.&lt;Boolean&gt;</code> \| <code>Promise.&lt;Array&gt;</code> \| <code>Promise.&lt;Object&gt;</code>
+    * [.recall([key])](#Bot+recall) ⇒ <code>Promise.&lt;String&gt;</code> \| <code>Promise.&lt;Number&gt;</code> \| <code>Promise.&lt;Boolean&gt;</code> \| <code>Promise.&lt;Array&gt;</code> \| <code>Promise.&lt;Object&gt;</code>
+    * [.forget([key])](#Bot+forget) ⇒ <code>Promise.&lt;String&gt;</code> \| <code>Promise.&lt;Number&gt;</code> \| <code>Promise.&lt;Boolean&gt;</code> \| <code>Promise.&lt;Array&gt;</code> \| <code>Promise.&lt;Object&gt;</code>
 
 <a name="new_Bot_new"></a>
 
@@ -813,7 +636,7 @@ Creates a Bot instance that is then attached to a Spark Room.
 ### bot.exit() ⇒ <code>Promise.&lt;Boolean&gt;</code>
 Instructs Bot to exit from room.
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 **Example**  
 ```js
 bot.exit();
@@ -823,12 +646,12 @@ bot.exit();
 ### bot.add(email(s), [moderator]) ⇒ <code>Promise.&lt;Array&gt;</code>
 Instructs Bot to add person(s) to room.
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 **Returns**: <code>Promise.&lt;Array&gt;</code> - Array of emails added  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| email(s) | <code>String</code> &#124; <code>Array</code> | Email Address (or Array of Email Addresses) of Person(s) to add to room. |
+| email(s) | <code>String</code> \| <code>Array</code> | Email Address (or Array of Email Addresses) of Person(s) to add to room. |
 | [moderator] | <code>Boolean</code> | Add as moderator. |
 
 **Example**  
@@ -855,12 +678,12 @@ bot.add(['john@test.com', 'jane@test.com', 'bill@test.com']);
 ### bot.remove(email(s)) ⇒ <code>Promise.&lt;Array&gt;</code>
 Instructs Bot to remove person from room.
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 **Returns**: <code>Promise.&lt;Array&gt;</code> - Array of emails removed  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| email(s) | <code>String</code> &#124; <code>Array</code> | Email Address (or Array of Email Addresses) of Person(s) to remove from room. |
+| email(s) | <code>String</code> \| <code>Array</code> | Email Address (or Array of Email Addresses) of Person(s) to remove from room. |
 
 **Example**  
 ```js
@@ -877,7 +700,7 @@ bot.remove(['john@test.com', 'jane@test.com', 'bill@test.com']);
 ### bot.getModerators() ⇒ <code>Promise.&lt;Array&gt;</code>
 Get room moderators.
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 **Example**  
 ```js
 bot.getModerators()
@@ -887,10 +710,10 @@ bot.getModerators()
 ```
 <a name="Bot+newRoom"></a>
 
-### bot.newRoom(name, emails) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
+### bot.newRoom(name, emails) ⇒ [<code>Promise.&lt;Bot&gt;</code>](#Bot)
 Create new room with people by email
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -899,10 +722,10 @@ Create new room with people by email
 
 <a name="Bot+newTeamRoom"></a>
 
-### bot.newTeamRoom(name, emails) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
+### bot.newTeamRoom(name, emails) ⇒ [<code>Promise.&lt;Bot&gt;</code>](#Bot)
 Create new Team Room
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -911,10 +734,10 @@ Create new Team Room
 
 <a name="Bot+moderateRoom"></a>
 
-### bot.moderateRoom() ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
+### bot.moderateRoom() ⇒ [<code>Promise.&lt;Bot&gt;</code>](#Bot)
 Enable Room Moderation.Enable.
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 **Example**  
 ```js
 bot.moderateRoom()
@@ -924,10 +747,10 @@ bot.moderateRoom()
 ```
 <a name="Bot+unmoderateRoom"></a>
 
-### bot.unmoderateRoom() ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
+### bot.unmoderateRoom() ⇒ [<code>Promise.&lt;Bot&gt;</code>](#Bot)
 Disable Room Moderation.
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 **Example**  
 ```js
 bot.unmoderateRoom()
@@ -937,14 +760,14 @@ bot.unmoderateRoom()
 ```
 <a name="Bot+moderatorSet"></a>
 
-### bot.moderatorSet(email(s)) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
+### bot.moderatorSet(email(s)) ⇒ [<code>Promise.&lt;Bot&gt;</code>](#Bot)
 Assign Moderator in Room
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| email(s) | <code>String</code> &#124; <code>Array</code> | Email Address (or Array of Email Addresses) of Person(s) to assign as moderator. |
+| email(s) | <code>String</code> \| <code>Array</code> | Email Address (or Array of Email Addresses) of Person(s) to assign as moderator. |
 
 **Example**  
 ```js
@@ -955,14 +778,14 @@ bot.moderatorSet('john@test.com')
 ```
 <a name="Bot+moderatorClear"></a>
 
-### bot.moderatorClear(email(s)) ⇒ <code>[Promise.&lt;Bot&gt;](#Bot)</code>
+### bot.moderatorClear(email(s)) ⇒ [<code>Promise.&lt;Bot&gt;</code>](#Bot)
 Unassign Moderator in Room
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| email(s) | <code>String</code> &#124; <code>Array</code> | Email Address (or Array of Email Addresses) of Person(s) to unassign as moderator. |
+| email(s) | <code>String</code> \| <code>Array</code> | Email Address (or Array of Email Addresses) of Person(s) to unassign as moderator. |
 
 **Example**  
 ```js
@@ -976,7 +799,7 @@ bot.moderatorClear('john@test.com')
 ### bot.implode() ⇒ <code>Promise.&lt;Boolean&gt;</code>
 Remove a room and all memberships.
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 **Example**  
 ```js
 flint.hears('/implode', function(bot, trigger) {
@@ -985,15 +808,15 @@ flint.hears('/implode', function(bot, trigger) {
 ```
 <a name="Bot+say"></a>
 
-### bot.say([format], message) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+### bot.say([format], message) ⇒ [<code>Promise.&lt;Message&gt;</code>](#Message)
 Send text with optional file to room.
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | [format] | <code>String</code> | <code>text</code> | Set message format. Valid options are 'text' or 'markdown'. |
-| message | <code>String</code> &#124; <code>Object</code> |  | Message to send to room. This can be a simple string, or a object for advanced use. |
+| message | <code>String</code> \| <code>Object</code> |  | Message to send to room. This can be a simple string, or a object for advanced use. |
 
 **Example**  
 ```js
@@ -1033,16 +856,16 @@ flint.hears('/hello', function(bot, trigger) {
 ```
 <a name="Bot+dm"></a>
 
-### bot.dm(email, [format], message) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+### bot.dm(email, [format], message) ⇒ [<code>Promise.&lt;Message&gt;</code>](#Message)
 Send text with optional file in a direct message. This sends a message to a 1:1 room with the user (creates 1:1, if one does not already exist)
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | email | <code>String</code> |  | Email of person to send Direct Message. |
 | [format] | <code>String</code> | <code>text</code> | Set message format. Valid options are 'text' or 'markdown'. |
-| message | <code>String</code> &#124; <code>Object</code> |  | Message to send to room. This can be a simple string, or a object for advanced use. |
+| message | <code>String</code> \| <code>Object</code> |  | Message to send to room. This can be a simple string, or a object for advanced use. |
 
 **Example**  
 ```js
@@ -1082,10 +905,10 @@ flint.hears('/dm', function(bot, trigger) {
 ```
 <a name="Bot+uploadStream"></a>
 
-### bot.uploadStream(filename, stream) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+### bot.uploadStream(filename, stream) ⇒ [<code>Promise.&lt;Message&gt;</code>](#Message)
 Upload a file to a room using a Readable Stream
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1107,10 +930,10 @@ flint.hears('/file', function(bot, trigger) {
 ```
 <a name="Bot+upload"></a>
 
-### bot.upload(filepath) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+### bot.upload(filepath) ⇒ [<code>Promise.&lt;Message&gt;</code>](#Message)
 Upload a file to room.
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1124,10 +947,10 @@ flint.hears('/file', function(bot, trigger) {
 ```
 <a name="Bot+censor"></a>
 
-### bot.censor(messageId) ⇒ <code>[Promise.&lt;Message&gt;](#Message)</code>
+### bot.censor(messageId) ⇒ [<code>Promise.&lt;Message&gt;</code>](#Message)
 Remove Message By Id.
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 
 | Param | Type |
 | --- | --- |
@@ -1138,7 +961,7 @@ Remove Message By Id.
 ### bot.roomRename(title) ⇒ <code>Promise.&lt;Room&gt;</code>
 Set Title of Room.
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 
 | Param | Type |
 | --- | --- |
@@ -1156,7 +979,7 @@ bot.roomRename('My Renamed Room')
 ### bot.getMessages(count) ⇒ <code>Promise.&lt;Array&gt;</code>
 Get messages from room. Returned data has newest message at bottom.
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 
 | Param | Type |
 | --- | --- |
@@ -1175,40 +998,37 @@ bot.getMessages(5).then(function(messages) {
 ```
 <a name="Bot+store"></a>
 
-### bot.store(id, key, value) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code>
+### bot.store(key, value) ⇒ <code>Promise.&lt;String&gt;</code> \| <code>Promise.&lt;Number&gt;</code> \| <code>Promise.&lt;Boolean&gt;</code> \| <code>Promise.&lt;Array&gt;</code> \| <code>Promise.&lt;Object&gt;</code>
 Store key/value data.
 
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
-
-| Param | Type |
-| --- | --- |
-| id | <code>String</code> | 
-| key | <code>String</code> | 
-| value | <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> | 
-
-<a name="Bot+recall"></a>
-
-### bot.recall(id, key) ⇒ <code>String</code> &#124; <code>Number</code> &#124; <code>Boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> &#124; <code>undefined</code>
-Recall value of data stored by 'key'.
-
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
-
-| Param | Type |
-| --- | --- |
-| id | <code>String</code> | 
-| key | <code>String</code> | 
-
-<a name="Bot+forget"></a>
-
-### bot.forget(id, [key]) ⇒ <code>Boolean</code>
-Forget a key or entire store.
-
-**Kind**: instance method of <code>[Bot](#Bot)</code>  
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| id | <code>String</code> |  |
-| [key] | <code>String</code> | Optional key value to forget. If key is not passed, id is removed. |
+| key | <code>String</code> | Key under id object |
+| value | <code>String</code> \| <code>Number</code> \| <code>Boolean</code> \| <code>Array</code> \| <code>Object</code> | Value of key |
+
+<a name="Bot+recall"></a>
+
+### bot.recall([key]) ⇒ <code>Promise.&lt;String&gt;</code> \| <code>Promise.&lt;Number&gt;</code> \| <code>Promise.&lt;Boolean&gt;</code> \| <code>Promise.&lt;Array&gt;</code> \| <code>Promise.&lt;Object&gt;</code>
+Recall value of data stored by 'key'.
+
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [key] | <code>String</code> | Key under id object (optional). If key is not passed, all keys for id are returned as an object. |
+
+<a name="Bot+forget"></a>
+
+### bot.forget([key]) ⇒ <code>Promise.&lt;String&gt;</code> \| <code>Promise.&lt;Number&gt;</code> \| <code>Promise.&lt;Boolean&gt;</code> \| <code>Promise.&lt;Array&gt;</code> \| <code>Promise.&lt;Object&gt;</code>
+Forget a key or entire store.
+
+**Kind**: instance method of [<code>Bot</code>](#Bot)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [key] | <code>String</code> | Key under id object (optional). If key is not passed, id and all children are removed. |
 
 <a name="Message"></a>
 
@@ -1265,7 +1085,7 @@ Trigger Object
 | Name | Type | Description |
 | --- | --- | --- |
 | id | <code>string</code> | Message ID |
-| phrase | <code>string</code> &#124; <code>regex</code> | Matched lexicon phrase |
+| phrase | <code>string</code> \| <code>regex</code> | Matched lexicon phrase |
 | text | <code>string</code> | Message Text (or false if no text) |
 | raw | <code>string</code> | Unprocessed Message Text (or false if no text) |
 | html | <code>string</code> | Message HTML (or false if no html) |
