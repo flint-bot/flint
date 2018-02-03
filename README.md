@@ -172,6 +172,13 @@ used. Other backend stores are possible by replicating any one of the built-in
 storage modules and passing it to the `flint.storeageDriver()` method. *See
 docs for store, recall, forget for more details.*
 
+**Example:**
+
+```js
+var redisDriver = require('node-flint/storage/redis');
+flint.storageDriver(redisDriver('redis://localhost'));
+```
+
 ## Bot Accounts
 
 **When using "Bot Accounts" the major differences are:**
