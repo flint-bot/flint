@@ -27,7 +27,7 @@
     "mime-types": "2.1.15",
     "moment": "2.18.1",
     "node-sparky": "3.1.19",
-    "redis": "2.7.1",
+    "redis": "2.8.x",
     "uuid": "3.1.0",
     "when": "3.7.8"
   },

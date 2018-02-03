@@ -1,77 +1,16 @@
 'use strict';
 
-var Redis = require('redis');
-var when = require('when');
-var _ = require('lodash');
+const Redis = require('redis');
+const when = require('when');
+const nodefn = require('when/node');
+const _ = require('lodash');
 
-module.exports = exports = function(connectionUrl, name) {
-  name = typeof name === 'string' ? name : 'flint';
-  var redis = Redis.createClient({ url: connectionUrl });
+// promisfy JSON.parse and JSON.stringify
+const jsonParse = when.lift(JSON.parse);
+const jsonStringify = when.lift(JSON.stringify);
 
-  var memStore = {};
-  var memCache = {};
-  var active = false;
-  var syncInterval = 1000;
-
-  // load memStore state from redis
-  function initRedis() {
-    return when.promise((resolve, reject) => {
-      redis.get(name, (err, res) => {
-        if(err) {
-          memStore = {};
-        } else if(res) {
-          memStore = JSON.parse(res);
-        } else {
-          memStore = {};
-        }
-        resolve(true);
-      });
-    });
-  }
-
-  // start periodicly sync of memStore state to redis
-  function syncRedis() {
-    // if memStore has changed...
-    if(JSON.stringify(memCache) !== JSON.stringify(memStore)) {
-      return when.promise((resolve, reject) => {
-        var serializedStore = JSON.stringify(memStore);
-        redis.set(name, serializedStore, err => {
-          if(err) {
-            reject(err);
-          } else {
-            resolve(true);
-          }
-        });
-      })
-      .delay(syncInterval)
-      .catch(err => {
-        console.log(err.stack);
-        return when(true);
-      })
-      .finally(() => {
-        memCache = _.cloneDeep(memStore);
-        if(active) syncRedis(memStore);
-        return when(true);
-      });
-    }
-
-    // else memStore has not changed...
-    else {
-      return when(true)
-        .delay(syncInterval)
-        .then(() => {
-          if(active) syncRedis(memStore);
-          return when(true);
-        });
-    }
-  }
-
-  // init redis and begin memStore sync
-  initRedis()
-    .then(() => {
-      active = true;
-      syncRedis(memStore);
-    });
+module.exports = exports = function(connectionUrl) {
+  const redis = nodefn.liftAll(Redis.createClient({ url: connectionUrl }));
 
   return {
 
@@ -87,22 +26,14 @@ module.exports = exports = function(connectionUrl, name) {
      * @returns {(Promise.<String>|Promise.<Number>|Promise.<Boolean>|Promise.<Array>|Promise.<Object>)}
      */
     store: function(id, key, value) {
-      if(typeof id === 'string') {
-        // if id does not exist, create
-        if(!memStore[id]) {
-          // create id object in memStore
-          memStore[id] = {};
+      if (id && key) {
+        if (value) {
+          return jsonStringify(value)
+            .then(stringVal => redis.hset(id, key, stringVal))
         }
-
-        if(typeof key === 'string' && typeof value !== 'undefined') {
-          memStore[id][key] = value;
-          return when(memStore[id][key]);
-        } else {
-          return when.reject(new Error('bot.store() must include a "key" argument of type "string"'));
-        }
-      } else {
-        return when.reject(new Error('bot.store() Storage module must include a "id" argument of type "string"'));
+        return redis.hset(id, key, '');
       }
+      return when.reject(new Error('invalid args'));
     },
 
     /**
@@ -116,35 +47,26 @@ module.exports = exports = function(connectionUrl, name) {
      * @returns {(Promise.<String>|Promise.<Number>|Promise.<Boolean>|Promise.<Array>|Promise.<Object>)}
      */
     recall: function(id, key) {
-      // if key is defined and of type string....
-      if(typeof id === 'string') {
-        // if key is defined and of type string....
-        if(typeof id === 'string') {
-          // if id/key exists...
-          if(memStore[id] && typeof key === 'string' && memStore[id][key]) {
-            return when(memStore[id][key]);
-          } else {
-            return when.reject(new Error('bot.recall() could not find the value referenced by id/key'));
-          }
+      if (id) {
+        if (key) {
+          return redis.hget(id, key)
+            .then((res) => {
+              const parsedRes = jsonParse(res)
+                .catch(() => when(res));
+              return parsedRes;
+            });
         }
-
-        // else if key is not defined
-        else if(typeof key === 'undefined') {
-          // if id exists...
-          if(memStore[id]) {
-            return when(memStore[id]);
-          } else {
-            return when.reject(new Error('bot.recall() has no key/values defined'));
-          }
-        }
-
-        // else key is defined, but of wrong type
-        else {
-          return when.reject(new Error('bot.recall() key must be of type "string"'));
-        }
-      } else {
-        return when.reject(new Error('bot.recall() Storage module must include a "id" argument of type "string"'));
+        return redis.hgetall(id)
+          .then((res) => {
+            const resKeys = _.keys(res);
+            return when.map(resKeys, (resKey) => {
+              const parsedRes = jsonParse(res[resKey])
+                .catch(() => when(res[resKey]));
+              return parsedRes;
+            });
+          });
       }
+      return when.reject(new Error('invalid args'));
     },
 
     /**
@@ -158,38 +80,17 @@ module.exports = exports = function(connectionUrl, name) {
      * @returns {(Promise.<String>|Promise.<Number>|Promise.<Boolean>|Promise.<Array>|Promise.<Object>)}
      */
     forget: function(id, key) {
-      if(typeof id === 'string') {
-        // if key is defined and of type string....
-        if(typeof key === 'string') {
-          // if id/key exists...
-          if(memStore[id] && memStore[id][key]) {
-            let deletedKey = _.cloneDeep(memStore[id][key]);
-            delete memStore[id][key];
-            return when(deletedKey);
-          } else {
-            return when.reject(new Error('bot.forget() could not find the value referenced by id/key'));
-          }
+      if (id) {
+        if (key) {
+          return redis.hdel(id, key)
+            .then(() => when(true))
+            .catch(() => when(true));
         }
-
-        // else if key is not defined
-        else if(typeof key === 'undefined') {
-          // if id exists...
-          if(memStore[id]) {
-            let deletedId = _.cloneDeep(memStore[id]);
-            delete memStore[id];
-            return when(deletedId);
-          } else {
-            return when.reject(new Error('bot.forget() has no key/values defined'));
-          }
-        }
-
-        // else key is defined, but of wrong type
-        else {
-          return when.reject(new Error('bot.forget() key must be of type "string"'));
-        }
-      } else {
-        return when.reject(new Error('bot.forget() Storage module must include a "id" argument of type "string"'));
+        return redis.del(id)
+          .then(() => when(true))
+          .catch(() => when(true));
       }
+      return when.reject(new Error('invalid args'));
     }
   };
 

@@ -70,8 +70,7 @@ these 3 methods:
   resolved promise with the value or a rejected promise if not found.
 * `bot.forget([key])` - Forget (remove) value(s) from a bot instance where 'key'
   is an optional property that when defined, removes the specific key, and when
-  undefined, removes all keys. Returns a resolved promise if deleted or a
-  rejected promise if not found.
+  undefined, removes all keys. Returns a resolved promise if deleted or not found.
 
 When a bot despawns (removed from room), the key/value store for that bot
 instance will automatically be removed from the store. Flint currently has an
