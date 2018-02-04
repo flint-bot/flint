@@ -14,7 +14,7 @@ class Authorization {
 
   auth(trigger) {
     // analyze trigger object
-    if (trigger && _.includes(this.config.domains, trigger.personDomain)) {
+    if (trigger && _.includes(this.config.domains, trigger.person.domain)) {
       return when(trigger);
     }
     // default deny

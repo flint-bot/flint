@@ -22,6 +22,7 @@ const config = {
       new (WinstonLogger.winston.transports.Console)({
         colorize: true,
         timestamp: false,
+        level: 'info',
       }),
     ],
   },
@@ -40,7 +41,7 @@ flint.use('authorization', DomainAuth);
 
 // string match on 'hello'
 flint.hears('hello', (bot, trigger) => {
-  bot.message.say().markdown(`**Hello** ${trigger.personDisplayName}!`);
+  bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
 });
 
 // setup express

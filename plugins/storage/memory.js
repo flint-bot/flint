@@ -3,7 +3,8 @@ const _ = require('lodash');
 
 class Storage {
 
-  constructor() {
+  constructor(flint) {
+    this.flint = flint;
     this.store = {};
   }
 
@@ -19,6 +20,11 @@ class Storage {
 
   // name, key, [val]
   create(...args) {
+    // reject if flint is not active
+    if (!this.flint.active) {
+      return when.reject(new Error('flint is currently stopped'));
+    }
+
     const name = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
     const key = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
     const val = args.length > 0 && typeof args[0] !== 'undefined' ? args.shift() : false;
@@ -38,6 +44,11 @@ class Storage {
 
   // name, [key]
   read(...args) {
+    // reject if flint is not active
+    if (!this.flint.active) {
+      return when.reject(new Error('flint is currently stopped'));
+    }
+
     const name = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
     const key = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
 
@@ -60,6 +71,11 @@ class Storage {
 
   // name, [key]
   delete(...args) {
+    // reject if flint is not active
+    if (!this.flint.active) {
+      return when.reject(new Error('flint is currently stopped'));
+    }
+
     const name = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
     const key = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
 

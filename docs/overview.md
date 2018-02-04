@@ -8,14 +8,88 @@ than includes two objects. The bot object, and the trigger object.
 A simple example of a flint.hears() function setup:
 
 ```js
-flint.hears(phrase, (bot, trigger) => {
-  bot.<command>
-    .then((returnedValue) => {
-      // do something with returnedValue
-    })
-    .catch(err => console.error(err));
+flint.hears('hello', (bot, trigger) => {
+  bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
 });
 ```
+
+#### Bot Object
+
+The "bot" object returned in the callback is where all bot actions are executed
+as it relates to the space that triggered the callback based on the matching
+phrase.
+
+In the above example, we are replying to the user using the
+`bot.message.say().markdown()` action to reply with a "Hello" and addressing
+the user that triggered the phrase by their display name.
+
+_**See the Bot documentation for other actions that are possible.**_
+
+#### Trigger Object
+
+The 'trigger' object returned in the callback will have content similar to the
+following:
+
+```json
+{
+  "person": {
+    "id": "NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk",
+    "email": "john.doe@example.com",
+    "username": "john.doe",
+    "domain": "example.com",
+    "emails": [
+      "john.doe@example.com"
+    ],
+    "displayName": "John Doe",
+    "nickName": "John",
+    "firstName": "John",
+    "lastName": "Doe",
+    "avatar": "https://728ea12f265d8b084b76-f2d062319207b10569fafcec8d088a43.ssl.cf1.rackcdn.com/V1~NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk==~1600",
+    "orgId": "NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk",
+    "created": "2016-10-17T19:24:15.163Z",
+    "lastActivity": "2018-02-04T22:32:52.995Z",
+    "status": "active",
+    "type": "person"
+  },
+  "room": {
+    "id": "NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk",
+    "type": "group"
+  },
+  "message": {
+    "id": "NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk",
+    "text": "MyBot Hello!",
+    "html": "<p><spark-mention data-object-type=\"person\" data-object-id=\"NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk\">MyBot</spark-mention> Hello!</p>",
+    "files": [],
+    "mentionedPeople": [
+      {
+        "id": "NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk",
+        "emails": [
+          "mybot@sparkbot.io"
+        ],
+        "displayName": "BotTester",
+        "avatar": "https://728ea12f265d8b084b76-f2d062319207b10569fafcec8d088a43.ssl.cf1.rackcdn.com/V1~NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk==~80",
+        "orgId": "NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk",
+        "created": "2017-10-27T00:01:09.387Z",
+        "type": "bot",
+        "email": "mybot@sparkbot.io",
+        "username": "MyBot",
+        "domain": "sparkbot.io"
+      }
+    ],
+    "created": "2018-02-04T22:37:41.965Z",
+    "normalized": "hello",
+    "array": [
+      "hello"
+    ],
+    "words": [
+      "hello"
+    ]
+  },
+  "created": "2018-02-04T22:37:42.446Z"
+}
+```
+
+_**See the Trigger documentation for additional details on this object.**_
 
 ## Authorization
 By default, the authorization system used in flint allows ALL users to interact
@@ -124,7 +198,7 @@ storage modules can be created by referencing the template at
 Other subsystems of Flint will use this same storage module for persisting data
 across restarts.
 
-**See docs for store, recall, forget for more details.**
+_**See docs for store, recall, forget for more details.**_
 
 ### File Store
 
@@ -302,6 +376,6 @@ Spark Space ID (roomId):
 * `bot.recall(key)`
 * `bot.forget([key])`
 
-For a more detailed example of this, you can reference the
+_For a more detailed example of this, you can reference the
 [example-advanced.js](/docs/example-advanced.md) app to see how various plugin
-types are inserted.
+types are inserted._
