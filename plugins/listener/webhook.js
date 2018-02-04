@@ -1,6 +1,14 @@
+const when = require('when');
+const _ = require('lodash');
+
 class Listener {
 
   constructor(flint) {
+    // validate required config
+    if (!flint.config.webhookUrl) {
+      throw new Error('invalid or missing config');
+    }
+
     this.flint = flint;
   }
 
@@ -26,6 +34,31 @@ class Listener {
       this.flint.spark.removeAllListeners('rooms-created');
       this.flint.spark.removeAllListeners('rooms-updated');
     }
+  }
+
+  init() {
+    const webhookName = `flint:${_.toLower(this.flint.person.emails[0])}`;
+    const webhookBody = {
+      name: webhookName,
+      targetUrl: this.flint.config.webhookUrl,
+      resource: 'all',
+      event: 'all',
+    };
+
+    return this.flint.spark.webhooksGet()
+      .then((webhooks) => {
+        const foundWebhooks = _.filter(webhooks, { name: webhookName });
+        if (foundWebhooks && foundWebhooks instanceof Array && foundWebhooks.length > 0) {
+          return when.map(webhooks, webhook => this.flint.spark.webhookRemove(webhook.id))
+            .catch((err) => {
+              // log error but ignore
+              this.flint.logger.error(new Error(`could not remove all webhooks with name: ${webhookName}`));
+              return when(true);
+            });
+        }
+        return when(true);
+      })
+      .then(() => this.flint.spark.webhookAdd(webhookBody));
   }
 
 }
