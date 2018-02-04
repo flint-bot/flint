@@ -412,7 +412,7 @@ After the plugin is added and validated, it is accessible from:
 
 * `flint.storage.create(name, key, value)`
 * `flint.storage.read(name, key)`
-* `flint.storage.delete()`
+* `flint.storage.delete(name, [key])`
 
 It is also mapped to the bot object(s) with the 'name' argument forced to the
 Spark Space ID (roomId):
