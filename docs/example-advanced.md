@@ -1,6 +1,12 @@
+#### Example Advanced Template Using Express
+```js
 const Flint = require('node-flint');
 const express = require('express');
 const bodyParser = require('body-parser');
+
+const RedisStore = require('node-flint/plugins/storage/redis');
+const WinstonLogger = require('node-flint/plugins/logger/winston');
+const DomainAuth = require('node-flint/plugins/auth/domain');
 
 // config
 const config = {
@@ -8,10 +14,29 @@ const config = {
   webhookSecret: 'somesecr3t',
   webhookUrl: 'http://example.com/webhook',
   port: 8080,
+  storage: {
+    url: 'redis://localhost',
+  },
+  logger: {
+    transports: [
+      new (WinstonLogger.winston.transports.Console)({
+        colorize: true,
+        timestamp: false,
+      }),
+    ],
+  },
+  authorization: {
+    domains: ['example.com', 'cisco.com'],
+  },
 };
 
 // init flint
 const flint = new Flint(config);
+
+// specify alternate plugins
+flint.use('storage', RedisStore);
+flint.use('logger', WinstonLogger);
+flint.use('authorization', DomainAuth);
 
 // string match on 'hello'
 flint.hears('hello', (bot, trigger) => {
@@ -38,3 +63,4 @@ process.on('SIGINT', () => {
   server.close();
   flint.stop();
 });
+```

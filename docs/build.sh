@@ -6,7 +6,8 @@ README="$(pwd)/../README.md"
 
 cat header.md > ${README}
 cat installation.md >> ${README}
-cat example1.md >> ${README}
+cat example-express.md >> ${README}
+cat example-links.md >> ${README}
 cat overview.md >> ${README}
 
 ${DOCTOC} --github --notitle --maxlevel 4 ${README}

@@ -1,4 +1,4 @@
-const Flint = require('../');
+const Flint = require('node-flint');
 const express = require('express');
 const bodyParser = require('body-parser');
 

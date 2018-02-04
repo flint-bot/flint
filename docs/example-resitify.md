@@ -1,4 +1,4 @@
-## Example Template Using Restify
+#### Example Template Using Restify
 ```js
 const Flint = require('node-flint');
 const Restify = require('restify');
