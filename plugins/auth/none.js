@@ -2,8 +2,10 @@ const when = require('when');
 
 class Authorization {
 
-  constructor() {
-    return trigger => when(trigger);
+  constructor(flint) {}
+
+  auth(trigger) {
+    return when(trigger);
   }
 
 }

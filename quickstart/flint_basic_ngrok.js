@@ -34,6 +34,7 @@ const server = app.listen(config.port, () => {
 
 // gracefully shutdown (ctrl-c)
 process.on('SIGINT', () => {
-  console.log('stopping...');
+  console.log('\nStopping...');
   server.close();
+  flint.stop();
 });

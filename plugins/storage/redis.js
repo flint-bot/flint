@@ -9,14 +9,14 @@ const jsonStringify = when.lift(JSON.stringify);
 class Storage {
 
   constructor(flint) {
-    this.config = flint.config;
-
     // validate required config
-    if (!this.config.redisStore) {
+    if (!flint.config.storage) {
       throw new Error('invalid or missing config');
     }
 
-    this.client = redis.createClient(this.config.redisStore);
+    this.config = flint.config.storage;
+
+    this.client = redis.createClient(this.config);
   }
 
   // called by flint when starting...
