@@ -17,22 +17,6 @@ flint.hears(phrase, (bot, trigger) => {
 });
 ```
 
-## Spark API Authentication
-The token used to authenticate Flint to the Spark API is passed as part of the
-options used when instantiating the Flint class. To change or update the
-token, use the Flint#sparkToken() method.
-
-**Example:**
-
-```js
-const newToken = 'Tm90aGluZyB0byBzZWUgaGVyZS4uLiBNb3ZlIGFsb25nLi4u';
-
-flint.setSparkToken(newToken)
-  .then((updatedToken) => {
-    console.log(`Spark token updated to: ${updatedToken}`);
-  });
-```
-
 ## Authorization
 By default, the authorization system used in flint allows ALL users to interact
 with the bot. Other plugins can be loaded that inspect the trigger object in

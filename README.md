@@ -6,9 +6,16 @@
 
 **x/x/x IMPORTANT:**
 
-* Flint v5 is a huge refactor from v4. Before upgrading your existing apps to
+* Flint v5 is a huge refactor from v4. Before upgrading your existing bots to
 use v5, please make sure to review all docs and examples to understand the new
 class methods and library structure.
+
+* Flint no longer supports tokens from non Bot Accounts. This has become
+necessary due to the various difference between a bot and person token.
+Additionally Cisco does not support nor endorse using a person token for bots.
+Applications that require this function should be defined as a "App"
+integration. If you are looking for a framework that uses a "person" token and
+integrates easier into "App" integrations, check out node-sparky.
 
 **See [CHANGELOG.md](/CHANGELOG.md) for details on changes to versions of Flint.**
 
@@ -24,7 +31,6 @@ class methods and library structure.
     - [Example Template Using Express](#example-template-using-express)
     - [Other Examples](#other-examples)
 - [Overview](#overview)
-- [Spark API Authentication](#spark-api-authentication)
 - [Authorization](#authorization)
   - [Domain Name Authorization](#domain-name-authorization)
 - [Logging](#logging)
@@ -122,22 +128,6 @@ flint.hears(phrase, (bot, trigger) => {
     })
     .catch(err => console.error(err));
 });
-```
-
-## Spark API Authentication
-The token used to authenticate Flint to the Spark API is passed as part of the
-options used when instantiating the Flint class. To change or update the
-token, use the Flint#sparkToken() method.
-
-**Example:**
-
-```js
-const newToken = 'Tm90aGluZyB0byBzZWUgaGVyZS4uLiBNb3ZlIGFsb25nLi4u';
-
-flint.setSparkToken(newToken)
-  .then((updatedToken) => {
-    console.log(`Spark token updated to: ${updatedToken}`);
-  });
 ```
 
 ## Authorization
