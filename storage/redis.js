@@ -2,7 +2,6 @@
 
 const Redis = require('redis');
 const when = require('when');
-const nodefn = require('when/node');
 const _ = require('lodash');
 
 // promisfy JSON.parse and JSON.stringify
@@ -10,7 +9,7 @@ const jsonParse = when.lift(JSON.parse);
 const jsonStringify = when.lift(JSON.stringify);
 
 module.exports = exports = function(connectionUrl) {
-  const redis = nodefn.liftAll(Redis.createClient({ url: connectionUrl }));
+  const redis = Redis.createClient({ url: connectionUrl });
 
   return {
 
@@ -29,9 +28,21 @@ module.exports = exports = function(connectionUrl) {
       if (id && key) {
         if (value) {
           return jsonStringify(value)
-            .then(stringVal => redis.hset(id, key, stringVal))
+            .then(stringVal => when.promise((resolve, reject) => redis.hset(id, key, stringVal, (err, result) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(result);
+              }
+            })));
         }
-        return redis.hset(id, key, '');
+        return when.promise((resolve, reject) => redis.hset(id, key, '', (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        }));
       }
       return when.reject(new Error('invalid args'));
     },
@@ -49,22 +60,32 @@ module.exports = exports = function(connectionUrl) {
     recall: function(id, key) {
       if (id) {
         if (key) {
-          return redis.hget(id, key)
-            .then((res) => {
-              const parsedRes = jsonParse(res)
-                .catch(() => when(res));
-              return parsedRes;
-            });
-        }
-        return redis.hgetall(id)
-          .then((res) => {
-            const resKeys = _.keys(res);
-            return when.map(resKeys, (resKey) => {
-              const parsedRes = jsonParse(res[resKey])
-                .catch(() => when(res[resKey]));
-              return parsedRes;
-            });
+          return when.promise((resolve, reject) => redis.hget(id, key, (err, result) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          })).then((res) => {
+            const parsedRes = jsonParse(res)
+              .catch(() => when(res));
+            return parsedRes;
           });
+        }
+        return when.promise((resolve, reject) => redis.hgetall(id, (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        })).then((res) => {
+          const resKeys = _.keys(res);
+          return when.map(resKeys, (resKey) => {
+            const parsedRes = jsonParse(res[resKey])
+              .catch(() => when(res[resKey]));
+            return parsedRes;
+          });
+        });
       }
       return when.reject(new Error('invalid args'));
     },
@@ -82,13 +103,21 @@ module.exports = exports = function(connectionUrl) {
     forget: function(id, key) {
       if (id) {
         if (key) {
-          return redis.hdel(id, key)
-            .then(() => when(true))
-            .catch(() => when(true));
+          return when.promise((resolve, reject) => redis.hdel(id, key, (err, result) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }));
         }
-        return redis.del(id)
-          .then(() => when(true))
-          .catch(() => when(true));
+        return when.promise((resolve, reject) => redis.del(id, (err, result) => {
+          if (err) {
+            resolve(true);
+          } else {
+            resolve(true);
+          }
+        }));
       }
       return when.reject(new Error('invalid args'));
     }
