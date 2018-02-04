@@ -54,12 +54,29 @@ used. Other backend stores are possible by replicating any one of the built-in
 storage modules and passing it to the `flint.use()` method. *See
 docs for store, recall, forget for more details.*
 
-**Example:**
+**Example:** (partial)
 
 ```js
 // require RedisStore plugin
 const RedisStore = require('node-flint/plugins/redis-store');
 
-// after initializing flint but before flint.start()
-flint.use('storage', new RedisStore({ url: 'redis://localhost' }));
+const config = {
+  token: 'abcdefg12345abcdefg12345abcdefg12345abcdefg12345abcdefg12345',
+  webhookSecret: 'somesecr3t',
+  webhookUrl: 'http://example.com/webhook',
+  port: 8080,
+  redisStore: {
+    url: 'redis://localhost',
+  },
+};
+
+// init flint
+const flint = new Flint(config);
+
+// load storage module
+flint.use('storage', RedisStore);
+
+// start flint
+flint.start();
+
 ```
