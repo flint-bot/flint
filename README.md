@@ -43,6 +43,7 @@ into "App" integrations, check out either
   - [File Store](#file-store)
   - [Redis Store](#redis-store)
   - [Mongo Store](#mongo-store)
+- [Authoring Plugins](#authoring-plugins)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ## Installation
@@ -334,7 +335,101 @@ flint.start();
 
 ```
 
+## Authoring Plugins
+
+The Flint plugin architecture currently supports the following types with others being added in future updates.
+
+* Authorization
+* Logging
+* Storage
+
+When needing to create a custom plugin, the best place to start is with either
+one of the existing plugins, or the template plugin found in the respective
+plugin sub-directory.
+
+For the plugin to validate, it must return a class constructor with the
+required methods.
+
+For passing configuration options to a custom plugin, these should be defined
+under the Flint config object with the object key being one of the supported
+plugin types. _(i.e. Storage plugins would have their config stored under
+flint.config.storage)._
+
+When the plugin is added via the `flint.use()` method, your class constructor
+will be passed a instantiated flint object as the only argument. To access the
+config object for your plugin, you can parse `flint.config.<plugin type>`.
+
+For example when creating a custom Storage plugin:
+
+**myplugin.js**
+
+```js
+class MyCustomStorage {
+
+  constructor(flint) {
+    this.config = flint.config.storage;
+  }
+
+  start() {}
+
+  stop() {}
+
+  create(name, key, value) {}
+
+  read(name, key) {}
+
+  delete(name, [key]) {}
+
+}
+
+module.exports = MyCustomStorage;
+```
+
+To use this plugin, your flint based app should have something similar to the
+following:
+
+**myapp.js**
+
+```js
+const MyPlugin = require('path/to/myplugin.js');
+
+const config = {
+  token: 'abcdefg12345abcdefg12345abcdefg12345abcdefg12345abcdefg12345',
+  webhookSecret: 'somesecr3t',
+  webhookUrl: 'http://example.com/webhook',
+  port: 8080,
+  storage: {
+    somePluginConfig: true,
+  },
+};
+
+const flint = new Flint(config);
+
+flint.use('storage', MyPlugin);
+```
+
+After the plugin is added and validated, it is accessible from:
+
+* `flint.storage.create(name, key, value)`
+* `flint.storage.read(name, key)`
+* `flint.storage.delete()`
+
+It is also mapped to the bot object(s) with the 'name' argument forced to the
+Spark Space ID (roomId):
+
+* `bot.store(key, value)`
+* `bot.recall(key)`
+* `bot.forget([key])`
+
+For a more detailed example of this, you can reference the
+[example-advanced.js](/docs/example-advanced.md) app to see how various plugin
+types are inserted.
+
 # Flint Reference
+
+
+
+ _Coming soon..._
 
 
 ## License

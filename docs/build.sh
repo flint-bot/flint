@@ -14,6 +14,9 @@ ${DOCTOC} --github --notitle --maxlevel 4 ${README}
 
 echo -e "\n# Flint Reference\n\n" >> ${README}
 
-${JSDOC} ../lib/flint.js ../lib/bot.js >> ${README}
+# temporary until jsdocs have been added to files
+echo -e "\n _Coming soon..._\n\n" >> ${README}
+
+${JSDOC} ../lib/flint.js ../lib/bot.js ../lib/trigger.js ../lib/commander.js ../lib/conversation.js >> ${README}
 
 cat license.md >> ${README}
