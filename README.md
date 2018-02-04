@@ -13,9 +13,13 @@ class methods and library structure.
 * Flint no longer supports tokens from non Bot Accounts. This has become
 necessary due to the various difference between a bot and person token.
 Additionally Cisco does not support nor endorse using a person token for bots.
-Applications that require this function should be defined as a "App"
-integration. If you are looking for a framework that uses a "person" token and
-integrates easier into "App" integrations, check out node-sparky.
+Applications that require this functionality should be defined as a "App"
+integration. You can read more about the differences between bots and apps
+[here](https://developer.ciscospark.com/bots.html#bots-vs-integrations). If you
+are looking for a framework that uses a "person" token and integrates easier
+into "App" integrations, check out either
+[node-sparky](https://github.com/flint-bot/sparky) or the Cisco
+[spark-js-sdk](https://github.com/ciscospark/spark-js-sdk).
 
 **See [CHANGELOG.md](/CHANGELOG.md) for details on changes to versions of Flint.**
 
@@ -105,11 +109,11 @@ quick setup to see how Flint Operates. After getting the basic setup working
 and a bot responding in a Room, be sure to read the rest of the documentation
 to learn about The more advanced features.
 
-* [**Basic Express with NGROK Example**](https://github.com/flint-bot/flint/blob/master/docs/example-ngrok.md)
+* [**Basic Express with NGROK Example**](/docs/example-ngrok.md)
 
-* [**Advanced Express Example**](https://github.com/flint-bot/flint/blob/master/docs/example-restify.md)
+* [**Advanced Express Example**](/docs/example-restify.md)
 
-* [**Restify Example**](https://github.com/flint-bot/flint/blob/master/docs/example-restify.md)
+* [**Restify Example**](/docs/example-restify.md)
 
 _More examples coming soon!_
 ## Overview

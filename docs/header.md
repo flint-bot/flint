@@ -13,9 +13,13 @@ class methods and library structure.
 * Flint no longer supports tokens from non Bot Accounts. This has become
 necessary due to the various difference between a bot and person token.
 Additionally Cisco does not support nor endorse using a person token for bots.
-Applications that require this function should be defined as a "App"
-integration. If you are looking for a framework that uses a "person" token and
-integrates easier into "App" integrations, check out node-sparky.
+Applications that require this functionality should be defined as a "App"
+integration. You can read more about the differences between bots and apps
+[here](https://developer.ciscospark.com/bots.html#bots-vs-integrations). If you
+are looking for a framework that uses a "person" token and integrates easier
+into "App" integrations, check out either
+[node-sparky](https://github.com/flint-bot/sparky) or the Cisco
+[spark-js-sdk](https://github.com/ciscospark/spark-js-sdk).
 
 **See [CHANGELOG.md](/CHANGELOG.md) for details on changes to versions of Flint.**
 
