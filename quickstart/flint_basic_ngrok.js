@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const config = {
   token: 'abcdefg12345abcdefg12345abcdefg12345abcdefg12345abcdefg12345',
   webhookSecret: 'somesecr3t',
-  webhookUrl: 'http://example.com/webhook',
+  webhookUrl: 'http://abcdefg.ngrok.io/webhook',
   port: 8080,
 };
 

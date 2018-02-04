@@ -8,14 +8,12 @@ class Storage {
   }
 
   // called by flint when starting...
-  start() {
-    // TODO
+  static start() {
     return when(true);
   }
 
   // called by flint when stopping...
-  stop() {
-    // TODO
+  static stop() {
     return when(true);
   }
 

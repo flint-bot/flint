@@ -22,6 +22,24 @@ class Logger {
     }
   }
 
+  error(message) {
+    if (message) {
+      this.winston.error(message);
+    }
+  }
+
+  warn(message) {
+    if (message) {
+      this.winston.warn(message);
+    }
+  }
+
+  info(message) {
+    if (message) {
+      this.winston.info(message);
+    }
+  }
+
 }
 
 module.exports = Logger;

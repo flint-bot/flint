@@ -1,6 +1,7 @@
-const Flint = require('../');
-const express = require('express');
-const bodyParser = require('body-parser');
+## Example Template Using Restify
+```js
+const Flint = require('node-flint');
+const Restify = require('restify');
 
 // config
 const config = {
@@ -18,15 +19,15 @@ flint.hears('hello', (bot, trigger) => {
   bot.message.say().markdown(`**Hello** ${trigger.personDisplayName}!`);
 });
 
-// setup express
-const app = express();
-app.use(bodyParser.json());
+// setup restify
+const server = Restify.createServer();
+server.use(Restify.bodyParser());
 
 // add route for path that is listening for web hooks
-app.post('/webhook', flint.spark.webhookListen());
+server.post('/webhook', flint.spark.webhookListen());
 
-// start express server
-const server = app.listen(config.port, () => {
+// start restify server
+server.listen(config.port, () => {
   // start flint
   flint.start();
   console.log(`Flint listening on port ${config.port}`);
@@ -37,3 +38,4 @@ process.on('SIGINT', () => {
   console.log('stopping...');
   server.close();
 });
+```
