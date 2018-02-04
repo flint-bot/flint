@@ -7,7 +7,7 @@ to learn about The more advanced features.
 
 * [**Basic Express with NGROK Example**](/docs/example-ngrok.md)
 
-* [**Advanced Express Example**](/docs/example-restify.md)
+* [**Advanced Express Example**](/docs/example-advanced.md)
 
 * [**Restify Example**](/docs/example-restify.md)
 
