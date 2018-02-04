@@ -38,7 +38,7 @@ class Logger {
 
   // message, meta
   error(...args) {
-    const message = args.length > 0 ? args.shift() : false;
+    const message = args.length > 0 ? args[0] : false;
 
     if (message) {
       this.winston.error(...args);
