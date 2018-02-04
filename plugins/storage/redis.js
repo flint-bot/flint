@@ -20,7 +20,7 @@ class Storage {
   }
 
   // called by flint when starting...
-  static start() {
+  start() {
     return when(true);
   }
 

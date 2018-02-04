@@ -8,12 +8,12 @@ class Storage {
   }
 
   // called by flint when starting...
-  static start() {
+  start() {
     return when(true);
   }
 
   // called by flint when stopping...
-  static stop() {
+  stop() {
     return when(true);
   }
 
