@@ -8,6 +8,7 @@ than includes two objects. The bot object, and the trigger object.
 A simple example of a flint.hears() function setup:
 
 ```js
+// case insensitive matches on first word in message (that is not bot mention)
 flint.hears('hello', (bot, trigger) => {
   bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
 });
@@ -16,8 +17,9 @@ flint.hears('hello', (bot, trigger) => {
 Regular Expression Example:
 
 ```js
+// responds to any mention that includes the word 'beer'
 flint.hears(/(^| )beer( |.|$)/i, (bot, trigger) => {
-  bot.message.say().markdown(`Enjoy a beer, ${trigger.person.displayName}! 🍻'`);
+  bot.message.say().markdown(`Enjoy a beer, ${trigger.person.displayName}! 🍻`);
 });
 ```
 

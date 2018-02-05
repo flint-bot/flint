@@ -145,7 +145,7 @@ Regular Expression Example:
 
 ```js
 flint.hears(/(^| )beer( |.|$)/i, (bot, trigger) => {
-  bot.message.say().markdown(`Enjoy a beer, ${trigger.person.displayName}! 🍻'`);
+  bot.message.say().markdown(`Enjoy a beer, ${trigger.person.displayName}! 🍻`);
 });
 ```
 
