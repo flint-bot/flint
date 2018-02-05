@@ -141,6 +141,36 @@ flint.hears('hello', (bot, trigger) => {
 });
 ```
 
+Regular Expression Example:
+
+```js
+flint.hears(/(^| )beer( |.|$)/i, (bot, trigger) => {
+  bot.message.say().markdown(`Enjoy a beer, ${trigger.person.displayName}! 🍻'`);
+});
+```
+
+Array Expression Example:
+
+```js
+// matches on any conversations with bot that includes all the words in the array
+flint.hears(['must', 'include', 'these', 'words'], (bot, trigger) => {
+  bot.message.say().markdown('Some text here...');
+});
+```
+
+Priority example:
+
+```js
+flint.hears('hello', (bot, trigger) => {
+  bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
+});
+
+// catch all that only triggers if a lower priority hears statement does not match...
+flint.hears(/.*/, (bot, trigger) => {
+  bot.message.say().markdown(`I am not sure what you meant ${trigger.person.displayName}. Can you please try asking your question another way?`);
+}, 10);
+```
+
 #### Bot Object
 
 The "bot" object returned in the callback is where all bot actions are executed
