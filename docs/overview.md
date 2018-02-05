@@ -204,11 +204,10 @@ flint.start();
 ```
 
 ## Logging
-By default, the logging subsystem uses a console based logger directed at the
-console. Other backend logging systems are possible by
-referencing any one of the built-in logging modules and passing it to the
-`flint.use()` method. Custom logging modules can be created by referencing
-the template at `plugins/logging/template.js`
+By default, the logging subsystem uses a console based logger. Other backend
+logging systems are possible by loading any one of the built-in plugins and
+passing it to the `flint.use()` method. Custom logging plugins can be created
+by referencing the template at `plugins/logging/template.js`
 
 ### Winston Logger
 
@@ -248,7 +247,7 @@ flint.start();
 
 
 ## Storage
-The storage system used in flint is a simple key/value store and resolves around
+The storage system used in flint is a simple key/value store and revolves around
 these 3 methods:
 
 * `bot.store(key, value)` - Store a value to a bot instance where 'key' is a
@@ -366,7 +365,8 @@ flint.start();
 
 ## Authoring Plugins
 
-The Flint plugin architecture currently supports the following types with others being added in future updates.
+The Flint plugin architecture currently supports the following types with others
+being added in future updates.
 
 * Authorization
 * Logging
@@ -459,7 +459,7 @@ types are inserted._
 ### Working Directly with Spark Spaces
 
 ```js
-flint.getBot({ roomId: 'abcdefg12345abcdefg12345abcdefg12345abcdefg12345abcdefg12345' })
+flint.query({ roomId: 'abcdefg12345abcdefg12345abcdefg12345abcdefg12345abcdefg12345' })
   .then(bot => {
     bot.message.say().markdown('**Hello Room**');
   })
@@ -487,7 +487,7 @@ address. This can be done from the `bot` or `flint` classes.
 For example:
 
 ```js
-bot.send('test@example.com').markdown('**Hello** there!');
+bot.message.send('test@example.com').markdown('**Hello** there!');
 ```
 
 or...
