@@ -28,7 +28,8 @@ class Storage {
 
   // called by flint when stopping...
   stop() {
-    return this.client.quit();
+    this.client.quit();
+    return when(true);
   }
 
   // name, key, [val]
