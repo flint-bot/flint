@@ -46,6 +46,13 @@ into "App" integrations, check out either
   - [Redis Store](#redis-store)
   - [Mongo Store](#mongo-store)
 - [Authoring Plugins](#authoring-plugins)
+- [Flint Advanced Operations](#flint-advanced-operations)
+  - [Working Directly with Spark Spaces](#working-directly-with-spark-spaces)
+  - [Spark API Interaction](#spark-api-interaction)
+  - [Sending Messages Directly to Spark User in a 1:1 Direct Room](#sending-messages-directly-to-spark-user-in-a-11-direct-room)
+  - [Creating a New Room](#creating-a-new-room)
+  - [Conversations and Dialogs](#conversations-and-dialogs)
+  - [NLP Utilities](#nlp-utilities)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ## Installation
@@ -144,7 +151,51 @@ In the above example, we are replying to the user using the
 `bot.message.say().markdown()` action to reply with a "Hello" and addressing
 the user that triggered the phrase by their display name.
 
-_**See the Bot documentation for other actions that are possible.**_
+The schema of the bot object is structured like this:
+
+```js
+{
+  room: {
+    info: {
+      id: 'NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk',
+      title: 'My Room',
+      type: 'group',
+      isLocked: false,
+      sipAddress: '5554441212@meet.ciscospark.com',
+      lastActivity: Date,
+      creatorId: 'NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk',
+      created: Date,
+    },
+    exit: Function,
+    moderate: Function,
+    unmoderate: Function,
+  },
+  membership: {
+    info: {
+      id: 'NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk',
+      roomId: 'NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk',
+      personId: 'NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk',
+      personEmail: 'mybot@sparkbot.io',
+      personDisplayName: 'MyBot',
+      personOrgId: 'NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk',
+      isModerator: false,
+      isMonitor: false,
+      created: Date,
+    },
+    add: Function,
+    remove: Function,
+  },
+  message: {
+    say: Function,
+    send: Function,
+  },
+  store: Function,
+  recall: Function,
+  forget: Function,
+}
+```
+
+_**See the Bot documentation for details on actions that are possible.**_
 
 #### Trigger Object
 
@@ -500,6 +551,60 @@ Spark Space ID (roomId):
 _For a more detailed example of this, you can reference the
 [example-advanced.js](/docs/example-advanced.md) app to see how various plugin
 types are inserted._
+
+## Flint Advanced Operations
+
+### Working Directly with Spark Spaces
+
+```js
+flint.getBot({ roomId: 'abcdefg12345abcdefg12345abcdefg12345abcdefg12345abcdefg12345' })
+  .then(bot => {
+    bot.message.say().markdown('**Hello Room**');
+  })
+```
+
+### Spark API Interaction
+
+Flint uses [node-sparky](https://github.com/flint-bot/sparky) as its
+underlying interface to the Spark API. There may be occasions when there is a
+need to perform an API operation not directly exposed from Flint. This can be
+accomplished by accessing `flint.spark` and referencing the documentation for
+node-sparky. For example:
+
+```js
+flint.spark.teamsGet()
+  .then(teams => console.log(JSON.stringify(teams, null, 2)));
+```
+
+### Sending Messages Directly to Spark User in a 1:1 Direct Room
+
+While replying to user initiated messages is the primary function of the
+`flint.hears` method, you can also send messages directly to a user by email
+address. This can be done from the `bot` or `flint` classes.
+
+For example:
+
+```js
+bot.send('test@example.com').markdown('**Hello** there!');
+```
+
+or...
+
+```js
+flint.send('test@example.com').markdown('**Hello** there!');
+```
+
+### Creating a New Room
+
+_Info to be added soon..._
+
+### Conversations and Dialogs
+
+_Info to be added soon..._
+
+### NLP Utilities
+
+_Info to be added soon..._
 
 # Flint Reference
 
