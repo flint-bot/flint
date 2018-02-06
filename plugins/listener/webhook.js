@@ -14,13 +14,13 @@ class Listener {
 
   start() {
     if (!this.flint.active) {
-      this.flint.spark.on('memberships-created', (data, bodyObj) => this.flint.onMembershipCreated(data, bodyObj));
-      this.flint.spark.on('memberships-updated', (data, bodyObj) => this.flint.onMembershipUpdated(data, bodyObj));
-      this.flint.spark.on('memberships-deleted', (data, bodyObj) => this.flint.onMembershipDeleted(data, bodyObj));
-      this.flint.spark.on('messages-created', (data, bodyObj) => this.flint.onMessageCreated(data, bodyObj));
-      this.flint.spark.on('messages-deleted', (data, bodyObj) => this.flint.onMessageDeleted(data, bodyObj));
-      this.flint.spark.on('rooms-created', (data, bodyObj) => this.flint.onRoomsCreated(data, bodyObj));
-      this.flint.spark.on('rooms-updated', (data, bodyObj) => this.flint.onRoomsUpdated(data, bodyObj));
+      this.flint.spark.on('memberships-created', data => this.flint.onMembershipCreated(data));
+      this.flint.spark.on('memberships-updated', data => this.flint.onMembershipUpdated(data));
+      this.flint.spark.on('memberships-deleted', data => this.flint.onMembershipDeleted(data));
+      this.flint.spark.on('messages-created', data => this.flint.onMessageCreated(data));
+      this.flint.spark.on('messages-deleted', data => this.flint.onMessageDeleted(data));
+      this.flint.spark.on('rooms-created', data => this.flint.onRoomsCreated(data));
+      this.flint.spark.on('rooms-updated', data => this.flint.onRoomsUpdated(data));
     }
   }
 
