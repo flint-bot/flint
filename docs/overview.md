@@ -173,7 +173,7 @@ with the bot. Other plugins can be loaded that inspect the trigger object in
 order to allow or deny users from interacting with the bot based on any property
 found in the trigger object. Other backend authorizations are possible by
 referencing any one of the built-in storage modules and passing it to the
-`flint.use()` method. Custom storage modules can be created by referencing
+`flint.use()` method. Custom authorization modules can be created by referencing
 the template at `plugins/auth/template.js`
 
 ### Domain Name Authorization

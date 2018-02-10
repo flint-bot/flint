@@ -9,8 +9,8 @@ const jsonStringify = when.lift(JSON.stringify);
 class Storage {
 
   constructor(flint) {
-    // validate required config
-    if (!flint.config.storage) {
+    // validate required config object
+    if (!(_.has(flint.config, 'storage') && typeof flint.config.storage === 'object')) {
       throw new Error('invalid or missing config');
     }
 
@@ -18,25 +18,42 @@ class Storage {
 
     this.config = flint.config.storage;
 
-    this.client = redis.createClient(this.config);
+    // validate required config object props
+    const validUrl = (url) => {
+      const isString = (typeof url === 'string');
+      const urlRe = /^redis[s]?:\/\/.*/i;
+      return (isString && urlRe.test(url));
+    };
+    if (!(_.has(this.config, 'url') && validUrl(this.config.url))) {
+      throw new Error('invalid or malformed redis connection string');
+    }
+
+    this.connected = false;
   }
 
   // called by flint when starting...
   start() {
+    if (!this.connected) {
+      this.client = redis.createClient(this.config);
+      this.connected = true;
+    }
     return when(true);
   }
 
   // called by flint when stopping...
   stop() {
-    this.client.quit();
+    if (this.connected) {
+      this.client.quit();
+      this.connected = false;
+    }
     return when(true);
   }
 
   // name, key, [val]
   create(...args) {
-    // reject if flint is not active
-    if (!this.flint.active) {
-      return when.reject(new Error('flint is currently stopped'));
+    // reject if flint and/or db is not active
+    if (!this.flint.active || !this.connected) {
+      return when.reject(new Error('flint or redis is currently stopped'));
     }
 
     const name = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
@@ -54,7 +71,7 @@ class Storage {
             }
           })));
       }
-      return when.promise((resolve, reject) => this.client.hset(name, key, '', (err, result) => {
+      return when.promise((resolve, reject) => this.client.hset(name, key, null, (err, result) => {
         if (err) {
           reject(err);
         } else {
@@ -67,9 +84,9 @@ class Storage {
 
   // name, [key]
   read(...args) {
-    // reject if flint is not active
-    if (!this.flint.active) {
-      return when.reject(new Error('flint is currently stopped'));
+    // reject if flint and/or db is not active
+    if (!this.flint.active || !this.connected) {
+      return when.reject(new Error('flint or redis is currently stopped'));
     }
 
     const name = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;
@@ -109,9 +126,9 @@ class Storage {
 
   // name, [key]
   delete(...args) {
-    // reject if flint is not active
-    if (!this.flint.active) {
-      return when.reject(new Error('flint is currently stopped'));
+    // reject if flint and/or db is not active
+    if (!this.flint.active || !this.connected) {
+      return when.reject(new Error('flint or redis is currently stopped'));
     }
 
     const name = args.length > 0 && typeof args[0] === 'string' ? args.shift() : false;

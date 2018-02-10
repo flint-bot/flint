@@ -42,6 +42,11 @@ flint.hears('hello', (bot, trigger) => {
   bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
 });
 
+// catch all (priority 10) for bot mentions that do not match
+flint.hears(/.*/, (bot, trigger) => {
+  bot.message.say('I did not undertand that.');
+}, 10);
+
 // setup express
 const app = express();
 app.use(bodyParser.json());
