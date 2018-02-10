@@ -205,6 +205,35 @@ flint.use('authorization', DomainAuth);
 flint.start();
 ```
 
+### OrgId Authorization
+
+**Example:**
+
+```js
+// require Organization authorization plugin
+const OrganizationAuth = require('node-flint/plugins/auth/organization');
+
+// add authorization object to flint config
+const config = {
+  token: 'abcdefg12345abcdefg12345abcdefg12345abcdefg12345abcdefg12345',
+  webhookSecret: 'somesecr3t',
+  webhookUrl: 'http://example.com/webhook',
+  port: 8080,
+  authorization: {
+    orgIds: ['abcdefg12345abcdefg12345abcdefg12345abcdefg12345abcdefg12345', 'abcdefg12345abcdefg12345abcdefg12345abcdefg12345abcdefg12345'],
+  },
+};
+
+// init flint
+const flint = new Flint(config);
+
+// load authorization module
+flint.use('authorization', OrganizationAuth);
+
+// start flint
+flint.start();
+```
+
 ## Logging
 By default, the logging subsystem uses a console based logger. Other backend
 logging systems are possible by loading any one of the built-in plugins and
@@ -350,7 +379,10 @@ const config = {
   webhookUrl: 'http://example.com/webhook',
   port: 8080,
   storage: {
-    url: 'mongodb://localhost',
+    url: 'mongodb://localhost:27017/flintBot',
+    options: {
+      useMongoClient: true,
+    },
   },
 };
 
