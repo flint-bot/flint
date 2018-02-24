@@ -51,6 +51,7 @@ into "App" integrations, check out either
   - [Working Directly with Spark Spaces](#working-directly-with-spark-spaces)
   - [Spark API Interaction](#spark-api-interaction)
   - [Sending Messages Directly to Spark User in a 1:1 Direct Room](#sending-messages-directly-to-spark-user-in-a-11-direct-room)
+  - [Memberships](#memberships)
   - [Creating a New Room](#creating-a-new-room)
   - [Conversations and Dialogs](#conversations-and-dialogs)
   - [NLP Utilities](#nlp-utilities)
@@ -88,7 +89,7 @@ const config = {
 const flint = new Flint(config);
 
 // string match on 'hello'
-flint.hears('hello', (bot, trigger) => {
+flint.hears.phrase('hello', (bot, trigger) => {
   bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
 });
 
@@ -134,11 +135,11 @@ defines the phrase or pattern the bot is listening for and what actions to take
 when that phrase or pattern is matched. The flint.hears function gets a callback
 than includes two objects. The bot object, and the trigger object.
 
-A simple example of a flint.hears() function setup:
+A simple example of a flint.hears function setup:
 
 ```js
 // case insensitive matches on first word in message (that is not bot mention)
-flint.hears('hello', (bot, trigger) => {
+flint.hears.phrase('hello', (bot, trigger) => {
   bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
 });
 ```
@@ -147,7 +148,7 @@ Regular Expression Example:
 
 ```js
 // responds to any mention that includes the word 'beer'
-flint.hears(/(^| )beer( |.|$)/i, (bot, trigger) => {
+flint.hears.pattern(/(^| )beer( |.|$)/i, (bot, trigger) => {
   bot.message.say().markdown(`Enjoy a beer, ${trigger.person.displayName}! 🍻`);
 });
 ```
@@ -156,7 +157,7 @@ Array Expression Example:
 
 ```js
 // matches on any conversations with bot that includes all the words in the array
-flint.hears(['must', 'include', 'these', 'words'], (bot, trigger) => {
+flint.hears.words(['must', 'include', 'these', 'words'], (bot, trigger) => {
   bot.message.say().markdown('Some text here...');
 });
 ```
@@ -164,12 +165,12 @@ flint.hears(['must', 'include', 'these', 'words'], (bot, trigger) => {
 Priority example:
 
 ```js
-flint.hears('hello', (bot, trigger) => {
+flint.hears.phrase('hello', (bot, trigger) => {
   bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
 });
 
 // catch all that only triggers if a lower priority hears statement does not match...
-flint.hears(/.*/, (bot, trigger) => {
+flint.hears.pattern(/.*/, (bot, trigger) => {
   bot.message.say().markdown(`I am not sure what you meant ${trigger.person.displayName}. Can you please try asking your question another way?`);
 }, 10);
 ```
@@ -202,6 +203,7 @@ The schema of the bot object is structured like this:
     exit: Function,
     moderate: Function,
     unmoderate: Function,
+    memberships: Function,
   },
   membership: {
     info: {
@@ -265,22 +267,7 @@ following:
     "text": "MyBot Hello!",
     "html": "<p><spark-mention data-object-type=\"person\" data-object-id=\"NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk\">MyBot</spark-mention> Hello!</p>",
     "files": [],
-    "mentionedPeople": [
-      {
-        "id": "NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk",
-        "emails": [
-          "mybot@sparkbot.io"
-        ],
-        "displayName": "BotTester",
-        "avatar": "https://728ea12f265d8b084b76-f2d062319207b10569fafcec8d088a43.ssl.cf1.rackcdn.com/V1~NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk==~80",
-        "orgId": "NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk",
-        "created": "2017-10-27T00:01:09.387Z",
-        "type": "bot",
-        "email": "mybot@sparkbot.io",
-        "username": "MyBot",
-        "domain": "sparkbot.io"
-      }
-    ],
+    "mentionedPeople": ["NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk"],
     "created": "2018-02-04T22:37:41.965Z",
     "normalized": "hello",
     "array": [
@@ -434,6 +421,8 @@ across restarts.
 _**See docs for store, recall, forget for more details.**_
 
 ### File Store
+
+_Note: Note yet implemented_
 
 **Example:**
 
@@ -643,6 +632,8 @@ flint.spark.teamsGet()
 
 ### Sending Messages Directly to Spark User in a 1:1 Direct Room
 
+_Note: This will likely be changing once conversation engine is added.._
+
 While replying to user initiated messages is the primary function of the
 `flint.hears` method, you can also send messages directly to a user by email
 address. This can be done from the `bot` or `flint` classes.
@@ -658,6 +649,23 @@ or...
 ```js
 flint.send('test@example.com').markdown('**Hello** there!');
 ```
+
+### Memberships
+
+Flint's membership objects for each room it has been added to:
+
+```js
+flint.memberships()
+  .then(memberships => { ... });
+```
+
+Memberships of others in a Spark Space:
+
+```js
+bot.room.memberships()
+  .then(memberships => { ... });
+```
+
 
 ### Creating a New Room
 

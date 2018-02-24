@@ -132,7 +132,7 @@ class WebSocket {
     }
   }
 
-  connect() {
+  start() {
     this.refreshToken();
 
     // query device
@@ -156,6 +156,10 @@ class WebSocket {
         return when(true);
       });
   }
+
+  stop() {}
+
+  init() {}
 
 }
 

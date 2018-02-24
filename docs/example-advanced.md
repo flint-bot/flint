@@ -40,12 +40,12 @@ flint.use('logger', WinstonLogger);
 flint.use('authorization', DomainAuth);
 
 // string match on 'hello'
-flint.hears('hello', (bot, trigger) => {
+flint.hears.phrase('hello', (bot, trigger) => {
   bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
 });
 
 // catch all (priority 10) for bot mentions that do not match
-flint.hears(/.*/, (bot, trigger) => {
+flint.hears.pattern(/.*/, (bot, trigger) => {
   bot.message.say('I did not undertand that.');
 }, 10);
 
