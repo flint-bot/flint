@@ -90,7 +90,7 @@ const flint = new Flint(config);
 
 // string match on 'hello'
 flint.hears.phrase('hello', (bot, trigger) => {
-  bot.message.say(`**Hello** ${trigger.person.displayName}!`).markdown();
+  bot.say(`**Hello** ${trigger.person.displayName}!`).markdown();
 });
 
 // setup express
@@ -140,7 +140,7 @@ A simple example of a flint.hears function setup:
 ```js
 // case insensitive matches on first word in message (that is not bot mention)
 flint.hears.phrase('hello', (bot, trigger) => {
-  bot.message.say(`**Hello** ${trigger.person.displayName}!`).markdown();
+  bot.say(`**Hello** ${trigger.person.displayName}!`).markdown();
 });
 ```
 
@@ -149,7 +149,7 @@ Regular Expression Example:
 ```js
 // responds to any mention that includes the word 'beer'
 flint.hears.pattern(/(^| )beer( |.|$)/i, (bot, trigger) => {
-  bot.message.say(`Enjoy a beer, ${trigger.person.displayName}! 🍻`).text();
+  bot.say(`Enjoy a beer, ${trigger.person.displayName}! 🍻`).text();
 });
 ```
 
@@ -158,7 +158,7 @@ Array Expression Example:
 ```js
 // matches on any conversations with bot that includes all the words in the array
 flint.hears.words(['must', 'include', 'these', 'words'], (bot, trigger) => {
-  bot.message.say('Some text here...').markdown();
+  bot.say('Some text here...').markdown();
 });
 ```
 
@@ -166,12 +166,12 @@ Priority example:
 
 ```js
 flint.hears.phrase('hello', (bot, trigger) => {
-  bot.message.say(`**Hello** ${trigger.person.displayName}!`).markdown();
+  bot.say(`**Hello** ${trigger.person.displayName}!`).markdown();
 });
 
 // catch all that only triggers if a lower priority hears statement does not match...
 flint.hears.pattern(/.*/, (bot, trigger) => {
-  bot.message.say(`I am not sure what you meant ${trigger.person.displayName}. Can you please try asking your question another way?`).markdown();
+  bot.say(`I am not sure what you meant ${trigger.person.displayName}. Can you please try asking your question another way?`).markdown();
 }, 10);
 ```
 
@@ -182,7 +182,7 @@ as it relates to the space that triggered the callback based on the matching
 phrase.
 
 In the above example, we are replying to the user using the
-`bot.message.say().markdown()` action to reply with a "Hello" and addressing
+`bot.say().markdown()` action to reply with a "Hello" and addressing
 the user that triggered the phrase by their display name.
 
 The schema of the bot object is structured like this:
@@ -613,7 +613,7 @@ types are inserted._
 ```js
 flint.query({ roomId: 'abcdefg12345abcdefg12345abcdefg12345abcdefg12345abcdefg12345' })
   .then(bot => {
-    bot.message.say('**Hello Room**').markdown();
+    bot.say('**Hello Room**').markdown();
   })
 ```
 
@@ -636,18 +636,19 @@ _Note: This will likely be changing once conversation engine is added.._
 
 While replying to user initiated messages is the primary function of the
 `flint.hears` method, you can also send messages directly to a user by email
-address. This can be done from the `bot` or `flint` classes.
+address. This can be done from the `bot` or `flint` classes. This returns a
+'bot' object for the 1:1 space.
 
 For example:
 
 ```js
-bot.message.send('test@example.com', '**Hello** there!').markdown();
+bot.message('test@example.com', '**Hello** there!').markdown();
 ```
 
 or...
 
 ```js
-flint.send('test@example.com', '**Hello** there!').markdown();
+flint.message('test@example.com', '**Hello** there!').markdown();
 ```
 
 ### Memberships
