@@ -90,7 +90,7 @@ const flint = new Flint(config);
 
 // string match on 'hello'
 flint.hears.phrase('hello', (bot, trigger) => {
-  bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
+  bot.message.say(`**Hello** ${trigger.person.displayName}!`).markdown();
 });
 
 // setup express
@@ -140,7 +140,7 @@ A simple example of a flint.hears function setup:
 ```js
 // case insensitive matches on first word in message (that is not bot mention)
 flint.hears.phrase('hello', (bot, trigger) => {
-  bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
+  bot.message.say(`**Hello** ${trigger.person.displayName}!`).markdown();
 });
 ```
 
@@ -149,7 +149,7 @@ Regular Expression Example:
 ```js
 // responds to any mention that includes the word 'beer'
 flint.hears.pattern(/(^| )beer( |.|$)/i, (bot, trigger) => {
-  bot.message.say().markdown(`Enjoy a beer, ${trigger.person.displayName}! 🍻`);
+  bot.message.say(`Enjoy a beer, ${trigger.person.displayName}! 🍻`).text();
 });
 ```
 
@@ -158,7 +158,7 @@ Array Expression Example:
 ```js
 // matches on any conversations with bot that includes all the words in the array
 flint.hears.words(['must', 'include', 'these', 'words'], (bot, trigger) => {
-  bot.message.say().markdown('Some text here...');
+  bot.message.say('Some text here...').markdown();
 });
 ```
 
@@ -166,12 +166,12 @@ Priority example:
 
 ```js
 flint.hears.phrase('hello', (bot, trigger) => {
-  bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
+  bot.message.say(`**Hello** ${trigger.person.displayName}!`).markdown();
 });
 
 // catch all that only triggers if a lower priority hears statement does not match...
 flint.hears.pattern(/.*/, (bot, trigger) => {
-  bot.message.say().markdown(`I am not sure what you meant ${trigger.person.displayName}. Can you please try asking your question another way?`);
+  bot.message.say(`I am not sure what you meant ${trigger.person.displayName}. Can you please try asking your question another way?`).markdown();
 }, 10);
 ```
 
@@ -613,7 +613,7 @@ types are inserted._
 ```js
 flint.query({ roomId: 'abcdefg12345abcdefg12345abcdefg12345abcdefg12345abcdefg12345' })
   .then(bot => {
-    bot.message.say().markdown('**Hello Room**');
+    bot.message.say('**Hello Room**').markdown();
   })
 ```
 
@@ -641,13 +641,13 @@ address. This can be done from the `bot` or `flint` classes.
 For example:
 
 ```js
-bot.message.send('test@example.com').markdown('**Hello** there!');
+bot.message.send('test@example.com', '**Hello** there!').markdown();
 ```
 
 or...
 
 ```js
-flint.send('test@example.com').markdown('**Hello** there!');
+flint.send('test@example.com', '**Hello** there!').markdown();
 ```
 
 ### Memberships

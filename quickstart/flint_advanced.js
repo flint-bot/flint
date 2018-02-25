@@ -39,12 +39,12 @@ flint.use('authorization', DomainAuth);
 
 // string match on 'hello'
 flint.hears.phrase('hello', (bot, trigger) => {
-  bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
+  bot.message.say(`**Hello** ${trigger.person.displayName}!`).markdown();
 });
 
 // catch all (priority 10) for bot mentions that do not match
 flint.hears.pattern(/.*/, (bot, trigger) => {
-  bot.message.say('I did not undertand that.');
+  bot.message.say('I did not undertand that.').text();
 }, 10);
 
 // setup express

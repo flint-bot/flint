@@ -15,7 +15,7 @@ const flint = new Flint(config);
 
 // string match on 'hello'
 flint.hears.phrase('hello', (bot, trigger) => {
-  bot.message.say().markdown(`**Hello** ${trigger.person.displayName}!`);
+  bot.message.say(`**Hello** ${trigger.person.displayName}!`).markdown();
 });
 
 // setup express
