@@ -1,6 +1,6 @@
 {
   "name": "node-flint",
-  "version": "4.6.4",
+  "version": "4.6.5",
   "description": "Bot SDK for Node JS",
   "main": "index.js",
   "scripts": {
