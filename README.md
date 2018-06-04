@@ -220,13 +220,12 @@ The schema of the bot object is structured like this:
     add: Function,
     remove: Function,
   },
-  message: {
-    say: Function,
-    send: Function,
-  },
+  say: Function,
+  message: Function,
   store: Function,
   recall: Function,
   forget: Function,
+  destroy: Function,
 }
 ```
 
