@@ -238,6 +238,7 @@ following:
 
 ```js
 {
+  personId: String,
   person: {
     id: String,
     email: String,
@@ -254,10 +255,12 @@ following:
     status: String,
     type: String,
   },
+  roomId: String,
   room: {
     id: String,
     type: String,
   },
+  messageId: String,
   message: {
     id: String,
     text: String,
