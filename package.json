@@ -14,7 +14,8 @@
   "keywords": [
     "bot",
     "sdk",
-    "spark"
+    "spark",
+    "webex teams"
   ],
   "author": "Nicholas Marus <nmarus@gmail.com>",
   "license": "MIT",
