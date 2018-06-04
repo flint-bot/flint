@@ -1,6 +1,6 @@
 # node-flint (v5)
 
-### Spark Bot SDK for Node JS
+### Webex Teams (formerly Spark) Bot SDK for Node JS
 
 ## News
 
@@ -15,7 +15,7 @@ necessary due to the various difference between a bot and person token.
 Additionally Cisco does not support nor endorse using a person token for bots.
 Applications that require this functionality should be defined as a "App"
 integration. You can read more about the differences between bots and apps
-[here](https://developer.ciscospark.com/bots.html#bots-vs-integrations). If you
+[here](https://developer.webex.com/bots.html#bots-vs-integrations). If you
 are looking for a framework that uses a "person" token and integrates easier
 into "App" integrations, check out either
 [node-sparky](https://github.com/flint-bot/sparky) or the Cisco
@@ -48,9 +48,9 @@ into "App" integrations, check out either
   - [Mongo Store](#mongo-store)
 - [Authoring Plugins](#authoring-plugins)
 - [Flint Advanced Operations](#flint-advanced-operations)
-  - [Working Directly with Spark Spaces](#working-directly-with-spark-spaces)
-  - [Spark API Interaction](#spark-api-interaction)
-  - [Sending Messages Directly to Spark User in a 1:1 Direct Room](#sending-messages-directly-to-spark-user-in-a-11-direct-room)
+  - [Working Directly with Webex Teams Spaces](#working-directly-with-webex-teams-spaces)
+  - [Webex Teams API Interaction](#webex-teams-api-interaction)
+  - [Sending Messages Directly to Webex Teams User in a 1:1 Direct Room](#sending-messages-directly-to-webex-teams-user-in-a-11-direct-room)
   - [Memberships](#memberships)
   - [Creating a New Room](#creating-a-new-room)
   - [Conversations and Dialogs](#conversations-and-dialogs)
@@ -591,7 +591,7 @@ After the plugin is added and validated, it is accessible from:
 * `flint.storage.delete(name, [key])`
 
 It is also mapped to the bot object(s) with the 'name' argument forced to the
-Spark Space ID (roomId):
+Webex Teams Space ID (roomId):
 
 * `bot.store(key, value)`
 * `bot.recall(key)`
@@ -603,7 +603,7 @@ types are inserted._
 
 ## Flint Advanced Operations
 
-### Working Directly with Spark Spaces
+### Working Directly with Webex Teams Spaces
 
 ```js
 flint.query({ roomId: 'abcdefg12345abcdefg12345abcdefg12345abcdefg12345abcdefg12345' })
@@ -612,10 +612,10 @@ flint.query({ roomId: 'abcdefg12345abcdefg12345abcdefg12345abcdefg12345abcdefg12
   })
 ```
 
-### Spark API Interaction
+### Webex Teams API Interaction
 
 Flint uses [node-sparky](https://github.com/flint-bot/sparky) as its
-underlying interface to the Spark API. There may be occasions when there is a
+underlying interface to the Webex Teams API. There may be occasions when there is a
 need to perform an API operation not directly exposed from Flint. This can be
 accomplished by accessing `flint.spark` and referencing the documentation for
 node-sparky. For example:
@@ -625,7 +625,7 @@ flint.spark.teamsGet()
   .then(teams => console.log(JSON.stringify(teams, null, 2)));
 ```
 
-### Sending Messages Directly to Spark User in a 1:1 Direct Room
+### Sending Messages Directly to Webex Teams User in a 1:1 Direct Room
 
 _Note: This will likely be changing once conversation engine is added.._
 
@@ -655,7 +655,7 @@ flint.memberships()
   .then(memberships => { ... });
 ```
 
-Memberships of others in a Spark Space:
+Memberships of others in a Webex Teams Space:
 
 ```js
 bot.room.memberships()
