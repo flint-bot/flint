@@ -236,47 +236,43 @@ _**See the Bot documentation for details on actions that are possible.**_
 The 'trigger' object returned in the callback will have content similar to the
 following:
 
-```json
+```js
 {
-  "person": {
-    "id": "NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk",
-    "email": "john.doe@example.com",
-    "username": "john.doe",
-    "domain": "example.com",
-    "emails": [
-      "john.doe@example.com"
+  person: {
+    id: 'some_person_id',
+     email: 'person@example.com',
+     username: 'person',
+     domain: 'example.com',
+     emails: [ 'person@example.com' ],
+     displayName: 'Some Person',
+     nickName: 'Some',
+     firstName: 'Some',
+     lastName: 'Person',
+     avatar: 'https://imageurl',
+     orgId: 'some_org_id',
+     created: '2016-10-17T19:24:15.163Z',
+     status: 'unknown',
+     type: 'person',
+  },
+  room: {
+    id: 'some_room_id',
+    type: 'group',
+  },
+  message: {
+    id: 'some_message_id',
+    text: 'BotTester Hello world world Nicholas Nick',
+    html: '<html message>',
+    files: [
+      { name: 'test1.csv', ext: 'csv', type: 'text/csv', binary: Buffer [], base64: 'base64 string for file' },
+      { name: 'test2.csv', ext: 'csv', type: 'text/csv', binary: Buffer [], base64: 'base64 string for file' },
     ],
-    "displayName": "John Doe",
-    "nickName": "John",
-    "firstName": "John",
-    "lastName": "Doe",
-    "avatar": "https://728ea12f265d8b084b76-f2d062319207b10569fafcec8d088a43.ssl.cf1.rackcdn.com/V1~NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk==~1600",
-    "orgId": "NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk",
-    "created": "2016-10-17T19:24:15.163Z",
-    "lastActivity": "2018-02-04T22:32:52.995Z",
-    "status": "active",
-    "type": "person"
+    mentionedPeople: [ 'some_id_1', 'some_id_2', 'some_id_3' ], // some_id1 would be the bot mention
+    created: '2018-06-04T13:24:33.795Z',
+    normalized: 'hello world world nicholas nick ',
+    array: [ 'hello', 'world', 'world', 'nicholas', 'nick' ],
+    words: [ 'hello', 'world', 'nicholas', 'nick' ],
   },
-  "room": {
-    "id": "NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk",
-    "type": "group"
-  },
-  "message": {
-    "id": "NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk",
-    "text": "MyBot Hello!",
-    "html": "<p><spark-mention data-object-type=\"person\" data-object-id=\"NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk\">MyBot</spark-mention> Hello!</p>",
-    "files": [],
-    "mentionedPeople": ["NDhmYy0zZDI3LTRjODEtOT1BMRS83NWTllNy04YWM1OTUyZmE4YTkY2lzY29zcGFyazovL3VzL1BFJk"],
-    "created": "2018-02-04T22:37:41.965Z",
-    "normalized": "hello",
-    "array": [
-      "hello"
-    ],
-    "words": [
-      "hello"
-    ]
-  },
-  "created": "2018-02-04T22:37:42.446Z"
+  created: '2018-06-04T13:24:35.148Z',
 }
 ```
 
