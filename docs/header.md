@@ -4,6 +4,14 @@
 
 ## News
 
+**6/21/18 IMPORTANT:**
+
+* On August 31st, 2018 all bots with the sparkbot.io domain name will be
+  renamed with a webex.bot domain. Today in flint, the code compares the bot's
+  email with the trigger email to filter out messages from itself. If this code
+  is running on August 31st the bot will start responding to its own messages.
+  Please update to Flint v4.7.x as soon as possible to avoid interruption. 
+
 **3/19/18 IMPORTANT:**
 
 * Note that Flint v4 is still using the node-sparky library version 3.x.
