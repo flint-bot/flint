@@ -4,6 +4,10 @@
 
 ## News
 
+**6/21/19 Deploying behind a firewall:**
+
+* Cisco has recently introduced support in the Webex Javascript SDK which allows applications to register to receive the message, membership, and room events via a socket instead of via wehbhoks.   This allows applications to be deployed behind firewalls and removes the requirement that webex bots and integrations must expose a public IP address to receive events.   To take advantage of this in your flint applications simply remove the `webhookUrl` field from the configuration object passed to the flint constructor.   If this field is not set, flint will register to listen for these events instead of creating webhooks.
+  
 **6/21/18 IMPORTANT:**
 
 * On August 31st, 2018 all bots with the sparkbot.io domain name will be
@@ -81,9 +85,12 @@ flint.hears('/hello', function(bot, trigger) {
 });
 
 // define express path for incoming webhooks
+// This is not necessary if webhookUrl is not set in the config
 app.post('/flint', webhook(flint));
 
 // start express server
+// This is not necessary if webhookUrl is not set in the config
+// unless the bot uses express for other reasons
 var server = app.listen(config.port, function () {
   flint.debug('Flint listening on port %s', config.port);
 });
@@ -91,7 +98,7 @@ var server = app.listen(config.port, function () {
 // gracefully shutdown (ctrl-c)
 process.on('SIGINT', function() {
   flint.debug('stoppping...');
-  server.close();
+  server.close();   // remove if not using webhooks and express
   flint.stop().then(function() {
     process.exit();
   });
@@ -144,7 +151,7 @@ of the chained 'then' functions.
 * `commands` : The commands that are ran when the `phrase` is heard.
 
 ## Authentication
-The token used to authenticate Flint to the Spark API is passed as part of the
+The token used to authenticate Flint to the Spark (now Webex) API is passed as part of the
 options used when instantiating the Flint class. To change or update the
 token, use the Flint#setSparkToken() method.
 
@@ -192,7 +199,7 @@ flint.storageDriver(redisDriver('redis://localhost'));
 **When using "Bot Accounts" the major differences are:**
 
 * Webhooks for message:created only trigger when the Bot is mentioned by name
-* Unable to read messages in rooms using the Spark API
+* Unable to read messages in rooms using the Spark (now Webex) API
 
 **Differences with trigger.args using Flint with a "Bot Account":**
 
@@ -354,8 +361,8 @@ Options Object
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | token | <code>string</code> |  | Spark Token. |
-| webhookUrl | <code>string</code> |  | URL that is used for SPark API to send callbacks. |
-| [webhookSecret] | <code>string</code> |  | If specified, inbound webhooks are authorized before being processed. |
+| webhookUrl | <code>string</code> |  | URL that is used for Spark API to send callbacks.  If this field is omitted, flint will use the webex javascript sdk to register to listen for the events via websocket instead.|
+| [webhookSecret] | <code>string</code> |  | If specified, inbound webhooks are authorized before being processed. This configuration is ignored if `webhookUrl` is not set.|
 | [messageFormat] | <code>string</code> | <code>&quot;text&quot;</code> | Default Spark message format to use with bot.say(). |
 | [maxPageItems] | <code>number</code> | <code>50</code> | Max results that the paginator uses. |
 | [maxConcurrent] | <code>number</code> | <code>3</code> | Max concurrent sessions to the Spark API |
@@ -367,8 +374,8 @@ Options Object
 | [queueSize] | <code>number</code> | <code>10000</code> | Size of the buffer that holds outbound requests. |
 | [requeueSize] | <code>number</code> | <code>10000</code> | Size of the buffer that holds outbound re-queue requests. |
 | [id] | <code>string</code> | <code>&quot;random&quot;</code> | The id this instance of flint uses. |
-| [webhookRequestJSONLocation] | <code>string</code> | <code>&quot;body&quot;</code> | The property under the Request to find the JSON contents. |
-| [removeWebhooksOnStart] | <code>Boolean</code> | <code>true</code> | If you wish to have the bot remove all account webhooks when starting. |
+| [webhookRequestJSONLocation] | <code>string</code> | <code>&quot;body&quot;</code> | The property under the Request to find the JSON contents. This configuration is ignored if `webhookUrl` is not set. |
+| [removeWebhooksOnStart] | <code>Boolean</code> | <code>true</code> | If you wish to have the bot remove all account webhooks when starting. This configuration is ignored if `webhookUrl` is not set. |
 
 <a name="Flint+setSparkToken"></a>
 

@@ -4,6 +4,10 @@
 
 ## News
 
+**6/21/19 Deploying behind a firewall:**
+
+* Cisco has recently introduced support in the Webex Javascript SDK which allows applications to register to receive the message, membership, and room events via a socket instead of via wehbhoks.   This allows applications to be deployed behind firewalls and removes the requirement that webex bots and integrations must expose a public IP address to receive events.   To take advantage of this in your flint applications simply remove the `webhookUrl` field from the configuration object passed to the flint constructor.   If this field is not set, flint will register to listen for these events instead of creating webhooks.
+
 **6/21/18 IMPORTANT:**
 
 * On August 31st, 2018 all bots with the sparkbot.io domain name will be
