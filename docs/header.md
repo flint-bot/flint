@@ -4,6 +4,10 @@
 
 ## News
 
+**10/25/19 Support for Adaptive Cards:**
+
+* Cisco recently introduced support for [Adaptive Cards](https://developer.webex.com/docs/api/guides/cards/) in the Webex Teams.   Bots can send cards, using the new `attachment` attribute of the message object. Cards are useful as an alternative to text messages and files in order to display or collect complex bits of information. Cards can be sent by passing an object to the bot.say() method that includes a valid attachment.   To process user input to cards, apps must implement a `flint.on('attachmentaction', ..)` function.   For more details see the [adaptive-card-example](./adaptive-card-example.md)
+
 **6/21/19 Deploying behind a firewall:**
 
 * Cisco has recently introduced support in the Webex Javascript SDK which allows applications to register to receive the message, membership, and room events via a socket instead of via wehbhoks.   This allows applications to be deployed behind firewalls and removes the requirement that webex bots and integrations must expose a public IP address to receive events.   To take advantage of this in your flint applications simply remove the `webhookUrl` field from the configuration object passed to the flint constructor.   If this field is not set, flint will register to listen for these events instead of creating webhooks.
