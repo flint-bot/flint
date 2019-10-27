@@ -14,6 +14,16 @@ var config = {
   port: 80
 };
 
+// init flint
+var flint = new Flint(config);
+flint.start();
+
+flint.on("initialized", async function () {
+  flint.debug("Flint initialized successfully! [Press CTRL-C to quit]");
+});
+
+
+
 // send an example card in response to any input
 flint.hears(/.*/, function(bot) {
   bot.say({
