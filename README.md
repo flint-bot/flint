@@ -4,6 +4,10 @@
 
 ## News
 
+**03/01/2020 Please consider the Webex Node Bot Framework:**
+
+* This framework is no longer being actively maintained by the original author.  Developers who are familiar with flint may consider trying the [webex-node-bot-framework](https://github.com/webex/webex-bot-node-framework).  While not 100% directly compatible with flint, this framework is inspired by flint and should be extremely familiar to developers who already use flint.   For more information see the [migration from flint guide](https://github.com/webex/webex-bot-node-framework/blob/master/docs/migrate-from-node-flint.md)
+
 **10/25/19 Support for Adaptive Cards:**
 
 * Cisco recently introduced support for [Adaptive Cards](https://developer.webex.com/docs/api/guides/cards/) in the Webex Teams.   Bots can send cards, using the new `attachment` attribute of the message object. Cards are useful as an alternative to text messages and files in order to display or collect complex bits of information. Cards can be sent by passing an object to the bot.say() method that includes a valid attachment.   To process user input to cards, apps must implement a `flint.on('attachmentaction', ..)` function.   For more details see the [adaptive-card-example](./docs/adaptive-card-example.md)
