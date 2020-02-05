@@ -22,7 +22,7 @@
   "author": "Nicholas Marus <nmarus@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "debug": "2.6.8",
+    "debug": "2.6.9",
     "lodash": "4.17.4",
     "mime-types": "2.1.15",
     "moment": "2.19.x",
