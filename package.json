@@ -27,7 +27,7 @@
     "mime-types": "2.1.15",
     "moment": "2.19.x",
     "node-sparky": "3.1.x",
-    "redis": "2.8.x",
+    "redis": "3.1.x",
     "uuid": "3.1.0",
     "webex": "^1.61.1",
     "when": "3.7.8"
