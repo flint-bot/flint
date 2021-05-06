@@ -23,7 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "debug": "2.6.8",
-    "lodash": "4.17.4",
+    "lodash": "4.17.21",
     "mime-types": "2.1.15",
     "moment": "2.19.x",
     "node-sparky": "3.1.x",
