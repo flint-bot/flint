@@ -25,7 +25,7 @@
     "debug": "2.6.8",
     "lodash": "4.17.4",
     "mime-types": "2.1.15",
-    "moment": "2.19.x",
+    "moment": "2.29.x",
     "node-sparky": "3.1.x",
     "redis": "2.8.x",
     "uuid": "3.1.0",
